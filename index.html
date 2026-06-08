@@ -23,12 +23,12 @@
     position: relative; overflow-x: hidden;
   }
 
-  .container { max-width: 950px; margin: 0 auto; position: relative; }
+  .container { max-width: 1050px; margin: 0 auto; position: relative; }
 
-  /* Animations */
   @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: none; } }
   @keyframes fadeUp   { from { opacity:0; transform: translateY(16px);  } to { opacity:1; transform: none; } }
   @keyframes slideInRow { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
+  @keyframes highlightPulse { 0% { background: rgba(79,142,247,0.4); } 100% { background: transparent; } }
 
   header { text-align: center; margin-bottom: 30px; margin-top: 10px; animation: fadeDown .6s ease both; }
   header h1 {
@@ -50,7 +50,8 @@
   .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; transition: all 0.3s ease; }
   .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;}
   
-  .btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  .btn svg { margin-left: 4px; }
   .btn:active { transform: scale(0.95); }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
   .btn-primary:hover { opacity: .9; box-shadow: 0 6px 16px rgba(79,142,247,0.4); transform: translateY(-1px); }
@@ -89,6 +90,7 @@
   .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; }
   .gpa-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
   .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
+  .gpa-row.highlight { animation: highlightPulse 1.5s ease-out; }
   .gpa-row:hover { background: rgba(255,255,255,0.02); }
   .gpa-row:last-child { border-bottom: none; }
   
@@ -99,9 +101,34 @@
   .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
   .autocomplete-item mark { background: none; color: var(--gold); font-weight: 700; }
 
+  /* ------------------- Target GPA Panel ------------------- */
+  .target-panel { display: none; flex-direction: column; gap: 16px; padding: 20px; background: rgba(0,0,0,0.2); border-top: 1px dashed var(--border); animation: fadeUp 0.3s; }
+  .target-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .target-header input { width: 120px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
+  .target-header input:focus { box-shadow: 0 0 0 3px rgba(245,200,66,0.15); }
+  .target-guide { font-size: 0.75rem; color: var(--muted); margin-top: 4px; display: block; width: 100%; }
+  .target-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  
+  .target-card { 
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
+      padding: 12px 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; 
+      justify-content: center; transition: all 0.2s ease; cursor: pointer; position: relative;
+  }
+  .target-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+  .target-card.muted { opacity: 0.4; filter: grayscale(80%); }
+  .target-card.focused { border-color: var(--accent2); background: rgba(124,92,252,0.05); box-shadow: 0 0 10px rgba(124,92,252,0.2); }
+  
+  .target-card-name { font-size: 0.85rem; font-weight: 700; display:flex; align-items:center; justify-content:space-between;}
+  .target-card-val { font-size: 0.88rem; font-weight: bold; padding: 6px 10px; border-radius: 8px; text-align: left; display: flex; justify-content: space-between; align-items: center;}
+  
+  .target-impossible { color: var(--red); font-size: 0.85rem; font-weight: bold; background: rgba(248,113,113,0.1); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(248,113,113,0.3); grid-column: 1 / -1;}
+  
+  .checkbox-indicator { display: none; }
+
   /* ------------------- Planner Styles ------------------- */
-  .planner-header { display: grid; grid-template-columns: 2fr 1fr 2.5fr 2.5fr 44px; gap: 10px; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
-  .planner-row { display: grid; grid-template-columns: 2fr 1fr 2.5fr 2.5fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
+  .planner-header { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
+  .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
+  .planner-row.highlight { animation: highlightPulse 1.5s ease-out; }
   .planner-row:hover { background: rgba(255,255,255,0.015); }
   .planner-row:last-child { border-bottom: none; }
   
@@ -110,6 +137,13 @@
   .session-group select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); }
   .session-group select:focus { border-color: var(--accent); }
   .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
+
+  .exam-group { flex-direction: column; gap: 4px; padding: 6px; align-items: stretch; justify-content: center; }
+  .exam-date-inputs { display: flex; gap: 4px; width: 100%; }
+  .exam-date-inputs select { flex: 1.3; padding: 6px 4px; font-size: 0.8rem; }
+  .exam-date-inputs input { flex: 1; padding: 6px 4px; font-size: 0.8rem; text-align: center; }
+  .exam-group > select.exam-time-sel { border-color: rgba(245,200,66,0.6); background: rgba(245,200,66,0.1); color: var(--gold); font-size: 0.75rem; padding: 4px; animation: fadeUp 0.3s; }
+  .exam-group > select.exam-time-sel.conflict-red { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
 
   /* --- Progress Bar --- */
   .planner-stats { background: rgba(255,255,255,0.015); border-top: 1px solid var(--border); padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; transition: background 0.3s; }
@@ -136,29 +170,110 @@
   .draft-chip span { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; transition: background 0.2s; }
   .draft-chip span:hover { background: rgba(248,113,113,0.2); }
 
+  /* ================= HORIZONTAL GRID TIMELINE ================= */
+  .timeline-section { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px 28px; display: none; animation: fadeUp 0.4s ease; box-shadow: inset 0 4px 20px rgba(0,0,0,0.1); }
+  .timeline-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  
+  .htl-scroll-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .htl-scroll-wrap::-webkit-scrollbar { height: 5px; }
+  .htl-scroll-wrap::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
+  .htl-scroll-wrap::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
+
+  .htl-grid { display: flex; gap: 0; align-items: stretch; min-width: max-content; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+
+  .htl-cell { 
+    position: relative; min-width: 72px; display: flex; flex-direction: column;
+    border-left: 1px solid var(--border); transition: background 0.2s ease;
+  }
+  .htl-cell:first-child { border-left: none; }
+  .htl-cell:first-child .htl-day-header { border-radius: 14px 0 0 0; }
+  .htl-cell:last-child .htl-day-header { border-radius: 0 14px 0 0; }
+
+  .htl-day-header {
+    padding: 8px 6px 6px; text-align: center; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--border); user-select: none;
+  }
+  .htl-day-num { font-size: 1.05rem; font-weight: 800; color: var(--text); line-height: 1; }
+  .htl-day-month { font-size: 0.62rem; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+
+  .htl-day-body { flex: 1; padding: 6px 5px; display: flex; flex-direction: column; gap: 5px; min-height: 72px; background: transparent; }
+
+  /* Empty day */
+  .htl-cell.htl-empty .htl-day-header { background: rgba(0,0,0,0.15); }
+  .htl-cell.htl-empty .htl-day-body { background: repeating-linear-gradient(135deg, transparent, transparent 5px, rgba(255,255,255,0.012) 5px, rgba(255,255,255,0.012) 10px); }
+  .htl-cell.htl-empty .htl-day-num { color: var(--muted); }
+
+  /* Exam day */
+  .htl-cell.htl-has-exam .htl-day-header { background: rgba(79,142,247,0.1); border-bottom-color: rgba(79,142,247,0.3); }
+  .htl-cell.htl-has-exam { background: rgba(79,142,247,0.035); }
+
+  /* Warning states */
+  .htl-cell.htl-warn-yellow .htl-day-header { background: rgba(245,200,66,0.1); border-bottom-color: rgba(245,200,66,0.35); }
+  .htl-cell.htl-warn-yellow { background: rgba(245,200,66,0.03); }
+  .htl-cell.htl-warn-red .htl-day-header { background: rgba(248,113,113,0.1); border-bottom-color: rgba(248,113,113,0.35); }
+  .htl-cell.htl-warn-red { background: rgba(248,113,113,0.03); }
+
+  /* Dot indicator */
+  .htl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 auto 2px; flex-shrink: 0; }
+  .htl-dot.normal { background: var(--accent); box-shadow: 0 0 6px rgba(79,142,247,0.6); }
+  .htl-dot.warn-y  { background: var(--gold);   box-shadow: 0 0 6px rgba(245,200,66,0.6); }
+  .htl-dot.warn-r  { background: var(--red);    box-shadow: 0 0 6px rgba(248,113,113,0.6); }
+
+  /* Exam chip inside cell */
+  .htl-exam-chip {
+    background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 7px; padding: 4px 6px; font-size: 0.68rem; font-weight: 600;
+    color: var(--text); line-height: 1.3; word-break: break-word; cursor: pointer;
+    transition: all 0.2s; text-align: center;
+  }
+  .htl-exam-chip:hover { background: rgba(79,142,247,0.22); transform: translateY(-1px); }
+  .htl-exam-chip.warn-y { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.35); color: var(--gold); }
+  .htl-exam-chip.warn-r { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.35); color: var(--red); }
+
+  .htl-exam-time { font-size: 0.6rem; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Gap separator between non-adjacent days */
+  .htl-gap-sep {
+    min-width: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 8px 4px; background: rgba(0,0,0,0.12); border-left: 1px solid rgba(255,255,255,0.05);
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .htl-gap-line { flex: 1; width: 2px; background: linear-gradient(to bottom, transparent, var(--border), transparent); border-radius: 2px; min-height: 20px; }
+  .htl-gap-label { font-size: 0.58rem; color: var(--muted); writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
+
+  /* Legend row */
+  .htl-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; font-size: 0.73rem; color: var(--muted); align-items: center; }
+  .htl-legend-item { display: flex; align-items: center; gap: 5px; }
+  .htl-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
   /* Timetable Grid Design */
-  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 24px; box-shadow: inset 0 4px 20px rgba(0,0,0,0.2); }
+  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: inset 0 4px 20px rgba(0,0,0,0.2); }
   .timetable { display: grid; grid-template-columns: 90px repeat(5, minmax(140px, 1fr)); gap: 10px; min-width: 800px; }
   .tt-header, .tt-day { background: rgba(255,255,255,0.04); border: 1px solid rgba(42,53,80,0.6); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; }
   .tt-header { background: rgba(79,142,247,0.05); color: var(--text); }
   .tt-cell { background: rgba(26, 34, 53, 0.4); border: 1px dashed rgba(42,53,80,0.8); border-radius: 10px; min-height: 95px; padding: 6px; display: flex; flex-direction: column; gap: 6px; transition: all 0.3s ease; }
   .tt-cell.conflict { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.4); }
 
-  .tt-course { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.3); border-right: 4px solid var(--accent); border-radius: 8px; font-weight: 600; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); backdrop-filter: blur(4px); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); word-break: break-word; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; text-align: center; }
+  .tt-course { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.3); border-right: 4px solid var(--accent); border-radius: 8px; font-weight: 600; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); backdrop-filter: blur(4px); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); word-break: break-word; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
   .tt-course.single-item { padding: 14px 12px; font-size: 0.88rem; margin: auto 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
   .tt-course.conflict-item { background: linear-gradient(135deg, rgba(248,113,113,0.2), rgba(248,113,113,0.1)); border: 1px solid rgba(248,113,113,0.4); border-right: 4px solid var(--red); color: #ffb3b3; padding: 8px; font-size: 0.75rem; width: 100%; }
 
   .tt-course:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 18px rgba(79,142,247,0.3); border-color: rgba(79,142,247,0.7); }
   .tt-course.conflict-item:hover { box-shadow: 0 8px 18px rgba(248,113,113,0.3); border-color: rgba(248,113,113,0.7); }
 
-  .conflict-warning { margin-top: 14px; padding: 12px 16px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; color: #ff9999; font-size: 0.85rem; display: none; align-items: center; gap: 8px; animation: slideInRow 0.4s; }
+  .conflict-warning { margin-top: 18px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: #ffb3b3; font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; animation: slideInRow 0.4s; box-shadow: 0 4px 15px rgba(248,113,113,0.1); line-height: 1.6; }
+  .conflict-warning ul { padding-right: 20px; margin-top: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
 
-  footer.signature { position: absolute; bottom: 16px; left: 24px; font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.35; letter-spacing: 0.5px; transition: opacity 0.3s ease, color 0.3s ease; user-select: none; }
+  .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .sem-btn.active { background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,92,252,0.2)); border-color: var(--accent); color: var(--text); }
+  .sem-btn:hover:not(.active) { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+  footer.signature { position: absolute; bottom: 16px; left: 24px; font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.25; letter-spacing: 0.5px; transition: opacity 0.3s ease, color 0.3s ease; user-select: none;}
   footer.signature:hover { opacity: 0.8; color: var(--accent); }
+  .signature a { text-decoration: none; color: inherit; display: block; }
+  .signature { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
 
-  /* ================= RESPONSIVE QUERIES ================= */
-  @media(max-width: 820px) {
-    /* Planner adjustments */
+  @media(max-width: 900px) {
     .planner-header { display: none; }
     .planner-row { 
       display: flex; flex-direction: column; gap: 10px; 
@@ -168,7 +283,6 @@
     .planner-row:hover { background: rgba(255,255,255,0.03); }
     .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
     
-    /* GPA adjustments */
     .gpa-header { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; font-size: 0.72rem; padding: 12px 10px; }
     .gpa-row { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; padding: 12px 10px; }
     .gpa-row input { padding: 8px 6px; font-size: 0.82rem; }
@@ -204,10 +318,25 @@
         <div>تعداد واحد</div>
         <div style="text-align:center; color:var(--muted)">جلسه اول</div>
         <div style="text-align:center; color:var(--muted)">جلسه دوم</div>
+        <div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div>
         <div></div>
       </div>
       <div id="planner-list"></div>
       
+      <div class="actions">
+        <button class="btn btn-primary" onclick="addPlannerCourse()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          افزودن درس
+        </button>
+        <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت برنامه</button>
+        <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
+          <span style="font-size:0.78rem; color:var(--muted); white-space:nowrap;">ماه‌های امتحانی:</span>
+          <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد — تیر</button>
+          <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی — بهمن</button>
+        </div>
+        <button class="btn btn-ghost" onclick="newPlanner()">📃 برنامه جدید</button>
+      </div>
+
       <div class="planner-stats">
         <div class="stats-info">
           <div class="stats-total">مجموع واحدها: <span id="planner-total-units">۰</span></div>
@@ -223,22 +352,15 @@
           <div class="bar-label label-20">۲۰ واحد</div>
         </div>
       </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" onclick="addPlannerCourse()">＋ افزودن درس</button>
-        <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت برنامه</button>
-        <button class="btn btn-ghost" onclick="newPlanner()" style="margin-right:auto">✨ برنامه جدید</button>
-      </div>
-      
       <div id="planner-drafts-panel" class="drafts-panel" style="display: none;"></div>
     </div>
 
     <div class="timetable-container">
       <div class="timetable" id="timetable-grid"></div>
-      <div id="conflict-alert" class="conflict-warning">
-        ⚠️ تداخل ساعتی در برنامه شما وجود دارد! لطفاً خانه‌های قرمز رنگ را بررسی کنید.
-      </div>
+      <div id="conflict-alert" class="conflict-warning"></div>
     </div>
+
+    <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
   <div id="gpa-tool" class="tool-section">
@@ -259,10 +381,25 @@
         <div>نام درس (اختیاری)</div><div style="text-align:center">واحد</div><div style="text-align:center">نمره (۰–۲۰)</div><div></div>
       </div>
       <div id="gpa-list"><div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div></div>
+      
+      <div id="gpa-target-panel" class="target-panel">
+        <div class="target-header">
+          <span style="font-size: 0.9rem; font-weight: 600;">می‌خواهم معدلم بشود:</span>
+          <input type="number" id="target-gpa-input" placeholder="مثلاً ۱۷.۵" step="0.1" min="10" max="20">
+          <button class="btn btn-primary" onclick="calculateTarget()" style="padding: 6px 14px;">محاسبه مسیر</button>
+          <span class="target-guide">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها کلیک کنید تا انتخاب شوند (قابلیت انتخاب چندگانه).</span>
+        </div>
+        <div id="target-results" class="target-results"></div>
+      </div>
+
       <div class="actions">
-        <button class="btn btn-primary" onclick="addGpaCourse()">＋ افزودن درس</button>
+        <button class="btn btn-primary" onclick="addGpaCourse()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          افزودن درس
+        </button>
         <button class="btn btn-ghost" onclick="saveGpaDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت معدل</button>
-        <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">✨ محاسبه جدید</button>
+        <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
+        <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
       </div>
       <div id="gpa-drafts-panel" class="drafts-panel" style="display: none;"></div>
     </div>
@@ -270,28 +407,53 @@
 
 </div>
 
-<footer class="signature">Crafted by Hooman × AI</footer>
+<footer class="signature">
+  <a href="https://www.iran-pedia.org/wiki/فاطمه_علی%E2%80%8Cمحمدی" target="_blank" rel="noopener noreferrer">
+    به یاد جاویدنام فاطمه علی‌محمدی
+  </a>
+</footer>
 
 <script>
   // ---------------- DATA & CONFIG ----------------
   const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
   const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
+  const PERSIAN_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+  const EXAM_TIMES = ['۰۸:۳۰ - ۱۰:۳۰', '۱۰:۳۰ - ۱۲:۳۰', '۱۳:۳۰ - ۱۵:۳۰', '۱۵:۳۰ - ۱۷:۳۰'];
 
-  // Complete Database
+  let selectedSemester = 0; 
+  const SEMESTER_MONTHS = {
+    0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }],
+    1: [{ idx: 9, name: 'دی' },   { idx: 10, name: 'بهمن' }]
+  };
+
   const COURSE_DB = {
-    'ریاضی فیزیک ۱': 3, 'ریاضی فیزیک ۲': 3, 'مکانیک تحلیلی ۱': 3, 'مکانیک تحلیلی ۲': 3,
-    'الکترومغناطیس ۱': 3, 'الکترومغناطیس ۲': 3, 'مکانیک کوانتومی ۱': 3, 'مکانیک کوانتومی ۲': 3,
-    'فیزیک حالت جامد ۱': 3, 'آزمایشگاه فیزیک حالت جامد ۱': 2, 'فیزیک اتمی و مولکولی': 3,
-    'فیزیک هسته ای ۱': 3, 'الکترونیک ۱': 3, 'آزمایشگاه الکترونیک ۱': 2, 'روش های تجربی در فیزیک': 3,
-    'محاسبات عددی': 3, 'برنامه نویسی کامپیوتر': 3, 'کارگاه ماشین افزار': 1, 'کارگاه الکترونیک': 1,
-    'نقشه کشی صنعتی': 1, 'سیستمهای دیجیتال ۱': 3, 'آزمایشگاه سیستمهای دیجیتال ۱': 2,
-    'سیستمهای دیجیتال ۲': 3, 'مهندسی فوتونیک': 3, 'آزمایشگاه فوتونیک': 2, 'مبانی مهندسی نانو': 3,
-    'کارآموزی': 2, 'ترمودینامیک': 3, 'آزمایشگاه فیزیک پایه ۳ (فیزیک)': 1, 'شیمی عمومی': 3,
-    'آزمایشگاه فیزیک عمومی ۴': 2, 'آزمایشگاه فیزیک پایه ۲ (فیزیک)': 1, 'معادلات دیفرانسیل': 3,
-    'فیزیک عمومی ۳': 3, 'فیزیک عمومی ۴': 3, 'فیزیک ۳': 3, 'فیزیک ۴': 3, 'آزمایشگاه شیمی عمومی': 1,
-    'آزمایشگاه فیزیک پایه ۱ (فیزیک)': 1, 'ریاضی عمومی ۱': 3, 'ریاضی عمومی ۲': 3, 'فیزیک ۲': 3, 
-    'فیزیک پایه ۱': 3, 'اندیشه اسلامی ۱': 2, 'اندیشه اسلامی ۲': 2, 'انقلاب اسلامی ایران': 2, 
-    'تفسیر موضوعی قرآن': 2, 'تاریخ تحلیلی صدر اسلام': 2, 'زبان عمومی': 3, 'تربیت بدنی ۱': 1
+    "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3,
+    "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1,
+    "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3,
+    "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3,
+    "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3,
+    "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3,
+    "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2,
+    "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3,
+    "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2,
+    "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3,
+    "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3,
+    "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3,
+    "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3,
+    "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1,
+    "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3,
+    "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3,
+    "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3,
+    "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3,
+    "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3,
+    "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1,
+    "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2,
+    "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2,
+    "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2,
+    "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2,
+    "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1,
+    "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3,
+    "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1
   };
   const PHYSICS_CHART = Object.keys(COURSE_DB);
 
@@ -305,6 +467,15 @@
   }
 
   function toFarsiNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+  function highlightRow(id, type) {
+    let el = document.getElementById(`${type}-row-${id}`);
+    if(el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.remove('highlight');
+        void el.offsetWidth;
+        el.classList.add('highlight');
+    }
+  }
   
   function fuzzyMatch(str, query) {
     let s = str.toLowerCase(), q = query.toLowerCase(), si = 0, qi = 0;
@@ -335,7 +506,7 @@
       let val = inputEl.value;
       let target = arrayRef.find(c => c.id === id);
       if(target) target.name = val;
-      if(type === 'gpa') calcGpa(); else drawTimetable();
+      if(type === 'gpa') { calcGpa(); clearTargetResults(); } else { drawTimetable(); updatePlannerStats(); drawTimeline(); }
       
       let ex = inputEl.parentNode.querySelector('.autocomplete-list'); if (ex) ex.remove();
       let sug = getSuggestions(val); if (sug.length === 0) return;
@@ -350,7 +521,7 @@
             if (COURSE_DB[s]) t.units = COURSE_DB[s].toString();
           }
           closeAllAutocomplete(); 
-          if(type === 'gpa') renderGpa(); else { handleUnitOrTimeChange(t, true, false); renderPlanner(); }
+          if(type === 'gpa') { renderGpa(); clearTargetResults(); } else { handleUnitOrTimeChange(t, true, false); renderPlanner(); }
         };
         dd.appendChild(item);
       });
@@ -360,33 +531,61 @@
 
   function createSelect(options, val, placeholder) {
     let s = document.createElement('select');
-    s.innerHTML = `<option value="">${placeholder}</option>` + options.map(o => `<option value="${o}" ${o==val?'selected':''}>${o}</option>`).join('');
+    s.innerHTML = `<option value="">${placeholder}</option>` + options.map((o, i) => {
+        let valueStr = (options === PERSIAN_MONTHS) ? i.toString() : o;
+        return `<option value="${valueStr}" ${valueStr==val?'selected':''}>${o}</option>`;
+    }).join('');
     return s;
+  }
+
+  function createMonthSelect(val) {
+    let s = document.createElement('select');
+    let months = SEMESTER_MONTHS[selectedSemester];
+    s.innerHTML = `<option value="">ماه</option>` + months.map(m =>
+        `<option value="${m.idx}" ${m.idx.toString()==val?'selected':''}>${m.name}</option>`
+    ).join('');
+    return s;
+  }
+
+  // محاسبه دقیق روز مطلق بر اساس تقویم شمسی
+  function toAbsDayJalali(monthIdx, day) {
+      let days = 0;
+      for(let i=0; i<monthIdx; i++) {
+          if(i <= 5) days += 31;
+          else if(i <= 10) days += 30;
+          else days += 29;
+      }
+      return days + day;
   }
 
   // ---------------- GPA CALCULATOR LOGIC ----------------
   let gpaCourses = [];
   let gpaIdCounter = 0;
   let gpaDrafts = [];
+  let focusIds = new Set(); // تغییر به مجموعه (چندگانه)
 
-  function addGpaCourse(name = '', units = '', grade = '') { gpaCourses.push({ id: ++gpaIdCounter, name, units, grade }); renderGpa(); }
-  function removeGpaCourse(id) { gpaCourses = gpaCourses.filter(c => c.id !== id); renderGpa(); }
+  function addGpaCourse(name = '', units = '', grade = '') { gpaCourses.push({ id: ++gpaIdCounter, name, units, grade }); renderGpa(); clearTargetResults(); }
+  function removeGpaCourse(id) { 
+      gpaCourses = gpaCourses.filter(c => c.id !== id); 
+      focusIds.delete(id);
+      renderGpa(); clearTargetResults(); 
+  }
 
   function renderGpa() {
     const list = document.getElementById('gpa-list'); closeAllAutocomplete();
     if (gpaCourses.length === 0) { list.innerHTML = '<div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div>'; calcGpa(); return; }
     list.innerHTML = '';
     gpaCourses.forEach(c => {
-      let row = document.createElement('div'); row.className = 'gpa-row';
+      let row = document.createElement('div'); row.className = 'gpa-row'; row.id = `gpa-row-${c.id}`;
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
       let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: مکانیک تحلیلی ۱'; nameInp.value = c.name;
       nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, gpaCourses, 'gpa');
 
       let unitInp = document.createElement('input'); unitInp.type = 'number'; unitInp.placeholder = 'واحد'; unitInp.value = c.units; unitInp.style.textAlign='center';
-      unitInp.addEventListener('input', () => { let v = parseInt(unitInp.value); if (v > 4) { unitInp.value = 4; } if (v < 1 && unitInp.value !== '') { unitInp.value = 1; } c.units = unitInp.value; calcGpa(); });
+      unitInp.addEventListener('input', () => { let v = parseInt(unitInp.value); if (v > 4) { unitInp.value = 4; } if (v < 1 && unitInp.value !== '') { unitInp.value = 1; } c.units = unitInp.value; calcGpa(); clearTargetResults(); });
 
       let gradeInp = document.createElement('input'); gradeInp.type = 'number'; gradeInp.placeholder = '۰ تا ۲۰'; gradeInp.value = c.grade; gradeInp.style.textAlign='center'; gradeInp.step = "0.01";
-      gradeInp.addEventListener('input', () => { let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); });
+      gradeInp.addEventListener('input', () => { let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); clearTargetResults(); });
 
       let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removeGpaCourse(c.id);
       row.append(nameWrap, unitInp, gradeInp, delBtn); list.appendChild(row);
@@ -403,6 +602,12 @@
     document.getElementById('total-units').textContent = toFarsiNum(units);
     document.getElementById('course-count').textContent = toFarsiNum(count);
     let gpaEl = document.getElementById('gpa-display'), badge = document.getElementById('status-badge');
+    let btnTarget = document.getElementById('target-toggle-btn');
+    
+    let totalValidUnits = gpaCourses.reduce((sum, c) => sum + (parseFloat(c.units) > 0 ? parseFloat(c.units) : 0), 0);
+    if(totalValidUnits > 0) { btnTarget.style.opacity = '1'; btnTarget.style.pointerEvents = 'auto'; } 
+    else { btnTarget.style.opacity = '0.4'; btnTarget.style.pointerEvents = 'none'; document.getElementById('gpa-target-panel').style.display = 'none'; }
+
     if (count === 0) { gpaEl.textContent = '—'; gpaEl.className = 'result-value'; badge.className = 'status-badge hidden'; return; }
     let gpa = weight / units; gpaEl.textContent = gpa.toFixed(2);
     gpaEl.className = 'result-value ' + (gpa >= 17 ? 'good' : (gpa > 12 ? '' : 'bad'));
@@ -412,19 +617,227 @@
     document.getElementById('status-text').textContent = gpa >= 17 ? 'الف' : (gpa > 12 ? 'عدم مشروط' : 'مشروط');
   }
 
-  function clearGpa() { gpaCourses = []; renderGpa(); }
-  
-  function newGpa() {
-    clearGpa();
-    addGpaCourse(); // Start fresh with one empty row
+  // ---------------- SMART TARGET GPA ALGORITHM (Multi-Select Focus) ----------------
+  function toggleTargetPanel() {
+    let panel = document.getElementById('gpa-target-panel');
+    panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
   }
+  
+  function clearTargetResults() { 
+      focusIds.clear(); 
+      document.getElementById('target-results').innerHTML = ''; 
+  }
+  
+  function getDifficulty(name) {
+      if(!name) return 1.0;
+      let n = name.toLowerCase();
+      let hard = ['کوانتوم', 'ریاضی', 'الکترومغناطیس', 'تحلیلی', 'دیفرانسیل', 'سیالات', 'ترمودینامیک', 'حالت جامد', 'محاسبات', 'فیزیک ۲', 'فیزیک ۳'];
+      let easy = ['آزمایشگاه', 'تربیت بدنی', 'اندیشه', 'اسلام', 'اخلاق', 'خانواده', 'قرآن', 'فارسی', 'زبان خارجه', 'کارگاه', 'پروژه'];
+      
+      if (hard.some(k => n.includes(k))) return 3.0; 
+      if (easy.some(k => n.includes(k))) return 0.4; 
+      return 1.0;
+  }
+
+  function addClearFocusButton(container) {
+      let btn = document.createElement('button');
+      btn.className = 'btn btn-ghost';
+      btn.style.gridColumn = '1 / -1';
+      btn.style.borderColor = 'var(--accent2)';
+      btn.style.color = 'var(--accent2)';
+      btn.innerHTML = '✖ لغو انتخاب‌ها (توزیع خودکار بین همه)';
+      btn.onclick = () => { focusIds.clear(); calculateTarget('run'); };
+      container.appendChild(btn);
+  }
+
+  function runDistributeDeficit(pool, deficitWeight, isFocusMode) {
+      pool.forEach(item => {
+          item.w_factor = item.is_empty ? (item.u / item.diff) : (item.potential_weight / item.diff);
+          item.assigned_delta_g = 0;
+      });
+
+      let remaining_deficit = deficitWeight;
+      let iterations = 0;
+
+      while (remaining_deficit > 0.01 && iterations < 10) {
+          let uncapped = pool.filter(item => {
+              let current_base = item.is_empty ? 0 : item.g;
+              let max_delta = item.max_g - current_base;
+              return item.assigned_delta_g < max_delta - 0.001;
+          });
+
+          if (uncapped.length === 0) return { impossible: true, val: remaining_deficit };
+
+          let total_w = uncapped.reduce((sum, item) => sum + item.w_factor, 0);
+          uncapped.forEach(item => {
+              let share = (item.w_factor / total_w) * remaining_deficit;
+              let raw_delta = share / item.u;
+
+              let current_base = item.is_empty ? 0 : item.g;
+              let max_delta = item.max_g - current_base;
+
+              let added_delta = Math.min(raw_delta, max_delta - item.assigned_delta_g);
+              item.assigned_delta_g += added_delta;
+              remaining_deficit -= (added_delta * item.u);
+          });
+          iterations++;
+      }
+
+      if (remaining_deficit > 0.01) return { impossible: true, val: remaining_deficit };
+
+      // اعمال پله های 0.25 نمره ای 
+      if (!isFocusMode && pool.length > 1) {
+          pool.sort((a,b) => (b.u / b.diff) - (a.u / a.diff));
+          let absorber = pool[0];
+          let absorbed_by_snapped = 0;
+
+          for (let i = 1; i < pool.length; i++) {
+              let item = pool[i];
+              let current_target = (item.is_empty ? 0 : item.g) + item.assigned_delta_g;
+              let snapped = Math.round(current_target * 4) / 4;
+              snapped = Math.max(item.is_empty ? 0 : item.g, Math.min(item.max_g, snapped));
+              
+              item.final_target_g = snapped;
+              absorbed_by_snapped += (snapped - (item.is_empty ? 0 : item.g)) * item.u;
+          }
+
+          let needed_for_absorber = deficitWeight - absorbed_by_snapped;
+          let final_absorber_g = (absorber.is_empty ? 0 : absorber.g) + (needed_for_absorber / absorber.u);
+
+          if (final_absorber_g > absorber.max_g + 0.01 || final_absorber_g < (absorber.is_empty ? 0 : absorber.g) - 0.01) {
+              pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
+          } else {
+              absorber.final_target_g = final_absorber_g;
+          }
+      } else {
+          pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
+      }
+
+      return { impossible: false, suggestions: pool };
+  }
+
+  function calculateTarget(actionStr = null) {
+    if(typeof actionStr === 'number') {
+        if(focusIds.has(actionStr)) focusIds.delete(actionStr);
+        else focusIds.add(actionStr);
+    }
+    
+    let target = parseFloat(document.getElementById('target-gpa-input').value);
+    let resultsDiv = document.getElementById('target-results');
+    resultsDiv.innerHTML = '';
+
+    if(isNaN(target) || target < 10 || target > 20) {
+        resultsDiv.innerHTML = '<div style="color:var(--red); font-size:0.85rem; padding:10px;">لطفاً یک معدل هدف معتبر (بین ۱۰ تا ۲۰) وارد کنید.</div>';
+        return;
+    }
+
+    let validCourses = gpaCourses.filter(c => !isNaN(parseFloat(c.units)) && parseFloat(c.units) > 0);
+    let totalUnits = validCourses.reduce((sum, c) => sum + parseFloat(c.units), 0);
+    let currentWeight = 0;
+
+    let pool = validCourses.map(c => {
+        let u = parseFloat(c.units);
+        let g = parseFloat(c.grade);
+        let is_empty = isNaN(g);
+        if (!is_empty) currentWeight += u * g;
+
+        let diff = getDifficulty(c.name);
+        let max_g = 20;
+        
+        if (!is_empty) {
+            if (g <= 4.99) max_g = 9.75; 
+            else if (g < 9.75) max_g = 10.0; 
+        }
+
+        let potential_weight = is_empty ? (20 * u) : ((max_g - g) * u);
+        
+        // اگر انتخاب شده‌ای داریم، بقیه ظرفیتشان صفر میشود
+        if (focusIds.size > 0 && !focusIds.has(c.id)) {
+            return { c, u, g, is_empty, diff, max_g, potential_weight: 0 };
+        }
+
+        return { c, u, g, is_empty, diff, max_g, potential_weight };
+    });
+
+    let deficitWeight = (target * totalUnits) - currentWeight;
+
+    if (deficitWeight <= 0) {
+         resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! 🎉</div>';
+         if(focusIds.size > 0) addClearFocusButton(resultsDiv);
+         return;
+    }
+
+    let shiftablePool = pool.filter(p => p.potential_weight > 0);
+    if (shiftablePool.length === 0) {
+         let msg = focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی برای رساندن شما به این معدل را ندارند. (درس‌های دیگری هم تیک بزنید)" : "برای رسیدن به هدف، مجموعاً نمره‌ای فراتر از سقف ۲۰ نیاز دارید.";
+         resultsDiv.innerHTML = `<div class="target-impossible">${msg}</div>`;
+         // اجازه می‌دهیم رندر ادامه پیدا کند تا دروس همچنان قابل کلیک باشند
+    }
+
+    let emptyPool = shiftablePool.filter(p => p.is_empty);
+    let targetPool = (emptyPool.length > 0 && focusIds.size === 0) ? emptyPool : shiftablePool;
+
+    let result = runDistributeDeficit(targetPool, deficitWeight, focusIds.size > 0);
+
+    if (result.impossible && emptyPool.length > 0 && emptyPool.length < shiftablePool.length && focusIds.size === 0) {
+        result = runDistributeDeficit(shiftablePool, deficitWeight, false);
+    }
+
+    if (result.impossible && shiftablePool.length > 0) {
+        let msg = focusIds.size > 0 ? "دروس انتخاب شده به تنهایی کافی نیستند. لطفاً درس دیگری را نیز انتخاب کنید." : "دسترسی به این معدل غیرممکن است.";
+        resultsDiv.innerHTML = `<div class="target-impossible">${msg}</div>`;
+    }
+
+    if(focusIds.size > 0) addClearFocusButton(resultsDiv);
+
+    // همیشه همه کارت های شیفت پذیر را رندر میکنیم تا قابل کلیک باشند
+    pool.filter(p => p.is_empty || p.max_g > p.g).forEach(s => {
+        let card = document.createElement('div');
+        let isFocused = focusIds.size > 0 && focusIds.has(s.c.id);
+        let isMuted = focusIds.size > 0 && !focusIds.has(s.c.id);
+        
+        card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : '');
+        card.onclick = () => calculateTarget(s.c.id); 
+        
+        let finalG = s.final_target_g || (s.is_empty ? 0 : s.g);
+        let delta = finalG - (s.is_empty ? 0 : s.g);
+        let color = getColorForGrade(finalG);
+        
+        let text = "";
+        if (isMuted || result.impossible && isFocused) {
+            text = `<span style="color:var(--muted); font-weight:normal; font-size:0.8rem">خارج از محاسبه</span>`;
+        } else {
+            text = !s.is_empty ? `کمبود: <b style="font-size:1rem">${delta.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${finalG.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}</span>` 
+                               : `پیشنهاد: <b style="font-size:1.1rem">${finalG.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}</b>`;
+        }
+
+        card.innerHTML = `
+            <div class="target-card-name" title="${s.c.name || 'بدون نام'}">
+               <span>${s.c.name || '(بدون نام)'}</span>
+               <div class="checkbox-indicator"></div>
+            </div>
+            <div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : color};">${text}</div>
+        `;
+        resultsDiv.appendChild(card);
+    });
+  }
+
+  function getColorForGrade(grade) {
+      if(grade >= 17) return 'var(--green)';
+      if(grade >= 14) return 'var(--accent)';
+      return 'var(--gold)';
+  }
+
+  function clearGpa() { gpaCourses = []; renderGpa(); clearTargetResults(); document.getElementById('target-gpa-input').value = ''; document.getElementById('gpa-target-panel').style.display='none'; }
+  function newGpa() { clearGpa(); addGpaCourse(); }
 
   // GPA Drafts
   function saveGpaDraft() {
     if (gpaCourses.length === 0) return alert('معدلی برای ذخیره وجود ندارد!');
     let gpaEl = document.getElementById('gpa-display').textContent;
+    let targetVal = document.getElementById('target-gpa-input').value;
     let draftName = `معدل ${gpaEl} (${gpaDrafts.length + 1})`;
-    gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(gpaCourses)) });
+    gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(gpaCourses)), target: targetVal });
     renderGpaDrafts();
   }
   function renderGpaDrafts() {
@@ -437,12 +850,14 @@
       chip.onclick = () => {
         gpaCourses = JSON.parse(JSON.stringify(draft.data));
         gpaIdCounter = Math.max(...gpaCourses.map(c => c.id), gpaIdCounter);
-        renderGpa();
+        document.getElementById('target-gpa-input').value = draft.target || '';
+        renderGpa(); clearTargetResults();
       };
       panel.appendChild(chip);
     });
   }
   function deleteGpaDraft(event, id) { event.stopPropagation(); gpaDrafts = gpaDrafts.filter(d => d.id !== id); renderGpaDrafts(); }
+
 
   // ---------------- PLANNER LOGIC & STATS ----------------
   let pCourses = [];
@@ -452,7 +867,9 @@
   function addPlannerCourse(data = {}) {
     pCourses.push({
       id: ++pIdCounter, name: data.name || '', units: data.units || '', 
-      d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || ''
+      d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '',
+      examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '',
+      hasExamConflict: false, examConflictLevel: 0 
     });
     renderPlanner();
   }
@@ -472,10 +889,42 @@
 
   function renderPlanner() {
     const list = document.getElementById('planner-list'); closeAllAutocomplete();
-    if (pCourses.length === 0) { list.innerHTML = '<div class="empty-row">درسی برای برنامه‌ریزی اضافه نشده است.</div>'; drawTimetable(); updatePlannerStats(); return; }
+    if (pCourses.length === 0) { 
+        list.innerHTML = '<div class="empty-row">درسی برای برنامه‌ریزی اضافه نشده است.</div>'; 
+        drawTimetable(); updatePlannerStats(); drawTimeline(); return; 
+    }
     list.innerHTML = '';
+    
+    let examDateMap = {};
     pCourses.forEach(c => {
-      let row = document.createElement('div'); row.className = 'planner-row';
+        c.hasExamConflict = false; c.examConflictLevel = 0;
+        if (c.examMonth && c.examDay) {
+            let dateKey = `${c.examMonth}-${c.examDay}`;
+            if (!examDateMap[dateKey]) examDateMap[dateKey] = [];
+            examDateMap[dateKey].push(c);
+        }
+    });
+    
+    Object.values(examDateMap).forEach(arr => {
+        if (arr.length > 1) {
+            arr.forEach(c => { c.hasExamConflict = true; c.examConflictLevel = Math.max(c.examConflictLevel, 1); });
+            let timeMap = {};
+            arr.forEach(c => {
+                if(c.examTime) {
+                    if(!timeMap[c.examTime]) timeMap[c.examTime] = [];
+                    timeMap[c.examTime].push(c);
+                }
+            });
+            Object.values(timeMap).forEach(timeArr => {
+                if(timeArr.length > 1) {
+                    timeArr.forEach(c => c.examConflictLevel = 2);
+                }
+            });
+        }
+    });
+
+    pCourses.forEach(c => {
+      let row = document.createElement('div'); row.className = 'planner-row'; row.id = `planner-row-${c.id}`;
       
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
       let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name;
@@ -484,14 +933,12 @@
       let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد');
       unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
 
-      // Session 1 Group
       let s1Grp = document.createElement('div'); s1Grp.className = 'session-group';
       let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت');
       d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
       t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
       s1Grp.append(d1Sel, t1Sel);
 
-      // Session 2 Group
       let s2Grp = document.createElement('div'); s2Grp.className = 'session-group';
       let is1Unit = parseInt(c.units) === 1; if (is1Unit) s2Grp.classList.add('disabled-session');
       let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت');
@@ -500,12 +947,52 @@
       if (is1Unit) { d2Sel.disabled = true; t2Sel.disabled = true; }
       s2Grp.append(d2Sel, t2Sel);
 
+      let examGrp = document.createElement('div'); examGrp.className = 'session-group exam-group';
+      let dateInps = document.createElement('div'); dateInps.className = 'exam-date-inputs';
+      
+      let eMonthSel = createMonthSelect(c.examMonth);
+      let eDayInp = document.createElement('input'); eDayInp.type = 'number'; eDayInp.placeholder = 'روز'; eDayInp.value = c.examDay;
+
+      eMonthSel.onchange = () => {
+          c.examMonth = eMonthSel.value;
+          if(!c.examMonth) c.examDay = ''; 
+          else {
+              let m = parseInt(c.examMonth);
+              let max = m <= 5 ? 31 : (m === 11 ? 29 : 30);
+              if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString();
+          }
+          renderPlanner();
+      };
+
+      eDayInp.addEventListener('input', (e) => {
+          if(!c.examMonth) { e.target.value = ''; return; }
+          let m = parseInt(c.examMonth);
+          let max = m <= 5 ? 31 : (m === 11 ? 29 : 30);
+          let v = parseInt(e.target.value);
+          if (v > max) e.target.value = max;
+          if (v < 1 && e.target.value !== '') e.target.value = 1;
+          c.examDay = e.target.value;
+      });
+      eDayInp.addEventListener('change', () => renderPlanner());
+
+      dateInps.append(eMonthSel, eDayInp);
+      examGrp.appendChild(dateInps);
+
+      if (c.hasExamConflict) {
+          let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت امتحان');
+          eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel';
+          eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); };
+          examGrp.appendChild(eTimeSel);
+      }
+
       let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removePlannerCourse(c.id);
 
-      row.append(nameWrap, unitSel, s1Grp, s2Grp, delBtn); list.appendChild(row);
+      row.append(nameWrap, unitSel, s1Grp, s2Grp, examGrp, delBtn); 
+      list.appendChild(row);
     });
     drawTimetable();
     updatePlannerStats();
+    drawTimeline();
   }
 
   function updatePlannerStats() {
@@ -547,34 +1034,199 @@
 
     pCourses.forEach(c => {
       let displayName = c.name || '(بدون نام)';
-      if (c.d1 && c.t1 && schedule[c.d1]) schedule[c.d1][c.t1].push(displayName);
-      if (c.d2 && c.t2 && schedule[c.d2]) schedule[c.d2][c.t2].push(displayName);
+      if (c.d1 && c.t1 && schedule[c.d1]) schedule[c.d1][c.t1].push({name: displayName, id: c.id});
+      if (c.d2 && c.t2 && schedule[c.d2]) schedule[c.d2][c.t2].push({name: displayName, id: c.id});
     });
 
     let hasConflict = false;
+    let conflictMessages = [];
+
     DAYS.forEach(day => {
       grid.innerHTML += `<div class="tt-day">${day}</div>`;
       TIMES.forEach(time => {
         let classes = schedule[day][time];
         let isConflict = classes.length > 1; let isSingle = classes.length === 1;
-        if (isConflict) hasConflict = true;
+        if (isConflict) {
+            hasConflict = true;
+            conflictMessages.push(`<strong>${day} (${time}):</strong> ${classes.map(cl => cl.name).join(' و ')}`);
+        }
         
         let cellHTML = `<div class="${isConflict ? 'tt-cell conflict' : 'tt-cell'}">`;
         classes.forEach(cls => {
-           cellHTML += `<div class="${isSingle ? 'tt-course single-item' : 'tt-course conflict-item'}">${cls}</div>`;
+           cellHTML += `<div class="${isSingle ? 'tt-course single-item' : 'tt-course conflict-item'}" onclick="highlightRow(${cls.id}, 'planner')">${cls.name}</div>`;
         });
         cellHTML += `</div>`; grid.innerHTML += cellHTML;
       });
     });
-    document.getElementById('conflict-alert').style.display = hasConflict ? 'flex' : 'none';
+
+    let alertBox = document.getElementById('conflict-alert');
+    if (hasConflict) {
+        alertBox.style.display = 'flex';
+        alertBox.innerHTML = `<div>⚠️ <b style="color:var(--red);">تداخل ساعتی در کلاس‌ها وجود دارد!</b> لطفاً خانه‌های قرمز رنگ در جدول را بررسی کنید.<br><ul>` + conflictMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`;
+    } else {
+        alertBox.style.display = 'none';
+    }
+  }
+
+  function setSemester(idx) {
+    selectedSemester = idx;
+    document.getElementById('sem-btn-0').classList.toggle('active', idx === 0);
+    document.getElementById('sem-btn-1').classList.toggle('active', idx === 1);
+    let valid = SEMESTER_MONTHS[idx].map(m => m.idx.toString());
+    pCourses.forEach(c => {
+      if (c.examMonth && !valid.includes(c.examMonth)) { c.examMonth = ''; c.examDay = ''; c.examTime = ''; c.hasExamConflict = false; c.examConflictLevel = 0; }
+    });
+    renderPlanner();
+  }
+
+  // رسم خط زمانی عمودی مدرن با محاسبه دقیق روزهای فرجه
+  function drawTimeline() {
+    let container = document.getElementById('exam-timeline-container');
+    let dateMap = {};
+    pCourses.forEach(c => {
+        if(c.examMonth && c.examDay) {
+            let key = `${c.examMonth}-${c.examDay}`;
+            if(!dateMap[key]) dateMap[key] = { month: parseInt(c.examMonth), day: parseInt(c.examDay), courses: [], level: 0 };
+            dateMap[key].courses.push(c);
+            dateMap[key].level = Math.max(dateMap[key].level, c.examConflictLevel);
+        }
+    });
+    
+    let examDates = Object.values(dateMap);
+    if(examDates.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    container.style.display = 'block';
+    examDates.sort((a,b) => toAbsDayJalali(a.month, a.day) - toAbsDayJalali(b.month, b.day));
+
+    // محاسبه بازه کل (از اولین تا آخرین امتحان)
+    let firstAbs = toAbsDayJalali(examDates[0].month, examDates[0].day);
+    let lastAbs  = toAbsDayJalali(examDates[examDates.length-1].month, examDates[examDates.length-1].day);
+
+    // ساخت map از روز مطلق به اطلاعات امتحان
+    let examByAbs = {};
+    examDates.forEach(d => { examByAbs[toAbsDayJalali(d.month, d.day)] = d; });
+
+    // تبدیل روز مطلق به روز/ماه شمسی (تقریبی)
+    function absToJalali(abs) {
+        let monthLengths = [31,31,31,31,31,31,30,30,30,30,30,29];
+        let rem = abs;
+        for(let m=0; m<12; m++) {
+            if(rem <= monthLengths[m]) return { month: m, day: rem };
+            rem -= monthLengths[m];
+        }
+        return { month: 11, day: rem };
+    }
+
+    // تعداد روزهای کل بازه
+    let totalDays = lastAbs - firstAbs + 1;
+    // اگر فاصله خیلی زیاد باشد، فاصله‌های بزرگ را compact کن
+    const MAX_DIRECT_DAYS = 25; // بیشتر از این مستقیم نمایش نده، separator بذار
+
+    let segments = []; // هر segment یا یک بازه پیوسته است یا یک separator
+    let i = firstAbs;
+    while(i <= lastAbs) {
+        // پیدا کردن بعدی امتحان
+        let nextExamAbs = null;
+        for(let j=i; j<=lastAbs; j++) {
+            if(examByAbs[j]) { nextExamAbs = j; break; }
+        }
+        if(nextExamAbs === null) break;
+
+        // فاصله از i تا nextExamAbs
+        let gap = nextExamAbs - i;
+        if(gap > MAX_DIRECT_DAYS && i > firstAbs) {
+            // separator
+            segments.push({ type:'sep', days: gap });
+            i = nextExamAbs;
+        } else {
+            // بازه پیوسته از i تا بعدی امتحان (یا چند روز بعدش)
+            let endOfChunk = nextExamAbs;
+            // ادامه بده تا امتحان بعدی یا خیلی دور نشه
+            while(endOfChunk < lastAbs) {
+                let nextNext = null;
+                for(let j=endOfChunk+1; j<=lastAbs; j++) { if(examByAbs[j]) { nextNext=j; break; } }
+                if(nextNext === null) { endOfChunk = lastAbs; break; }
+                if(nextNext - endOfChunk > MAX_DIRECT_DAYS) break;
+                endOfChunk = nextNext;
+            }
+            // اضافه کردن روزها
+            let days = [];
+            for(let d=i; d<=endOfChunk; d++) {
+                let jal = absToJalali(d);
+                days.push({ abs: d, month: jal.month, day: jal.day, examData: examByAbs[d] || null });
+            }
+            segments.push({ type:'days', days });
+            i = endOfChunk + 1;
+        }
+    }
+
+    let cellsHTML = '';
+    segments.forEach((seg, si) => {
+        if(seg.type === 'sep') {
+            cellsHTML += `
+            <div class="htl-gap-sep">
+              <div class="htl-gap-line"></div>
+              <div class="htl-gap-label">${toFarsiNum(seg.days)} روز</div>
+              <div class="htl-gap-line"></div>
+            </div>`;
+        } else {
+            seg.days.forEach(d => {
+                let hasExam = !!d.examData;
+                let level = hasExam ? d.examData.level : 0;
+                let cellClass = 'htl-cell';
+                let dotClass = '';
+                if(!hasExam) { cellClass += ' htl-empty'; }
+                else if(level === 2) { cellClass += ' htl-has-exam htl-warn-red'; dotClass = 'warn-r'; }
+                else if(level === 1) { cellClass += ' htl-has-exam htl-warn-yellow'; dotClass = 'warn-y'; }
+                else { cellClass += ' htl-has-exam'; dotClass = 'normal'; }
+
+                let chipsHTML = '';
+                if(hasExam) {
+                    chipsHTML += `<div class="htl-dot ${dotClass}"></div>`;
+                    d.examData.courses.forEach(c => {
+                        let chipClass = level===2?'warn-r': level===1?'warn-y':'';
+                        let timeHtml = c.examTime ? `<div class="htl-exam-time">${c.examTime}</div>` : '';
+                        chipsHTML += `<div class="htl-exam-chip ${chipClass}" onclick="highlightRow(${c.id},'planner')" title="${c.name||'(بدون نام)'}">
+                            ${c.name||'(بدون نام)'}${timeHtml}
+                        </div>`;
+                    });
+                }
+
+                cellsHTML += `
+                <div class="${cellClass}">
+                  <div class="htl-day-header">
+                    <div class="htl-day-num">${toFarsiNum(d.day)}</div>
+                    <div class="htl-day-month">${PERSIAN_MONTHS[d.month]}</div>
+                  </div>
+                  <div class="htl-day-body">${chipsHTML}</div>
+                </div>`;
+            });
+        }
+    });
+
+    let html = `
+      <div class="timeline-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        مسیر امتحانات شما
+        <span style="font-size:0.75rem; color:var(--muted); font-weight:400;">— هر خانه یک روز</span>
+      </div>
+      <div class="htl-scroll-wrap">
+        <div class="htl-grid">${cellsHTML}</div>
+      </div>
+      <div class="htl-legend">
+        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--muted);opacity:0.4;"></div> روز بدون امتحان</div>
+        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--accent);box-shadow:0 0 5px rgba(79,142,247,0.6)"></div> روز امتحان</div>
+        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--gold);box-shadow:0 0 5px rgba(245,200,66,0.6)"></div> امتحان همروز</div>
+        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--red);box-shadow:0 0 5px rgba(248,113,113,0.6)"></div> تداخل ساعتی</div>
+      </div>
+    `;
+    container.innerHTML = html;
   }
 
   function clearPlanner() { pCourses = []; renderPlanner(); }
-  
-  function newPlanner() {
-    clearPlanner();
-    addPlannerCourse(); // Start fresh with one empty row
-  }
+  function newPlanner() { clearPlanner(); addPlannerCourse(); }
 
   // Planner Drafts
   function savePlannerDraft() {

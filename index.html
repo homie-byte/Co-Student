@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co-Student</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e; --surface: #111827; --card: #1a2235; --border: #2a3550;
+    --accent: #4f8ef7; --accent2: #7c5cfc; --gold: #f5c842;
+    --green: #34d399; --red: #f87171; --text: #e8eaf2; --muted: #6b7a99;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Vazirmatn', sans-serif; background: var(--bg); color: var(--text);
+    min-height: 100vh; padding: 24px 16px 80px;
+    background-image: radial-gradient(ellipse at 20% 10%, rgba(79,142,247,0.12) 0%, transparent 50%),
+                      radial-gradient(ellipse at 80% 80%, rgba(124,92,252,0.1) 0%, transparent 50%);
+    position: relative; overflow-x: hidden;
+  }
+
+  .container { max-width: 950px; margin: 0 auto; position: relative; }
+
+  /* Animations */
+  @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: none; } }
+  @keyframes fadeUp   { from { opacity:0; transform: translateY(16px);  } to { opacity:1; transform: none; } }
+  @keyframes slideInRow { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
+
+  header { text-align: center; margin-bottom: 30px; margin-top: 10px; animation: fadeDown .6s ease both; }
+  header h1 {
+    font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: -0.5px; margin-bottom: 20px;
+  }
+
+  .tabs { display: inline-flex; background: rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 20px; border: 1px solid var(--border); }
+  .tab-btn {
+    background: transparent; color: var(--muted); border: none; padding: 10px 24px; border-radius: 14px;
+    font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+  }
+  .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+
+  .tool-section { display: none; animation: fadeUp 0.4s ease both; }
+  .tool-section.active { display: block; }
+
+  .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; transition: all 0.3s ease; }
+  .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;}
+  
+  .btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  .btn:active { transform: scale(0.95); }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
+  .btn-primary:hover { opacity: .9; box-shadow: 0 6px 16px rgba(79,142,247,0.4); transform: translateY(-1px); }
+  .btn-ghost { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
+  .btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
+  .btn-danger:hover { background: rgba(248,113,113,.25); transform: translateY(-1px); }
+
+  input, select {
+    background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 10px; color: var(--text);
+    font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); background: rgba(79,142,247,.1); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
+  select option { background: var(--surface); color: var(--text); }
+  .empty-row { padding: 32px; text-align: center; color: var(--muted); font-size: .88rem; }
+
+  /* ------------------- GPA Calculator Styles ------------------- */
+  .result-card { background: linear-gradient(135deg, #1a2235, #1e2a42); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .result-group { display: flex; flex-direction: column; gap: 4px; }
+  .result-label { font-size: .75rem; color: var(--muted); font-weight: 500; }
+  .result-value { font-size: 2.8rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
+  .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
+  .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
+  .result-meta { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-val  { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+  .meta-lbl  { font-size: .72rem; color: var(--muted); }
+
+  .status-badge { display: flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 30px; font-size: .88rem; font-weight: 700; border: 1.5px solid transparent; transition: all .4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .status-badge.hidden { opacity: 0; transform: scale(0.9); pointer-events: none; position: absolute; }
+  .status-badge.alef   { background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.4); color: var(--green); }
+  .status-badge.ok     { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); }
+  .status-badge.bad    { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
+
+  .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; }
+  .gpa-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
+  .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
+  .gpa-row:hover { background: rgba(255,255,255,0.02); }
+  .gpa-row:last-child { border-bottom: none; }
+  
+  .autocomplete-wrap { position: relative; width: 100%; }
+  .autocomplete-list { position: absolute; top: calc(100% + 4px); right: 0; left: 0; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-height: 200px; overflow-y: auto; transition: all 0.2s ease; }
+  .autocomplete-item { padding: 9px 14px; font-size: .84rem; cursor: pointer; border-bottom: 1px solid rgba(42,53,80,.4); text-align: right; transition: background 0.15s; }
+  .autocomplete-item:last-child { border-bottom: none; }
+  .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
+  .autocomplete-item mark { background: none; color: var(--gold); font-weight: 700; }
+
+  /* ------------------- Planner Styles ------------------- */
+  .planner-header { display: grid; grid-template-columns: 2fr 1fr 2.5fr 2.5fr 44px; gap: 10px; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
+  .planner-row { display: grid; grid-template-columns: 2fr 1fr 2.5fr 2.5fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
+  .planner-row:hover { background: rgba(255,255,255,0.015); }
+  .planner-row:last-child { border-bottom: none; }
+  
+  .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); transition: all 0.3s ease; }
+  .session-group:hover { border-color: rgba(255,255,255,0.1); background: rgba(0,0,0,0.25); }
+  .session-group select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); }
+  .session-group select:focus { border-color: var(--accent); }
+  .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
+
+  /* --- Progress Bar --- */
+  .planner-stats { background: rgba(255,255,255,0.015); border-top: 1px solid var(--border); padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; transition: background 0.3s; }
+  .stats-info { display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.85rem; color: var(--muted); }
+  .stats-total { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+  .stats-total span { font-size: 1.8rem; color: var(--accent); font-weight: 800; margin-left: 6px; transition: color 0.4s; }
+  
+  .bar-container { position: relative; height: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); overflow: hidden; display: flex; }
+  .bar-fill { position: absolute; top: 0; right: 0; height: 100%; width: 0%; background: var(--accent); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 1; border-radius: 8px; box-shadow: 0 0 12px rgba(79,142,247,0.5); }
+  
+  .bar-marker { position: absolute; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.8); z-index: 2; box-shadow: 0 0 4px rgba(0,0,0,0.8); transition: opacity 0.3s; }
+  .marker-14 { right: 58.33%; } 
+  .marker-20 { right: 83.33%; } 
+
+  .bar-label { position: absolute; bottom: -22px; font-size: 0.65rem; color: var(--muted); font-weight: 600; transform: translateX(50%); z-index: 3;}
+  .label-14 { right: 58.33%; }
+  .label-20 { right: 83.33%; }
+  .bar-wrapper { position: relative; margin-bottom: 20px; }
+
+  /* Drafts Panel */
+  .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: wrap; align-items: center; }
+  .draft-chip { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; gap: 6px; align-items: center; }
+  .draft-chip:hover { background: rgba(79,142,247,0.2); transform: translateY(-1px); }
+  .draft-chip span { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; transition: background 0.2s; }
+  .draft-chip span:hover { background: rgba(248,113,113,0.2); }
+
+  /* Timetable Grid Design */
+  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 24px; box-shadow: inset 0 4px 20px rgba(0,0,0,0.2); }
+  .timetable { display: grid; grid-template-columns: 90px repeat(5, minmax(140px, 1fr)); gap: 10px; min-width: 800px; }
+  .tt-header, .tt-day { background: rgba(255,255,255,0.04); border: 1px solid rgba(42,53,80,0.6); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .tt-header { background: rgba(79,142,247,0.05); color: var(--text); }
+  .tt-cell { background: rgba(26, 34, 53, 0.4); border: 1px dashed rgba(42,53,80,0.8); border-radius: 10px; min-height: 95px; padding: 6px; display: flex; flex-direction: column; gap: 6px; transition: all 0.3s ease; }
+  .tt-cell.conflict { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.4); }
+
+  .tt-course { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.3); border-right: 4px solid var(--accent); border-radius: 8px; font-weight: 600; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); backdrop-filter: blur(4px); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); word-break: break-word; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; text-align: center; }
+  .tt-course.single-item { padding: 14px 12px; font-size: 0.88rem; margin: auto 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
+  .tt-course.conflict-item { background: linear-gradient(135deg, rgba(248,113,113,0.2), rgba(248,113,113,0.1)); border: 1px solid rgba(248,113,113,0.4); border-right: 4px solid var(--red); color: #ffb3b3; padding: 8px; font-size: 0.75rem; width: 100%; }
+
+  .tt-course:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 18px rgba(79,142,247,0.3); border-color: rgba(79,142,247,0.7); }
+  .tt-course.conflict-item:hover { box-shadow: 0 8px 18px rgba(248,113,113,0.3); border-color: rgba(248,113,113,0.7); }
+
+  .conflict-warning { margin-top: 14px; padding: 12px 16px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; color: #ff9999; font-size: 0.85rem; display: none; align-items: center; gap: 8px; animation: slideInRow 0.4s; }
+
+  footer.signature { position: absolute; bottom: 16px; left: 24px; font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.35; letter-spacing: 0.5px; transition: opacity 0.3s ease, color 0.3s ease; user-select: none; }
+  footer.signature:hover { opacity: 0.8; color: var(--accent); }
+
+  /* ================= RESPONSIVE QUERIES ================= */
+  @media(max-width: 820px) {
+    /* Planner adjustments */
+    .planner-header { display: none; }
+    .planner-row { 
+      display: flex; flex-direction: column; gap: 10px; 
+      background: rgba(255,255,255,0.015); border-radius: 12px; 
+      margin: 12px; padding: 16px; border: 1px solid var(--border);
+    }
+    .planner-row:hover { background: rgba(255,255,255,0.03); }
+    .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
+    
+    /* GPA adjustments */
+    .gpa-header { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; font-size: 0.72rem; padding: 12px 10px; }
+    .gpa-row { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; padding: 12px 10px; }
+    .gpa-row input { padding: 8px 6px; font-size: 0.82rem; }
+    .result-meta { gap: 16px; }
+    .result-value { font-size: 2.2rem; }
+  }
+
+  @media(max-width: 480px) {
+    .tabs { flex-direction: column; width: 100%; border-radius: 14px; }
+    .tab-btn { text-align: center; border-radius: 10px; }
+    .actions { flex-direction: column; align-items: stretch; }
+    .actions button { justify-content: center; width: 100%; }
+    .planner-stats { padding: 14px 16px; }
+    .stats-info { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Co-Student</h1>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('planner-tool')">برنامه‌ریز انتخاب واحد</button>
+      <button class="tab-btn" onclick="switchTab('gpa-tool')">محاسبه‌گر معدل</button>
+    </div>
+  </header>
+
+  <div id="planner-tool" class="tool-section active">
+    <div class="card-wrapper">
+      <div class="planner-header">
+        <div>نام درس</div>
+        <div>تعداد واحد</div>
+        <div style="text-align:center; color:var(--muted)">جلسه اول</div>
+        <div style="text-align:center; color:var(--muted)">جلسه دوم</div>
+        <div></div>
+      </div>
+      <div id="planner-list"></div>
+      
+      <div class="planner-stats">
+        <div class="stats-info">
+          <div class="stats-total">مجموع واحدها: <span id="planner-total-units">۰</span></div>
+          <div id="planner-status-text">وضعیت: مجاز</div>
+        </div>
+        <div class="bar-wrapper">
+          <div class="bar-container">
+            <div class="bar-marker marker-14" title="مرز ۱۴ واحد"></div>
+            <div class="bar-marker marker-20" title="مرز ۲۰ واحد"></div>
+            <div class="bar-fill" id="planner-progress-fill"></div>
+          </div>
+          <div class="bar-label label-14">۱۴ واحد</div>
+          <div class="bar-label label-20">۲۰ واحد</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="addPlannerCourse()">＋ افزودن درس</button>
+        <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت برنامه</button>
+        <button class="btn btn-ghost" onclick="newPlanner()" style="margin-right:auto">✨ برنامه جدید</button>
+      </div>
+      
+      <div id="planner-drafts-panel" class="drafts-panel" style="display: none;"></div>
+    </div>
+
+    <div class="timetable-container">
+      <div class="timetable" id="timetable-grid"></div>
+      <div id="conflict-alert" class="conflict-warning">
+        ⚠️ تداخل ساعتی در برنامه شما وجود دارد! لطفاً خانه‌های قرمز رنگ را بررسی کنید.
+      </div>
+    </div>
+  </div>
+
+  <div id="gpa-tool" class="tool-section">
+    <div class="result-card">
+      <div class="result-group">
+        <span class="result-label">معدل کل</span>
+        <span class="result-value" id="gpa-display">—</span>
+      </div>
+      <div class="result-meta">
+        <div class="meta-item"><span class="meta-val" id="total-units">۰</span><span class="meta-lbl">کل واحدها</span></div>
+        <div class="meta-item"><span class="meta-val" id="course-count">۰</span><span class="meta-lbl">تعداد درس</span></div>
+        <div id="status-badge" class="status-badge hidden"><span class="status-icon" id="status-icon"></span><span id="status-text"></span></div>
+      </div>
+    </div>
+
+    <div class="card-wrapper">
+      <div class="gpa-header">
+        <div>نام درس (اختیاری)</div><div style="text-align:center">واحد</div><div style="text-align:center">نمره (۰–۲۰)</div><div></div>
+      </div>
+      <div id="gpa-list"><div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div></div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="addGpaCourse()">＋ افزودن درس</button>
+        <button class="btn btn-ghost" onclick="saveGpaDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت معدل</button>
+        <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">✨ محاسبه جدید</button>
+      </div>
+      <div id="gpa-drafts-panel" class="drafts-panel" style="display: none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="signature">Crafted by Hooman × AI</footer>
+
+<script>
+  // ---------------- DATA & CONFIG ----------------
+  const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
+  const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
+
+  // Complete Database
+  const COURSE_DB = {
+    'ریاضی فیزیک ۱': 3, 'ریاضی فیزیک ۲': 3, 'مکانیک تحلیلی ۱': 3, 'مکانیک تحلیلی ۲': 3,
+    'الکترومغناطیس ۱': 3, 'الکترومغناطیس ۲': 3, 'مکانیک کوانتومی ۱': 3, 'مکانیک کوانتومی ۲': 3,
+    'فیزیک حالت جامد ۱': 3, 'آزمایشگاه فیزیک حالت جامد ۱': 2, 'فیزیک اتمی و مولکولی': 3,
+    'فیزیک هسته ای ۱': 3, 'الکترونیک ۱': 3, 'آزمایشگاه الکترونیک ۱': 2, 'روش های تجربی در فیزیک': 3,
+    'محاسبات عددی': 3, 'برنامه نویسی کامپیوتر': 3, 'کارگاه ماشین افزار': 1, 'کارگاه الکترونیک': 1,
+    'نقشه کشی صنعتی': 1, 'سیستمهای دیجیتال ۱': 3, 'آزمایشگاه سیستمهای دیجیتال ۱': 2,
+    'سیستمهای دیجیتال ۲': 3, 'مهندسی فوتونیک': 3, 'آزمایشگاه فوتونیک': 2, 'مبانی مهندسی نانو': 3,
+    'کارآموزی': 2, 'ترمودینامیک': 3, 'آزمایشگاه فیزیک پایه ۳ (فیزیک)': 1, 'شیمی عمومی': 3,
+    'آزمایشگاه فیزیک عمومی ۴': 2, 'آزمایشگاه فیزیک پایه ۲ (فیزیک)': 1, 'معادلات دیفرانسیل': 3,
+    'فیزیک عمومی ۳': 3, 'فیزیک عمومی ۴': 3, 'فیزیک ۳': 3, 'فیزیک ۴': 3, 'آزمایشگاه شیمی عمومی': 1,
+    'آزمایشگاه فیزیک پایه ۱ (فیزیک)': 1, 'ریاضی عمومی ۱': 3, 'ریاضی عمومی ۲': 3, 'فیزیک ۲': 3, 
+    'فیزیک پایه ۱': 3, 'اندیشه اسلامی ۱': 2, 'اندیشه اسلامی ۲': 2, 'انقلاب اسلامی ایران': 2, 
+    'تفسیر موضوعی قرآن': 2, 'تاریخ تحلیلی صدر اسلام': 2, 'زبان عمومی': 3, 'تربیت بدنی ۱': 1
+  };
+  const PHYSICS_CHART = Object.keys(COURSE_DB);
+
+  // ---------------- SYSTEM UTILITIES ----------------
+  function switchTab(tabId) {
+    document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+    closeAllAutocomplete();
+  }
+
+  function toFarsiNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+  
+  function fuzzyMatch(str, query) {
+    let s = str.toLowerCase(), q = query.toLowerCase(), si = 0, qi = 0;
+    while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; }
+    return qi === q.length;
+  }
+  function highlight(str, query) {
+    let res = [], s = str, q = query.toLowerCase(), qi = 0;
+    for (let i = 0; i < s.length; i++) {
+      if (qi < q.length && s[i].toLowerCase() === q[qi]) { res.push(`<mark>${s[i]}</mark>`); qi++; }
+      else res.push(s[i]);
+    }
+    return res.join('');
+  }
+  function getSuggestions(query) {
+    if (!query || query.trim().length < 1) return [];
+    let q = query.trim();
+    let exact = PHYSICS_CHART.filter(s => s.startsWith(q));
+    let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q));
+    let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q));
+    return [...exact, ...includes, ...fuzzy].slice(0, 5);
+  }
+  function closeAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
+  document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-wrap')) closeAllAutocomplete(); });
+
+  function setupAutocomplete(id, inputEl, arrayRef, type) {
+    inputEl.addEventListener('input', () => {
+      let val = inputEl.value;
+      let target = arrayRef.find(c => c.id === id);
+      if(target) target.name = val;
+      if(type === 'gpa') calcGpa(); else drawTimetable();
+      
+      let ex = inputEl.parentNode.querySelector('.autocomplete-list'); if (ex) ex.remove();
+      let sug = getSuggestions(val); if (sug.length === 0) return;
+      let dd = document.createElement('div'); dd.className = 'autocomplete-list';
+      sug.forEach(s => {
+        let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = highlight(s, val);
+        item.onmousedown = (e) => {
+          e.preventDefault(); inputEl.value = s; 
+          let t = arrayRef.find(c => c.id === id);
+          if(t) {
+            t.name = s;
+            if (COURSE_DB[s]) t.units = COURSE_DB[s].toString();
+          }
+          closeAllAutocomplete(); 
+          if(type === 'gpa') renderGpa(); else { handleUnitOrTimeChange(t, true, false); renderPlanner(); }
+        };
+        dd.appendChild(item);
+      });
+      inputEl.parentNode.appendChild(dd);
+    });
+  }
+
+  function createSelect(options, val, placeholder) {
+    let s = document.createElement('select');
+    s.innerHTML = `<option value="">${placeholder}</option>` + options.map(o => `<option value="${o}" ${o==val?'selected':''}>${o}</option>`).join('');
+    return s;
+  }
+
+  // ---------------- GPA CALCULATOR LOGIC ----------------
+  let gpaCourses = [];
+  let gpaIdCounter = 0;
+  let gpaDrafts = [];
+
+  function addGpaCourse(name = '', units = '', grade = '') { gpaCourses.push({ id: ++gpaIdCounter, name, units, grade }); renderGpa(); }
+  function removeGpaCourse(id) { gpaCourses = gpaCourses.filter(c => c.id !== id); renderGpa(); }
+
+  function renderGpa() {
+    const list = document.getElementById('gpa-list'); closeAllAutocomplete();
+    if (gpaCourses.length === 0) { list.innerHTML = '<div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div>'; calcGpa(); return; }
+    list.innerHTML = '';
+    gpaCourses.forEach(c => {
+      let row = document.createElement('div'); row.className = 'gpa-row';
+      let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
+      let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: مکانیک تحلیلی ۱'; nameInp.value = c.name;
+      nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, gpaCourses, 'gpa');
+
+      let unitInp = document.createElement('input'); unitInp.type = 'number'; unitInp.placeholder = 'واحد'; unitInp.value = c.units; unitInp.style.textAlign='center';
+      unitInp.addEventListener('input', () => { let v = parseInt(unitInp.value); if (v > 4) { unitInp.value = 4; } if (v < 1 && unitInp.value !== '') { unitInp.value = 1; } c.units = unitInp.value; calcGpa(); });
+
+      let gradeInp = document.createElement('input'); gradeInp.type = 'number'; gradeInp.placeholder = '۰ تا ۲۰'; gradeInp.value = c.grade; gradeInp.style.textAlign='center'; gradeInp.step = "0.01";
+      gradeInp.addEventListener('input', () => { let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); });
+
+      let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removeGpaCourse(c.id);
+      row.append(nameWrap, unitInp, gradeInp, delBtn); list.appendChild(row);
+    });
+    calcGpa();
+  }
+
+  function calcGpa() {
+    let weight = 0, units = 0, count = 0;
+    gpaCourses.forEach(c => {
+      let u = parseFloat(c.units), g = parseFloat(c.grade);
+      if (u >= 1 && u <= 4 && g >= 0 && g <= 20) { weight += u * g; units += u; count++; }
+    });
+    document.getElementById('total-units').textContent = toFarsiNum(units);
+    document.getElementById('course-count').textContent = toFarsiNum(count);
+    let gpaEl = document.getElementById('gpa-display'), badge = document.getElementById('status-badge');
+    if (count === 0) { gpaEl.textContent = '—'; gpaEl.className = 'result-value'; badge.className = 'status-badge hidden'; return; }
+    let gpa = weight / units; gpaEl.textContent = gpa.toFixed(2);
+    gpaEl.className = 'result-value ' + (gpa >= 17 ? 'good' : (gpa > 12 ? '' : 'bad'));
+    
+    badge.className = 'status-badge ' + (gpa >= 17 ? 'alef' : (gpa > 12 ? 'ok' : 'bad'));
+    document.getElementById('status-icon').textContent = gpa >= 17 ? '★' : (gpa > 12 ? '✔' : '✕');
+    document.getElementById('status-text').textContent = gpa >= 17 ? 'الف' : (gpa > 12 ? 'عدم مشروط' : 'مشروط');
+  }
+
+  function clearGpa() { gpaCourses = []; renderGpa(); }
+  
+  function newGpa() {
+    clearGpa();
+    addGpaCourse(); // Start fresh with one empty row
+  }
+
+  // GPA Drafts
+  function saveGpaDraft() {
+    if (gpaCourses.length === 0) return alert('معدلی برای ذخیره وجود ندارد!');
+    let gpaEl = document.getElementById('gpa-display').textContent;
+    let draftName = `معدل ${gpaEl} (${gpaDrafts.length + 1})`;
+    gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(gpaCourses)) });
+    renderGpaDrafts();
+  }
+  function renderGpaDrafts() {
+    const panel = document.getElementById('gpa-drafts-panel');
+    if (gpaDrafts.length === 0) { panel.style.display = 'none'; return; }
+    panel.style.display = 'flex'; panel.innerHTML = '<div style="font-size:0.8rem; color:var(--muted); margin-left:10px;">معدل‌های ذخیره‌شده:</div>';
+    gpaDrafts.forEach((draft) => {
+      let chip = document.createElement('div'); chip.className = 'draft-chip';
+      chip.innerHTML = `${draft.name} <span title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
+      chip.onclick = () => {
+        gpaCourses = JSON.parse(JSON.stringify(draft.data));
+        gpaIdCounter = Math.max(...gpaCourses.map(c => c.id), gpaIdCounter);
+        renderGpa();
+      };
+      panel.appendChild(chip);
+    });
+  }
+  function deleteGpaDraft(event, id) { event.stopPropagation(); gpaDrafts = gpaDrafts.filter(d => d.id !== id); renderGpaDrafts(); }
+
+  // ---------------- PLANNER LOGIC & STATS ----------------
+  let pCourses = [];
+  let pIdCounter = 0;
+  let plannerDrafts = [];
+
+  function addPlannerCourse(data = {}) {
+    pCourses.push({
+      id: ++pIdCounter, name: data.name || '', units: data.units || '', 
+      d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || ''
+    });
+    renderPlanner();
+  }
+
+  function removePlannerCourse(id) { pCourses = pCourses.filter(c => c.id !== id); renderPlanner(); }
+
+  function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) {
+    let u = parseInt(c.units) || 1;
+    if (u > 1 && c.d1 && c.t1) {
+      if (isSession1Change || isUnitChange) {
+        let dIdx = DAYS.indexOf(c.d1);
+        if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; }
+      }
+    }
+    if (u === 1) { c.d2 = ''; c.t2 = ''; }
+  }
+
+  function renderPlanner() {
+    const list = document.getElementById('planner-list'); closeAllAutocomplete();
+    if (pCourses.length === 0) { list.innerHTML = '<div class="empty-row">درسی برای برنامه‌ریزی اضافه نشده است.</div>'; drawTimetable(); updatePlannerStats(); return; }
+    list.innerHTML = '';
+    pCourses.forEach(c => {
+      let row = document.createElement('div'); row.className = 'planner-row';
+      
+      let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
+      let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name;
+      nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, pCourses, 'planner');
+
+      let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد');
+      unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
+
+      // Session 1 Group
+      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group';
+      let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت');
+      d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
+      t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
+      s1Grp.append(d1Sel, t1Sel);
+
+      // Session 2 Group
+      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group';
+      let is1Unit = parseInt(c.units) === 1; if (is1Unit) s2Grp.classList.add('disabled-session');
+      let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت');
+      d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); };
+      t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); };
+      if (is1Unit) { d2Sel.disabled = true; t2Sel.disabled = true; }
+      s2Grp.append(d2Sel, t2Sel);
+
+      let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removePlannerCourse(c.id);
+
+      row.append(nameWrap, unitSel, s1Grp, s2Grp, delBtn); list.appendChild(row);
+    });
+    drawTimetable();
+    updatePlannerStats();
+  }
+
+  function updatePlannerStats() {
+    let total = 0;
+    pCourses.forEach(c => { total += parseInt(c.units) || 0; });
+    
+    document.getElementById('planner-total-units').innerHTML = `<span>${toFarsiNum(total)}</span>`;
+    let fill = document.getElementById('planner-progress-fill');
+    let statusText = document.getElementById('planner-status-text');
+
+    let percentage = Math.min((total / 24) * 100, 100);
+    fill.style.width = percentage + '%';
+
+    if (total === 0) {
+      fill.style.background = 'transparent'; fill.style.boxShadow = 'none';
+      statusText.textContent = '';
+    } else if (total <= 14) {
+      fill.style.background = 'var(--red)'; fill.style.boxShadow = '0 0 12px rgba(248,113,113,0.6)';
+      statusText.innerHTML = '<span style="color: var(--red);">مجاز برای معدل مشروط (سقف ۱۴)</span>';
+    } else if (total <= 20) {
+      fill.style.background = 'var(--accent)'; fill.style.boxShadow = '0 0 12px rgba(79,142,247,0.6)';
+      statusText.innerHTML = '<span style="color: var(--accent);">مجاز برای معدل عادی (سقف ۲۰)</span>';
+    } else if (total <= 24) {
+      fill.style.background = 'var(--green)'; fill.style.boxShadow = '0 0 12px rgba(52,211,153,0.6)';
+      statusText.innerHTML = '<span style="color: var(--green);">مجاز برای معدل الف (سقف ۲۴)</span>';
+    } else {
+      fill.style.background = 'var(--gold)'; fill.style.boxShadow = '0 0 12px rgba(245,200,66,0.6)';
+      statusText.innerHTML = '<span style="color: var(--gold);">⚠️ بیش از حد مجاز!</span>';
+    }
+  }
+
+  function drawTimetable() {
+    const grid = document.getElementById('timetable-grid');
+    grid.innerHTML = '<div class="tt-header">ایام / ساعات</div>';
+    TIMES.forEach(t => { grid.innerHTML += `<div class="tt-header">${t}</div>`; });
+
+    let schedule = {};
+    DAYS.forEach(d => { schedule[d] = {}; TIMES.forEach(t => schedule[d][t] = []); });
+
+    pCourses.forEach(c => {
+      let displayName = c.name || '(بدون نام)';
+      if (c.d1 && c.t1 && schedule[c.d1]) schedule[c.d1][c.t1].push(displayName);
+      if (c.d2 && c.t2 && schedule[c.d2]) schedule[c.d2][c.t2].push(displayName);
+    });
+
+    let hasConflict = false;
+    DAYS.forEach(day => {
+      grid.innerHTML += `<div class="tt-day">${day}</div>`;
+      TIMES.forEach(time => {
+        let classes = schedule[day][time];
+        let isConflict = classes.length > 1; let isSingle = classes.length === 1;
+        if (isConflict) hasConflict = true;
+        
+        let cellHTML = `<div class="${isConflict ? 'tt-cell conflict' : 'tt-cell'}">`;
+        classes.forEach(cls => {
+           cellHTML += `<div class="${isSingle ? 'tt-course single-item' : 'tt-course conflict-item'}">${cls}</div>`;
+        });
+        cellHTML += `</div>`; grid.innerHTML += cellHTML;
+      });
+    });
+    document.getElementById('conflict-alert').style.display = hasConflict ? 'flex' : 'none';
+  }
+
+  function clearPlanner() { pCourses = []; renderPlanner(); }
+  
+  function newPlanner() {
+    clearPlanner();
+    addPlannerCourse(); // Start fresh with one empty row
+  }
+
+  // Planner Drafts
+  function savePlannerDraft() {
+    if (pCourses.length === 0) return alert('برنامه‌ای برای ذخیره وجود ندارد!');
+    let totalU = pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
+    let draftName = `برنامه ${plannerDrafts.length + 1}`;
+    plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(pCourses)) });
+    renderPlannerDrafts();
+  }
+  function renderPlannerDrafts() {
+    const panel = document.getElementById('planner-drafts-panel');
+    if (plannerDrafts.length === 0) { panel.style.display = 'none'; return; }
+    panel.style.display = 'flex'; panel.innerHTML = '<div style="font-size:0.8rem; color:var(--muted); margin-left:10px;">برنامه‌های ذخیره‌شده:</div>';
+    plannerDrafts.forEach((draft) => {
+      let chip = document.createElement('div'); chip.className = 'draft-chip';
+      chip.innerHTML = `${draft.name} (${toFarsiNum(draft.units)} واحد) <span title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
+      chip.onclick = () => {
+        pCourses = JSON.parse(JSON.stringify(draft.data));
+        pIdCounter = Math.max(...pCourses.map(c => c.id), pIdCounter);
+        renderPlanner();
+      };
+      panel.appendChild(chip);
+    });
+  }
+  function deletePlannerDraft(event, id) { event.stopPropagation(); plannerDrafts = plannerDrafts.filter(d => d.id !== id); renderPlannerDrafts(); }
+
+  // Init defaults
+  addGpaCourse();
+  addPlannerCourse();
+</script>
+</body>
+</html>

@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل هدف ویژه دانشجویان.">
+<meta name="keywords" content="محاسبه معدل, انتخاب واحد, برنامه ریزی درسی, معدل دانشگاه, چارت درسی, معدل کل">
+<meta name="author" content="Co-Student">
 <title>Co-Student</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -17,41 +20,83 @@
 
   body {
     font-family: 'Vazirmatn', sans-serif; background: var(--bg); color: var(--text);
-    min-height: 100vh; padding: 24px 16px 80px;
+    min-height: 100vh; padding: 0 16px 0;
     background-image: radial-gradient(ellipse at 20% 10%, rgba(79,142,247,0.12) 0%, transparent 50%),
                       radial-gradient(ellipse at 80% 80%, rgba(124,92,252,0.1) 0%, transparent 50%);
-    position: relative; overflow-x: hidden;
+    position: relative; overflow-x: hidden; display: flex; flex-direction: column;
   }
 
-  .container { max-width: 1050px; margin: 0 auto; position: relative; }
+  .container { flex: 1; max-width: 1050px; width: 100%; margin: 0 auto; position: relative; }
 
   @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: none; } }
   @keyframes fadeUp   { from { opacity:0; transform: translateY(16px);  } to { opacity:1; transform: none; } }
   @keyframes slideInRow { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
-  @keyframes highlightPulse { 0% { background: rgba(79,142,247,0.4); } 100% { background: transparent; } }
 
-  header { text-align: center; margin-bottom: 30px; margin-top: 10px; animation: fadeDown .6s ease both; }
+  header { text-align: center; margin-bottom: 25px; margin-top: 25px; animation: fadeDown .6s ease both; }
   header h1 {
-    font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     letter-spacing: -0.5px; margin-bottom: 20px;
   }
 
-  .tabs { display: inline-flex; background: rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 20px; border: 1px solid var(--border); }
-  .tab-btn {
-    background: transparent; color: var(--muted); border: none; padding: 10px 24px; border-radius: 14px;
-    font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
-  }
+  /* --- Header Controls --- */
+  .header-controls { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; min-height: 50px; }
+  
+  .tabs { display: inline-flex; background: rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 20px; border: 1px solid var(--border); z-index: 10; margin: 0 auto; }
+  .tab-btn { background: transparent; color: var(--muted); border: none; padding: 10px 24px; border-radius: 14px; font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
   .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+
+  .auth-wrapper { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; align-items: center; z-index: 20; }
+  .auth-btn { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.4); color: var(--text); padding: 10px 20px; border-radius: 14px; font-family: 'Vazirmatn'; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+  .auth-btn:hover { background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(124,92,252,0.25)); transform: translateY(-2px); border-color: var(--accent); }
+  
+  .user-info { display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 18px; border: 1px solid var(--border); }
+  .btn-panel { background: var(--accent); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+  .btn-panel:hover { background: #3b76d6; }
+  .btn-logout { background: transparent; color: var(--muted); border: 1px solid transparent; padding: 6px 12px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+  .btn-logout:hover { color: var(--red); background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.2); }
+
+  /* --- Modals --- */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: 20px; width: 90%; transform: translateY(20px); transition: transform 0.2s; position: relative; }
+  .modal-overlay.active .modal-box { transform: translateY(0); }
+  .close-modal { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10; }
+  .close-modal:hover { background: rgba(248,113,113,0.1); color: var(--red); }
+
+  .auth-modal { max-width: 360px; }
+  .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
+  .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn'; font-size: 0.9rem; }
+  .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; }
+  .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
+  .auth-switch:hover { color: var(--accent); }
+  .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
+
+  /* Dashboard Specific */
+  .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
+  .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .dash-course-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .dash-course-row input { padding: 8px; font-size: 0.85rem; }
+  .dashboard-modal::-webkit-scrollbar { width: 6px; }
+  .dashboard-modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+  
+  .dash-draft-chip { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 8px 14px; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: 0.2s; width: calc(50% - 7px); }
+  .dash-draft-chip:hover { background: rgba(79,142,247,0.1); border-color: rgba(79,142,247,0.4); }
+  .dash-draft-chip .name-click { flex: 1; color: var(--accent); font-weight: 600; cursor: pointer; }
+  .dash-draft-chip .action-icons { display: flex; gap: 6px; }
+  .dash-draft-chip .action-icons span { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: 0.2s;}
+  .dash-draft-chip .edit-btn { color: var(--gold); background: rgba(245,200,66,0.1); }
+  .dash-draft-chip .edit-btn:hover { background: rgba(245,200,66,0.3); color: #fff; }
+  .dash-draft-chip .del-btn { color: var(--red); background: rgba(248,113,113,0.1); }
+  .dash-draft-chip .del-btn:hover { background: rgba(248,113,113,0.3); color: #fff;}
 
   .tool-section { display: none; animation: fadeUp 0.4s ease both; }
   .tool-section.active { display: block; }
-
-  .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; transition: all 0.3s ease; }
+  .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; position: relative; z-index: 10; }
   .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;}
   
   .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-  .btn svg { margin-left: 4px; }
   .btn:active { transform: scale(0.95); }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
   .btn-primary:hover { opacity: .9; box-shadow: 0 6px 16px rgba(79,142,247,0.4); transform: translateY(-1px); }
@@ -60,275 +105,227 @@
   .btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
   .btn-danger:hover { background: rgba(248,113,113,.25); transform: translateY(-1px); }
 
-  input, select {
-    background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 10px; color: var(--text);
-    font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none;
-  }
+  input, select { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none; }
   input:focus, select:focus { border-color: var(--accent); background: rgba(79,142,247,.1); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
   select option { background: var(--surface); color: var(--text); }
   .empty-row { padding: 32px; text-align: center; color: var(--muted); font-size: .88rem; }
 
-  /* ------------------- GPA Calculator Styles ------------------- */
-  .result-card { background: linear-gradient(135deg, #1a2235, #1e2a42); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-  .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .result-group { display: flex; flex-direction: column; gap: 4px; }
-  .result-label { font-size: .75rem; color: var(--muted); font-weight: 500; }
-  .result-value { font-size: 2.8rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
-  .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
-  .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
-  .result-meta { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
-  .meta-item { display: flex; flex-direction: column; gap: 2px; }
-  .meta-val  { font-size: 1.3rem; font-weight: 700; color: var(--text); }
-  .meta-lbl  { font-size: .72rem; color: var(--muted); }
+  /* ------------------- Re-Designed GPA Display Cards ------------------- */
+  .result-card { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .result-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
+  .result-group::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .result-group .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .result-group .result-value { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
+  .result-group .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
+  .result-group .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
+  
+  .overall-gpa-box { flex: 1; min-width: 200px; display: none; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(79,142,247,0.08), rgba(124,92,252,0.08)); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(79,142,247,0.3); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+  .overall-gpa-box .result-label { font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+  .overall-gpa-box .meta-val { font-size: 2.8rem; font-weight: 800; color: var(--accent); line-height: 1; }
 
-  .status-badge { display: flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 30px; font-size: .88rem; font-weight: 700; border: 1.5px solid transparent; transition: all .4s cubic-bezier(0.4, 0, 0.2, 1); }
-  .status-badge.hidden { opacity: 0; transform: scale(0.9); pointer-events: none; position: absolute; }
+  .result-meta { flex: 1.5; min-width: 250px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
+  .meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .meta-val  { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1; }
+  .meta-lbl  { font-size: .75rem; color: var(--muted); }
+
+  .status-badge { display: flex; align-items: center; gap: 7px; padding: 6px 16px; border-radius: 30px; font-size: .9rem; font-weight: 700; border: 1.5px solid transparent; }
+  .status-badge.hidden { display: none; }
   .status-badge.alef   { background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.4); color: var(--green); }
   .status-badge.ok     { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); }
   .status-badge.bad    { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
 
-  .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; }
+  .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; position: relative;}
   .gpa-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
-  .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
-  .gpa-row.highlight { animation: highlightPulse 1.5s ease-out; }
-  .gpa-row:hover { background: rgba(255,255,255,0.02); }
+  .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
   .gpa-row:last-child { border-bottom: none; }
   
-  .autocomplete-wrap { position: relative; width: 100%; }
-  .autocomplete-list { position: absolute; top: calc(100% + 4px); right: 0; left: 0; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-height: 200px; overflow-y: auto; transition: all 0.2s ease; }
-  .autocomplete-item { padding: 9px 14px; font-size: .84rem; cursor: pointer; border-bottom: 1px solid rgba(42,53,80,.4); text-align: right; transition: background 0.15s; }
+  .autocomplete-wrap { position: relative; width: 100%; z-index: 50; }
+  .autocomplete-list { position: absolute; top: calc(100% + 4px); right: 0; left: 0; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.6); max-height: 200px; overflow-y: auto; }
+  .autocomplete-item { padding: 9px 14px; font-size: .84rem; cursor: pointer; border-bottom: 1px solid rgba(42,53,80,.4); text-align: right; }
   .autocomplete-item:last-child { border-bottom: none; }
   .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
   .autocomplete-item mark { background: none; color: var(--gold); font-weight: 700; }
 
-  /* ------------------- Target GPA Panel ------------------- */
+  /* ------------------- Target GPA & Simulator Panel ------------------- */
   .target-panel { display: none; flex-direction: column; gap: 16px; padding: 20px; background: rgba(0,0,0,0.2); border-top: 1px dashed var(--border); animation: fadeUp 0.3s; }
   .target-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .target-header input { width: 120px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
-  .target-header input:focus { box-shadow: 0 0 0 3px rgba(245,200,66,0.15); }
-  .target-guide { font-size: 0.75rem; color: var(--muted); margin-top: 4px; display: block; width: 100%; }
   .target-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .target-guide { font-size: 0.75rem; color: var(--muted); margin-top: 4px; display: none; width: 100%; }
   
-  .target-card { 
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
-      padding: 12px 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; 
-      justify-content: center; transition: all 0.2s ease; cursor: pointer; position: relative;
-  }
+  /* Simulator Styles - Left to Right */
+  .simulator-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 10px; display: none; animation: fadeUp 0.3s; }
+  .sim-title { font-size: 1.1rem; color: var(--text); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;}
+  .sim-gpa-display { font-size: 1.8rem; font-weight: 800; color: var(--accent); background: rgba(0,0,0,0.3); padding: 4px 16px; border-radius: 12px; border: 1px solid rgba(79,142,247,0.3); }
+  .sim-row { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); }
+  .sim-row:last-child { border-bottom: none; }
+  .sim-row-top { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text); font-weight: 600; direction: ltr; }
+  .sim-val { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; font-weight: bold; min-width: 45px; text-align: center;}
+  
+  .sim-slider { direction: ltr; -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: rgba(255,255,255,0.1); outline: none; transition: .2s; }
+  .sim-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--thumb-c, var(--accent)); cursor: pointer; transition: 0.2s; border: 2px solid #fff; }
+  .sim-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  
+  .target-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; justify-content: center; transition: all 0.2s ease; cursor: pointer; }
   .target-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
   .target-card.muted { opacity: 0.4; filter: grayscale(80%); }
-  .target-card.focused { border-color: var(--accent2); background: rgba(124,92,252,0.05); box-shadow: 0 0 10px rgba(124,92,252,0.2); }
-  
+  .target-card.focused { border-color: var(--accent2); background: rgba(124,92,252,0.05); }
   .target-card-name { font-size: 0.85rem; font-weight: 700; display:flex; align-items:center; justify-content:space-between;}
   .target-card-val { font-size: 0.88rem; font-weight: bold; padding: 6px 10px; border-radius: 8px; text-align: left; display: flex; justify-content: space-between; align-items: center;}
-  
   .target-impossible { color: var(--red); font-size: 0.85rem; font-weight: bold; background: rgba(248,113,113,0.1); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(248,113,113,0.3); grid-column: 1 / -1;}
-  
-  .checkbox-indicator { display: none; }
 
   /* ------------------- Planner Styles ------------------- */
   .planner-header { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
-  .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); animation: slideInRow 0.3s ease-out; transition: background 0.2s; }
-  .planner-row.highlight { animation: highlightPulse 1.5s ease-out; }
-  .planner-row:hover { background: rgba(255,255,255,0.015); }
+  .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
   .planner-row:last-child { border-bottom: none; }
-  
-  .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); transition: all 0.3s ease; }
-  .session-group:hover { border-color: rgba(255,255,255,0.1); background: rgba(0,0,0,0.25); }
+  .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
   .session-group select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); }
-  .session-group select:focus { border-color: var(--accent); }
   .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
-
   .exam-group { flex-direction: column; gap: 4px; padding: 6px; align-items: stretch; justify-content: center; }
   .exam-date-inputs { display: flex; gap: 4px; width: 100%; }
   .exam-date-inputs select { flex: 1.3; padding: 6px 4px; font-size: 0.8rem; }
   .exam-date-inputs input { flex: 1; padding: 6px 4px; font-size: 0.8rem; text-align: center; }
-  .exam-group > select.exam-time-sel { border-color: rgba(245,200,66,0.6); background: rgba(245,200,66,0.1); color: var(--gold); font-size: 0.75rem; padding: 4px; animation: fadeUp 0.3s; }
+  .exam-group > select.exam-time-sel { border-color: rgba(245,200,66,0.6); background: rgba(245,200,66,0.1); color: var(--gold); font-size: 0.75rem; padding: 4px; }
   .exam-group > select.exam-time-sel.conflict-red { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
 
-  /* --- Progress Bar --- */
-  .planner-stats { background: rgba(255,255,255,0.015); border-top: 1px solid var(--border); padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; transition: background 0.3s; }
+  .planner-stats { background: rgba(255,255,255,0.015); border-top: 1px solid var(--border); padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; }
   .stats-info { display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.85rem; color: var(--muted); }
   .stats-total { font-size: 1.2rem; font-weight: 700; color: var(--text); }
-  .stats-total span { font-size: 1.8rem; color: var(--accent); font-weight: 800; margin-left: 6px; transition: color 0.4s; }
-  
+  .stats-total span { font-size: 1.8rem; color: var(--accent); font-weight: 800; margin-left: 6px; }
   .bar-container { position: relative; height: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); overflow: hidden; display: flex; }
-  .bar-fill { position: absolute; top: 0; right: 0; height: 100%; width: 0%; background: var(--accent); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 1; border-radius: 8px; box-shadow: 0 0 12px rgba(79,142,247,0.5); }
-  
-  .bar-marker { position: absolute; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.8); z-index: 2; box-shadow: 0 0 4px rgba(0,0,0,0.8); transition: opacity 0.3s; }
-  .marker-14 { right: 58.33%; } 
-  .marker-20 { right: 83.33%; } 
-
+  .bar-fill { position: absolute; top: 0; right: 0; height: 100%; width: 0%; background: var(--accent); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 1; border-radius: 8px; }
+  .bar-marker { position: absolute; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.8); z-index: 2; }
+  .marker-14 { right: 58.33%; } .marker-20 { right: 83.33%; } 
   .bar-label { position: absolute; bottom: -22px; font-size: 0.65rem; color: var(--muted); font-weight: 600; transform: translateX(50%); z-index: 3;}
-  .label-14 { right: 58.33%; }
-  .label-20 { right: 83.33%; }
+  .label-14 { right: 58.33%; } .label-20 { right: 83.33%; }
   .bar-wrapper { position: relative; margin-bottom: 20px; }
 
-  /* Drafts Panel */
+  /* Bottom Panel Draft Chips */
   .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: wrap; align-items: center; }
-  .draft-chip { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; gap: 6px; align-items: center; }
-  .draft-chip:hover { background: rgba(79,142,247,0.2); transform: translateY(-1px); }
-  .draft-chip span { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; transition: background 0.2s; }
-  .draft-chip span:hover { background: rgba(248,113,113,0.2); }
+  .draft-chip { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; gap: 6px; align-items: center; transition: 0.2s;}
+  .draft-chip:hover { background: rgba(79,142,247,0.2); }
+  .draft-chip span.del-btn { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; }
 
-  /* ================= HORIZONTAL GRID TIMELINE ================= */
-  .timeline-section { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px 28px; display: none; animation: fadeUp 0.4s ease; box-shadow: inset 0 4px 20px rgba(0,0,0,0.1); }
+  /* ================= HORIZONTAL GRID TIMELINE & TIMETABLE ================= */
+  .timeline-section { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px 28px; display: none; box-shadow: inset 0 4px 20px rgba(0,0,0,0.1); }
   .timeline-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  
   .htl-scroll-wrap { overflow-x: auto; padding-bottom: 8px; }
   .htl-scroll-wrap::-webkit-scrollbar { height: 5px; }
-  .htl-scroll-wrap::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
   .htl-scroll-wrap::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
-
   .htl-grid { display: flex; gap: 0; align-items: stretch; min-width: max-content; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-
-  .htl-cell { 
-    position: relative; min-width: 72px; display: flex; flex-direction: column;
-    border-left: 1px solid var(--border); transition: background 0.2s ease;
-  }
+  .htl-cell { position: relative; min-width: 72px; display: flex; flex-direction: column; border-left: 1px solid var(--border); }
   .htl-cell:first-child { border-left: none; }
-  .htl-cell:first-child .htl-day-header { border-radius: 14px 0 0 0; }
-  .htl-cell:last-child .htl-day-header { border-radius: 0 14px 0 0; }
-
-  .htl-day-header {
-    padding: 8px 6px 6px; text-align: center; background: rgba(255,255,255,0.04);
-    border-bottom: 1px solid var(--border); user-select: none;
-  }
+  .htl-day-header { padding: 8px 6px 6px; text-align: center; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border); user-select: none; }
   .htl-day-num { font-size: 1.05rem; font-weight: 800; color: var(--text); line-height: 1; }
   .htl-day-month { font-size: 0.62rem; color: var(--muted); margin-top: 2px; white-space: nowrap; }
-
   .htl-day-body { flex: 1; padding: 6px 5px; display: flex; flex-direction: column; gap: 5px; min-height: 72px; background: transparent; }
-
-  /* Empty day */
   .htl-cell.htl-empty .htl-day-header { background: rgba(0,0,0,0.15); }
   .htl-cell.htl-empty .htl-day-body { background: repeating-linear-gradient(135deg, transparent, transparent 5px, rgba(255,255,255,0.012) 5px, rgba(255,255,255,0.012) 10px); }
-  .htl-cell.htl-empty .htl-day-num { color: var(--muted); }
-
-  /* Exam day */
   .htl-cell.htl-has-exam .htl-day-header { background: rgba(79,142,247,0.1); border-bottom-color: rgba(79,142,247,0.3); }
   .htl-cell.htl-has-exam { background: rgba(79,142,247,0.035); }
-
-  /* Warning states */
   .htl-cell.htl-warn-yellow .htl-day-header { background: rgba(245,200,66,0.1); border-bottom-color: rgba(245,200,66,0.35); }
   .htl-cell.htl-warn-yellow { background: rgba(245,200,66,0.03); }
   .htl-cell.htl-warn-red .htl-day-header { background: rgba(248,113,113,0.1); border-bottom-color: rgba(248,113,113,0.35); }
   .htl-cell.htl-warn-red { background: rgba(248,113,113,0.03); }
-
-  /* Dot indicator */
   .htl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 auto 2px; flex-shrink: 0; }
-  .htl-dot.normal { background: var(--accent); box-shadow: 0 0 6px rgba(79,142,247,0.6); }
-  .htl-dot.warn-y  { background: var(--gold);   box-shadow: 0 0 6px rgba(245,200,66,0.6); }
-  .htl-dot.warn-r  { background: var(--red);    box-shadow: 0 0 6px rgba(248,113,113,0.6); }
-
-  /* Exam chip inside cell */
-  .htl-exam-chip {
-    background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
-    border-radius: 7px; padding: 4px 6px; font-size: 0.68rem; font-weight: 600;
-    color: var(--text); line-height: 1.3; word-break: break-word; cursor: pointer;
-    transition: all 0.2s; text-align: center;
-  }
-  .htl-exam-chip:hover { background: rgba(79,142,247,0.22); transform: translateY(-1px); }
+  .htl-dot.normal { background: var(--accent); }
+  .htl-dot.warn-y  { background: var(--gold); }
+  .htl-dot.warn-r  { background: var(--red); }
+  .htl-exam-chip { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); border-radius: 7px; padding: 4px 6px; font-size: 0.68rem; font-weight: 600; color: var(--text); line-height: 1.3; text-align: center; cursor: pointer; }
   .htl-exam-chip.warn-y { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.35); color: var(--gold); }
   .htl-exam-chip.warn-r { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.35); color: var(--red); }
-
   .htl-exam-time { font-size: 0.6rem; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* Gap separator between non-adjacent days */
-  .htl-gap-sep {
-    min-width: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 4px; padding: 8px 4px; background: rgba(0,0,0,0.12); border-left: 1px solid rgba(255,255,255,0.05);
-    border-right: 1px solid rgba(255,255,255,0.05);
-  }
+  .htl-gap-sep { min-width: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; background: rgba(0,0,0,0.12); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); }
   .htl-gap-line { flex: 1; width: 2px; background: linear-gradient(to bottom, transparent, var(--border), transparent); border-radius: 2px; min-height: 20px; }
   .htl-gap-label { font-size: 0.58rem; color: var(--muted); writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
-
-  /* Legend row */
-  .htl-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; font-size: 0.73rem; color: var(--muted); align-items: center; }
-  .htl-legend-item { display: flex; align-items: center; gap: 5px; }
-  .htl-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-
-  /* Timetable Grid Design */
-  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: inset 0 4px 20px rgba(0,0,0,0.2); }
+  
+  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
   .timetable { display: grid; grid-template-columns: 90px repeat(5, minmax(140px, 1fr)); gap: 10px; min-width: 800px; }
   .tt-header, .tt-day { background: rgba(255,255,255,0.04); border: 1px solid rgba(42,53,80,0.6); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; }
   .tt-header { background: rgba(79,142,247,0.05); color: var(--text); }
-  .tt-cell { background: rgba(26, 34, 53, 0.4); border: 1px dashed rgba(42,53,80,0.8); border-radius: 10px; min-height: 95px; padding: 6px; display: flex; flex-direction: column; gap: 6px; transition: all 0.3s ease; }
+  .tt-cell { background: rgba(26, 34, 53, 0.4); border: 1px dashed rgba(42,53,80,0.8); border-radius: 10px; min-height: 95px; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
   .tt-cell.conflict { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.4); }
-
-  .tt-course { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.3); border-right: 4px solid var(--accent); border-radius: 8px; font-weight: 600; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); backdrop-filter: blur(4px); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); word-break: break-word; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
+  .tt-course { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.3); border-right: 4px solid var(--accent); border-radius: 8px; font-weight: 600; color: #ffffff; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
   .tt-course.single-item { padding: 14px 12px; font-size: 0.88rem; margin: auto 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
   .tt-course.conflict-item { background: linear-gradient(135deg, rgba(248,113,113,0.2), rgba(248,113,113,0.1)); border: 1px solid rgba(248,113,113,0.4); border-right: 4px solid var(--red); color: #ffb3b3; padding: 8px; font-size: 0.75rem; width: 100%; }
-
-  .tt-course:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 18px rgba(79,142,247,0.3); border-color: rgba(79,142,247,0.7); }
-  .tt-course.conflict-item:hover { box-shadow: 0 8px 18px rgba(248,113,113,0.3); border-color: rgba(248,113,113,0.7); }
-
-  .conflict-warning { margin-top: 18px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: #ffb3b3; font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; animation: slideInRow 0.4s; box-shadow: 0 4px 15px rgba(248,113,113,0.1); line-height: 1.6; }
-  .conflict-warning ul { padding-right: 20px; margin-top: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
-
-  .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  
+  .conflict-warning { margin-top: 18px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: #ffb3b3; font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; line-height: 1.6; }
+  .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
   .sem-btn.active { background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,92,252,0.2)); border-color: var(--accent); color: var(--text); }
-  .sem-btn:hover:not(.active) { border-color: rgba(255,255,255,0.2); color: var(--text); }
 
-  footer.signature { position: absolute; bottom: 16px; left: 24px; font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.25; letter-spacing: 0.5px; transition: opacity 0.3s ease, color 0.3s ease; user-select: none;}
-  footer.signature:hover { opacity: 0.8; color: var(--accent); }
+  /* حفظ فوتر در پس‌زمینه مطلق */
+  footer.signature { 
+    display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;
+    padding: 30px 0; margin-top: 40px; position: relative; z-index: -1;
+    font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.3; transition: opacity 0.3s ease;
+  }
+  footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
-  .signature { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
 
   @media(max-width: 900px) {
-    .planner-header { display: none; }
-    .planner-row { 
-      display: flex; flex-direction: column; gap: 10px; 
-      background: rgba(255,255,255,0.015); border-radius: 12px; 
-      margin: 12px; padding: 16px; border: 1px solid var(--border);
-    }
-    .planner-row:hover { background: rgba(255,255,255,0.03); }
-    .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
+    .header-controls { flex-direction: column; gap: 15px; }
+    .auth-wrapper { position: static; transform: none; }
     
+    .planner-header { display: none; }
+    .planner-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px; padding: 16px; border: 1px solid var(--border); }
+    .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
     .gpa-header { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; font-size: 0.72rem; padding: 12px 10px; }
     .gpa-row { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; padding: 12px 10px; }
-    .gpa-row input { padding: 8px 6px; font-size: 0.82rem; }
-    .result-meta { gap: 16px; }
-    .result-value { font-size: 2.2rem; }
+    .dash-grid { grid-template-columns: 1fr; }
+    
+    .result-card { flex-direction: column; gap: 20px; }
+    .result-group, .overall-gpa-box { width: 100%; }
+    .result-meta { width: 100%; justify-content: space-between; margin: 0; }
   }
 
   @media(max-width: 480px) {
-    .tabs { flex-direction: column; width: 100%; border-radius: 14px; }
-    .tab-btn { text-align: center; border-radius: 10px; }
+    .tabs { width: 100%; display: flex; }
+    .tab-btn { flex: 1; text-align: center; }
     .actions { flex-direction: column; align-items: stretch; }
-    .actions button { justify-content: center; width: 100%; }
-    .planner-stats { padding: 14px 16px; }
-    .stats-info { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .actions button { width: 100%; }
+    .result-meta { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .dash-draft-chip { width: 100%; }
   }
 </style>
 </head>
 <body>
-<div class="container">
 
+<div class="container">
+  
   <header>
     <h1>Co-Student</h1>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('planner-tool')">برنامه‌ریز انتخاب واحد</button>
-      <button class="tab-btn" onclick="switchTab('gpa-tool')">محاسبه‌گر معدل</button>
+    <div class="header-controls">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('planner-tool')">برنامه‌ریز انتخاب واحد</button>
+          <button class="tab-btn" onclick="switchTab('gpa-tool')">محاسبه‌گر معدل</button>
+        </div>
+        
+        <div class="auth-wrapper">
+          <button class="auth-btn" id="login-trigger-btn" onclick="openAuthModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              ورود / ثبت‌نام
+          </button>
+          <div class="user-info" id="user-info-display">
+            <span id="user-email-text" style="padding: 0 4px;"></span>
+            <button class="btn-panel" onclick="openDashboardModal()">پنل من ⚙️</button>
+            <button class="btn-logout" onclick="logoutApp()">خروج</button>
+          </div>
+        </div>
     </div>
   </header>
 
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="planner-header">
-        <div>نام درس</div>
-        <div>تعداد واحد</div>
-        <div style="text-align:center; color:var(--muted)">جلسه اول</div>
-        <div style="text-align:center; color:var(--muted)">جلسه دوم</div>
-        <div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div>
-        <div></div>
+        <div>نام درس</div><div>تعداد واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
       </div>
       <div id="planner-list"></div>
       
       <div class="actions">
         <button class="btn btn-primary" onclick="addPlannerCourse()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          افزودن درس
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت برنامه</button>
+        <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
         <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
           <span style="font-size:0.78rem; color:var(--muted); white-space:nowrap;">ماه‌های امتحانی:</span>
           <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد — تیر</button>
@@ -343,36 +340,32 @@
           <div id="planner-status-text">وضعیت: مجاز</div>
         </div>
         <div class="bar-wrapper">
-          <div class="bar-container">
-            <div class="bar-marker marker-14" title="مرز ۱۴ واحد"></div>
-            <div class="bar-marker marker-20" title="مرز ۲۰ واحد"></div>
-            <div class="bar-fill" id="planner-progress-fill"></div>
-          </div>
-          <div class="bar-label label-14">۱۴ واحد</div>
-          <div class="bar-label label-20">۲۰ واحد</div>
+          <div class="bar-container"><div class="bar-marker marker-14"></div><div class="bar-marker marker-20"></div><div class="bar-fill" id="planner-progress-fill"></div></div>
+          <div class="bar-label label-14">۱۴ واحد</div><div class="bar-label label-20">۲۰ واحد</div>
         </div>
       </div>
       <div id="planner-drafts-panel" class="drafts-panel" style="display: none;"></div>
     </div>
-
-    <div class="timetable-container">
-      <div class="timetable" id="timetable-grid"></div>
-      <div id="conflict-alert" class="conflict-warning"></div>
-    </div>
-
+    <div class="timetable-container"><div class="timetable" id="timetable-grid"></div><div id="conflict-alert" class="conflict-warning"></div></div>
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
-        <span class="result-label">معدل کل</span>
+        <span class="result-label">معدل ترم</span>
         <span class="result-value" id="gpa-display">—</span>
       </div>
+      
       <div class="result-meta">
-        <div class="meta-item"><span class="meta-val" id="total-units">۰</span><span class="meta-lbl">کل واحدها</span></div>
+        <div class="meta-item"><span class="meta-val" id="total-units">۰</span><span class="meta-lbl">واحدهای ترم</span></div>
         <div class="meta-item"><span class="meta-val" id="course-count">۰</span><span class="meta-lbl">تعداد درس</span></div>
         <div id="status-badge" class="status-badge hidden"><span class="status-icon" id="status-icon"></span><span id="status-text"></span></div>
+      </div>
+      
+      <div class="overall-gpa-box" id="overall-gpa-container">
+        <span class="result-label">معدل کل (با احتساب این ترم)</span>
+        <span class="meta-val" id="overall-gpa-val">—</span>
       </div>
     </div>
 
@@ -386,18 +379,29 @@
         <div class="target-header">
           <span style="font-size: 0.9rem; font-weight: 600;">می‌خواهم معدلم بشود:</span>
           <input type="number" id="target-gpa-input" placeholder="مثلاً ۱۷.۵" step="0.1" min="10" max="20">
-          <button class="btn btn-primary" onclick="calculateTarget()" style="padding: 6px 14px;">محاسبه مسیر</button>
-          <span class="target-guide">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها کلیک کنید تا انتخاب شوند (قابلیت انتخاب چندگانه).</span>
+          <button class="btn btn-primary" onclick="calculateTarget()" style="padding: 6px 14px;">پیشنهاد هوشمند</button>
+          <button class="btn btn-ghost" onclick="toggleSimulator()" id="sim-toggle-btn" style="display:none; color:var(--accent); border-color:var(--accent);">🎛️ تنظیم دستی نمرات</button>
+          <button class="btn btn-danger" onclick="resetTargetSimulation()" style="padding: 6px 12px; margin-right: auto;">⟲ بازگرداندن به حالت اولیه</button>
         </div>
+        <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
         <div id="target-results" class="target-results"></div>
+        
+        <!-- لابراتوار نمرات (تنظیم دستی) -->
+        <div id="interactive-simulator" class="simulator-box">
+            <div class="sim-title">
+                🎛️ تنظیم دستی نمرات
+                <div class="sim-gpa-display" id="sim-gpa-val">0.00</div>
+            </div>
+            <div id="sim-sliders-list"></div>
+        </div>
       </div>
 
       <div class="actions">
         <button class="btn btn-primary" onclick="addGpaCourse()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          افزودن درس
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="saveGpaDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره موقت معدل</button>
+        <button class="btn btn-ghost" onclick="importFromProfile()" id="btn-import-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
+        <button class="btn btn-ghost" onclick="saveGpaDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره معدل</button>
         <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
         <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
       </div>
@@ -407,855 +411,892 @@
 
 </div>
 
+<!-- Modal ورود / ثبت‌نام -->
+<div class="modal-overlay" id="auth-modal-overlay">
+  <div class="modal-box auth-modal">
+    <button class="close-modal" onclick="closeAuthModal()">✕</button>
+    <h2 id="auth-title">ورود به حساب کاربری</h2>
+    <div id="auth-error" class="auth-error"></div>
+    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)">
+    <input type="password" id="auth-password" placeholder="رمز عبور">
+    <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">ورود</button>
+    <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
+  </div>
+</div>
+
+<!-- Modal داشبورد / پنل کاربری -->
+<div class="modal-overlay" id="dashboard-modal-overlay">
+  <div class="modal-box dashboard-modal">
+    <button class="close-modal" onclick="closeDashboardModal()">✕</button>
+    <h2>⚙️ تنظیمات پنل من</h2>
+    
+    <div class="dash-grid">
+        <div>
+            <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">رشته تحصیلی</label>
+            <input type="text" id="dash-major" placeholder="مثلاً فیزیک">
+        </div>
+        <div>
+            <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">دانشگاه</label>
+            <input type="text" id="dash-uni" placeholder="مثلاً دانشگاه مازندران">
+        </div>
+        <div>
+            <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;" id="lbl-term">ترم جاری</label>
+            <input type="number" id="dash-term" placeholder="مثلاً 3" oninput="updateTermLabels()">
+        </div>
+        <div>
+            <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;" id="lbl-passed-units">تعداد واحد پاس شده</label>
+            <input type="number" id="dash-passed-units" placeholder="مثلاً 35">
+        </div>
+        <div style="grid-column: 1 / -1;">
+            <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">معدل کل تا قبل این ترم</label>
+            <input type="number" step="0.01" id="dash-current-gpa" placeholder="مثلاً 16.50">
+        </div>
+    </div>
+    
+    <h3 style="font-size: 1.1rem; margin: 25px 0 10px; color: var(--accent);">📚 دروس ثابت ترم من</h3>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا در محاسبه‌گر معدل فقط با یک دکمه فراخوانی شوند.</div>
+    
+    <div id="dash-courses-list"></div>
+    <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(255,255,255,0.2);" onclick="addDashCourse()">+ افزودن درس جدید به پنل</button>
+
+    <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
+    <h3 style="font-size: 1.1rem; color: var(--gold); margin-bottom: 15px;">💾 فایل‌های ذخیره شده من</h3>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">برای اجرای هر فایل، روی نام آن کلیک کنید.</div>
+    
+    <div id="dash-saved-items-container" style="display:flex; flex-direction:column; gap:15px;">
+       <div id="dash-gpa-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+       <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+
+    <!-- تنظیمات حساب کاربری -->
+    <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
+    <h3 style="font-size: 1.1rem; color: var(--red); margin-bottom: 15px;">🔐 تنظیمات حساب کاربری</h3>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">برای تغییر نام کاربری یا رمز عبور از گزینه‌های زیر استفاده کنید.</div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="changeUsername()">تغییر نام کاربری</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="changePassword()">تغییر رمز عبور</button>
+        <button class="btn btn-danger" style="flex:1;" onclick="deleteAccount()">حذف حساب کاربری</button>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 10px;">
+        <button class="btn btn-ghost" onclick="closeDashboardModal()">بستن</button>
+        <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 10px 24px;">ذخیره اطلاعات پنل</button>
+    </div>
+  </div>
+</div>
+
 <footer class="signature">
   <a href="https://www.iran-pedia.org/wiki/فاطمه_علی%E2%80%8Cمحمدی" target="_blank" rel="noopener noreferrer">
     به یاد جاویدنام فاطمه علی‌محمدی
   </a>
 </footer>
 
+<!-- 1. ماژول اصلی جاوا اسکریپت فایربیس و پنل کاربری -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateEmail, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDjvY_yEysjMCpmYGEbETDwKmFYdy8yPAc",
+    authDomain: "co-student-765de.firebaseapp.com",
+    projectId: "co-student-765de",
+    storageBucket: "co-student-765de.firebasestorage.app",
+    messagingSenderId: "305986820338",
+    appId: "1:305986820338:web:e8971a40cc20c04afe986b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let isLoginMode = true;
+  window.userProfileData = { courses: [] };
+
+  window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
+  window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
+  window.toggleAuthMode = () => {
+    isLoginMode = !isLoginMode;
+    document.getElementById('auth-title').innerText = isLoginMode ? "ورود به حساب کاربری" : "ثبت‌نام کاربر جدید";
+    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
+    document.getElementById('auth-switch-btn').innerText = isLoginMode ? "حساب ندارید؟ ثبت‌نام کنید" : "قبلاً ثبت‌نام کرده‌اید؟ وارد شوید";
+    document.getElementById('auth-error').style.display = 'none';
+  }
+
+  window.handleAuthSubmit = async () => {
+    const rawUsername = document.getElementById('auth-username').value.trim().toLowerCase();
+    const username = rawUsername.replace(/[^a-z0-9_]/g, '');
+    const pass = document.getElementById('auth-password').value;
+    const errorBox = document.getElementById('auth-error');
+    
+    if(!username || !pass) { errorBox.innerText = "لطفاً نام کاربری و رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(username !== rawUsername || username.length < 3) { errorBox.innerText = "نام کاربری باید حداقل ۳ حرف انگلیسی باشد (بدون فاصله)."; errorBox.style.display = 'block'; return; }
+    
+    const fakeEmail = username + "@costudent.local";
+    
+    try {
+      if(isLoginMode) await signInWithEmailAndPassword(auth, fakeEmail, pass);
+      else await createUserWithEmailAndPassword(auth, fakeEmail, pass);
+      closeAuthModal();
+    } catch (error) {
+      errorBox.style.display = 'block';
+      if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این نام کاربری قبلاً ثبت شده است.";
+      else if(error.code === 'auth/weak-password') errorBox.innerText = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+      else if(error.code === 'auth/invalid-credential') errorBox.innerText = "نام کاربری یا رمز عبور اشتباه است.";
+      else errorBox.innerText = "خطایی رخ داد. مجدداً تلاش کنید.";
+    }
+  }
+
+  window.logoutApp = () => { signOut(auth); }
+
+  onAuthStateChanged(auth, async (user) => {
+    const loginBtn = document.getElementById('login-trigger-btn');
+    const userInfo = document.getElementById('user-info-display');
+    const importBtn = document.getElementById('btn-import-profile');
+    
+    if (user) {
+      window.currentUser = user;
+      loginBtn.style.display = 'none';
+      userInfo.style.display = 'flex';
+      let displayUsername = user.email.split('@')[0];
+      document.getElementById('user-email-text').innerHTML = `<b>${displayUsername}</b>`;
+      
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
+        window.userProfileData = data.profile || { courses: [] };
+        window.renderGpaDrafts(); window.renderPlannerDrafts();
+        if(window.userProfileData.courses && window.userProfileData.courses.length > 0) importBtn.style.display = 'inline-flex';
+        if(typeof window.calcGpa === 'function') window.calcGpa(); 
+      }
+    } else {
+      window.currentUser = null;
+      loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; importBtn.style.display = 'none';
+      window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
+      window.renderGpaDrafts(); window.renderPlannerDrafts();
+      if(typeof window.calcGpa === 'function') window.calcGpa();
+    }
+  });
+
+  // Account Settings Functions
+  window.changeUsername = async () => {
+      let newUsername = prompt("نام کاربری جدید (انگلیسی) را وارد کنید:");
+      if(!newUsername) return;
+      newUsername = newUsername.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+      if(newUsername.length < 3) return alert("نام کاربری نامعتبر است.");
+      let newEmail = newUsername + "@costudent.local";
+      try {
+          await updateEmail(window.currentUser, newEmail);
+          alert("نام کاربری با موفقیت تغییر کرد.");
+          document.getElementById('user-email-text').innerHTML = `<b>${newUsername}</b>`;
+      } catch(e) {
+          if(e.code === 'auth/requires-recent-login') { alert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
+          else { alert("این نام کاربری از قبل وجود دارد یا خطایی رخ داده است."); }
+      }
+  };
+
+  window.changePassword = async () => {
+      let newPass = prompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):");
+      if(!newPass || newPass.length < 6) return alert("رمز عبور نامعتبر است.");
+      try {
+          await updatePassword(window.currentUser, newPass);
+          alert("رمز عبور با موفقیت تغییر کرد.");
+      } catch(e) {
+          if(e.code === 'auth/requires-recent-login') { alert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
+          else { alert("خطا در تغییر رمز عبور."); }
+      }
+  };
+
+  window.deleteAccount = async () => {
+      let conf = confirm("آیا از حذف اکانت و تمام اطلاعات خود مطمئن هستید؟ این کار غیرقابل بازگشت است.");
+      if(!conf) return;
+      try {
+          await deleteUser(window.currentUser);
+          alert("حساب کاربری شما با موفقیت حذف شد.");
+          window.closeDashboardModal();
+      } catch(e) {
+          if(e.code === 'auth/requires-recent-login') { alert("برای حذف حساب باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
+          else { alert("خطا در حذف حساب."); }
+      }
+  };
+
+  window.updateTermLabels = () => {
+      let t = parseInt(document.getElementById('dash-term').value);
+      let lbl = document.getElementById('lbl-passed-units');
+      if(!isNaN(t) && t > 1) lbl.innerText = `تعداد واحد پاس شده تا ترم ${t-1}`;
+      else lbl.innerText = `تعداد واحد پاس شده تا قبل این ترم`;
+  }
+
+  window.openDashboardModal = () => {
+      document.getElementById('dash-major').value = window.userProfileData.major || '';
+      document.getElementById('dash-uni').value = window.userProfileData.uni || '';
+      document.getElementById('dash-term').value = window.userProfileData.term || '';
+      document.getElementById('dash-passed-units').value = window.userProfileData.passedUnits || '';
+      document.getElementById('dash-current-gpa').value = window.userProfileData.currentGpa || '';
+      updateTermLabels();
+      
+      const list = document.getElementById('dash-courses-list'); list.innerHTML = '';
+      if(window.userProfileData.courses) {
+          window.userProfileData.courses.forEach((c) => { appendDashCourseRow(c.name, c.units, c.grade); });
+      }
+      document.getElementById('dashboard-modal-overlay').classList.add('active');
+  }
+  
+  window.closeDashboardModal = () => { document.getElementById('dashboard-modal-overlay').classList.remove('active'); }
+  
+  window.appendDashCourseRow = (name='', units='', grade='') => {
+      const list = document.getElementById('dash-courses-list');
+      const id = `dash-course-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+      const div = document.createElement('div');
+      div.className = 'dash-course-row';
+      div.id = id;
+      
+      div.innerHTML = `
+          <div class="autocomplete-wrap" style="z-index: 100;"><input type="text" class="dc-name" placeholder="نام درس" value="${name}"></div>
+          <input type="number" class="dc-units" placeholder="واحد" value="${units}">
+          <input type="number" class="dc-grade" placeholder="نمره (اختیاری)" value="${grade}" step="0.01">
+          <button class="btn-danger" style="padding:6px; font-size:1rem; cursor:pointer;" onclick="document.getElementById('${id}').remove()">✕</button>
+      `;
+      list.appendChild(div);
+      
+      let nameInp = div.querySelector('.dc-name');
+      let unitInp = div.querySelector('.dc-units');
+      nameInp.addEventListener('input', () => {
+          let val = nameInp.value;
+          let ex = nameInp.parentNode.querySelector('.autocomplete-list'); if(ex) ex.remove();
+          let sug = window.getSuggestions(val); if(sug.length===0) return;
+          let dd = document.createElement('div'); dd.className = 'autocomplete-list';
+          sug.forEach(s => {
+              let item = document.createElement('div'); item.className='autocomplete-item'; item.innerHTML = window.highlight(s, val);
+              item.onmousedown = (e) => {
+                  e.preventDefault(); nameInp.value = s;
+                  if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s];
+                  window.closeAllAutocomplete();
+              };
+              dd.appendChild(item);
+          });
+          nameInp.parentNode.appendChild(dd);
+      });
+  }
+  window.addDashCourse = () => { appendDashCourseRow(); }
+
+  window.saveDashboardProfile = async () => {
+      const major = document.getElementById('dash-major').value;
+      const uni = document.getElementById('dash-uni').value;
+      const term = document.getElementById('dash-term').value;
+      const passedUnits = document.getElementById('dash-passed-units').value;
+      const currentGpa = document.getElementById('dash-current-gpa').value;
+      
+      const courseRows = document.querySelectorAll('.dash-course-row');
+      const courses = [];
+      courseRows.forEach(row => {
+          const name = row.querySelector('.dc-name').value;
+          const units = row.querySelector('.dc-units').value;
+          const grade = row.querySelector('.dc-grade').value;
+          if(name || units) courses.push({name, units, grade});
+      });
+      
+      window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses };
+      
+      try {
+          await setDoc(doc(db, "users", window.currentUser.uid), { profile: window.userProfileData }, { merge: true });
+          closeDashboardModal();
+          if(courses.length > 0) document.getElementById('btn-import-profile').style.display = 'inline-flex';
+          else document.getElementById('btn-import-profile').style.display = 'none';
+          if(typeof window.calcGpa === 'function') window.calcGpa();
+      } catch(e) { alert('خطا در ذخیره اطلاعات!'); }
+  }
+
+  // --- مدیریت فایل‌های ابری (معدل و برنامه) ---
+  window.saveGpaDraft = async () => {
+    if (!window.currentUser) { alert('ابتدا وارد حساب کاربری شوید.'); window.openAuthModal(); return; }
+    if (window.gpaCourses.length === 0) return alert('معدلی برای ذخیره وجود ندارد!');
+    let gpaEl = document.getElementById('gpa-display').textContent;
+    let targetVal = document.getElementById('target-gpa-input').value;
+    let draftName = `معدل ${gpaEl} (${window.gpaDrafts.length + 1})`;
+    window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
+    try {
+      await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+      window.renderGpaDrafts();
+      alert('معدل در پنل ذخیره شد.');
+    } catch (e) { alert('خطا در ذخیره اطلاعات!'); }
+  }
+  
+  window.deleteGpaDraft = async (event, id) => {
+    event.stopPropagation(); window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
+    if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+    window.renderGpaDrafts(); 
+  }
+
+  window.renameGpaDraft = async (event, id) => {
+      event.stopPropagation();
+      let draft = window.gpaDrafts.find(d => d.id === id);
+      if(!draft) return;
+      let newName = prompt("نام جدید را وارد کنید:", draft.name);
+      if(newName && newName.trim() !== "") {
+          draft.name = newName.trim();
+          if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+          window.renderGpaDrafts();
+      }
+  }
+
+  window.savePlannerDraft = async () => {
+    if (!window.currentUser) { alert('ابتدا وارد حساب کاربری شوید.'); window.openAuthModal(); return; }
+    if (window.pCourses.length === 0) return alert('برنامه‌ای برای ذخیره وجود ندارد!');
+    let totalU = window.pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
+    let draftName = `برنامه ${window.plannerDrafts.length + 1}`;
+    window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
+    try {
+      await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+      window.renderPlannerDrafts();
+      alert('برنامه در پنل ذخیره شد.');
+    } catch (e) { alert('خطا در ذخیره اطلاعات!'); }
+  }
+  
+  window.deletePlannerDraft = async (event, id) => {
+    event.stopPropagation(); window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
+    if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+    window.renderPlannerDrafts(); 
+  }
+
+  window.renamePlannerDraft = async (event, id) => {
+      event.stopPropagation();
+      let draft = window.plannerDrafts.find(d => d.id === id);
+      if(!draft) return;
+      let newName = prompt("نام جدید را وارد کنید:", draft.name);
+      if(newName && newName.trim() !== "") {
+          draft.name = newName.trim();
+          if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+          window.renderPlannerDrafts();
+      }
+  }
+</script>
+
+<!-- 2. کدهای محاسباتی، شبیه‌ساز هدف‌گذاری و منطق سایت -->
 <script>
-  // ---------------- DATA & CONFIG ----------------
+  window.gpaDrafts = []; window.plannerDrafts = [];
+  window.gpaCourses = []; window.pCourses = [];
+
   const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
   const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
   const PERSIAN_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   const EXAM_TIMES = ['۰۸:۳۰ - ۱۰:۳۰', '۱۰:۳۰ - ۱۲:۳۰', '۱۳:۳۰ - ۱۵:۳۰', '۱۵:۳۰ - ۱۷:۳۰'];
-
   let selectedSemester = 0; 
-  const SEMESTER_MONTHS = {
-    0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }],
-    1: [{ idx: 9, name: 'دی' },   { idx: 10, name: 'بهمن' }]
-  };
+  const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
 
-  const COURSE_DB = {
-    "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3,
-    "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1,
-    "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3,
-    "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3,
-    "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3,
-    "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3,
-    "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2,
-    "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3,
-    "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2,
-    "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3,
-    "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3,
-    "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3,
-    "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3,
-    "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1,
-    "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3,
-    "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3,
-    "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3,
-    "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3,
-    "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3,
-    "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1,
-    "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2,
-    "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2,
-    "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2,
-    "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2,
-    "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1,
-    "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3,
-    "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1
-  };
-  const PHYSICS_CHART = Object.keys(COURSE_DB);
+  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
+  const PHYSICS_CHART = Object.keys(window.COURSE_DB);
 
-  // ---------------- SYSTEM UTILITIES ----------------
-  function switchTab(tabId) {
-    document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
-    closeAllAutocomplete();
-  }
-
+  function switchTab(tabId) { document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(event && event.currentTarget) event.currentTarget.classList.add('active'); else document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active'); window.closeAllAutocomplete(); }
   function toFarsiNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
-  function highlightRow(id, type) {
-    let el = document.getElementById(`${type}-row-${id}`);
-    if(el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.classList.remove('highlight');
-        void el.offsetWidth;
-        el.classList.add('highlight');
-    }
-  }
+  function highlightRow(id, type) { let el = document.getElementById(`${type}-row-${id}`); if(el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.remove('highlight'); void el.offsetWidth; el.classList.add('highlight'); } }
+  function fuzzyMatch(str, query) { let s = str.toLowerCase(), q = query.toLowerCase(), si = 0, qi = 0; while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; } return qi === q.length; }
   
-  function fuzzyMatch(str, query) {
-    let s = str.toLowerCase(), q = query.toLowerCase(), si = 0, qi = 0;
-    while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; }
-    return qi === q.length;
-  }
-  function highlight(str, query) {
-    let res = [], s = str, q = query.toLowerCase(), qi = 0;
-    for (let i = 0; i < s.length; i++) {
-      if (qi < q.length && s[i].toLowerCase() === q[qi]) { res.push(`<mark>${s[i]}</mark>`); qi++; }
-      else res.push(s[i]);
-    }
-    return res.join('');
-  }
-  function getSuggestions(query) {
-    if (!query || query.trim().length < 1) return [];
-    let q = query.trim();
-    let exact = PHYSICS_CHART.filter(s => s.startsWith(q));
-    let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q));
-    let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q));
-    return [...exact, ...includes, ...fuzzy].slice(0, 5);
-  }
-  function closeAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
-  document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-wrap')) closeAllAutocomplete(); });
+  window.highlight = function(str, query) { let res = [], s = str, q = query.toLowerCase(), qi = 0; for (let i = 0; i < s.length; i++) { if (qi < q.length && s[i].toLowerCase() === q[qi]) { res.push(`<mark>${s[i]}</mark>`); qi++; } else res.push(s[i]); } return res.join(''); }
+  window.getSuggestions = function(query) { if (!query || query.trim().length < 1) return []; let q = query.trim(); let exact = PHYSICS_CHART.filter(s => s.startsWith(q)); let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q)); let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q)); return [...exact, ...includes, ...fuzzy].slice(0, 5); }
+  window.closeAllAutocomplete = function() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
+  document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-wrap')) window.closeAllAutocomplete(); });
 
   function setupAutocomplete(id, inputEl, arrayRef, type) {
     inputEl.addEventListener('input', () => {
-      let val = inputEl.value;
-      let target = arrayRef.find(c => c.id === id);
-      if(target) target.name = val;
-      if(type === 'gpa') { calcGpa(); clearTargetResults(); } else { drawTimetable(); updatePlannerStats(); drawTimeline(); }
-      
+      let val = inputEl.value; let target = arrayRef.find(c => c.id === id); if(target) target.name = val;
+      if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } else { drawTimetable(); updatePlannerStats(); drawTimeline(); }
       let ex = inputEl.parentNode.querySelector('.autocomplete-list'); if (ex) ex.remove();
-      let sug = getSuggestions(val); if (sug.length === 0) return;
+      let sug = window.getSuggestions(val); if (sug.length === 0) return;
       let dd = document.createElement('div'); dd.className = 'autocomplete-list';
       sug.forEach(s => {
-        let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = highlight(s, val);
-        item.onmousedown = (e) => {
-          e.preventDefault(); inputEl.value = s; 
-          let t = arrayRef.find(c => c.id === id);
-          if(t) {
-            t.name = s;
-            if (COURSE_DB[s]) t.units = COURSE_DB[s].toString();
-          }
-          closeAllAutocomplete(); 
-          if(type === 'gpa') { renderGpa(); clearTargetResults(); } else { handleUnitOrTimeChange(t, true, false); renderPlanner(); }
-        };
+        let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = window.highlight(s, val);
+        item.onmousedown = (e) => { e.preventDefault(); inputEl.value = s; let t = arrayRef.find(c => c.id === id); if(t) { t.name = s; if (window.COURSE_DB[s]) { t.units = window.COURSE_DB[s].toString(); let uInput = inputEl.parentNode.nextElementSibling; if(uInput) uInput.value = t.units; } } window.closeAllAutocomplete(); if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } else { handleUnitOrTimeChange(t, true, false); renderPlanner(); } };
         dd.appendChild(item);
       });
       inputEl.parentNode.appendChild(dd);
     });
   }
 
-  function createSelect(options, val, placeholder) {
-    let s = document.createElement('select');
-    s.innerHTML = `<option value="">${placeholder}</option>` + options.map((o, i) => {
-        let valueStr = (options === PERSIAN_MONTHS) ? i.toString() : o;
-        return `<option value="${valueStr}" ${valueStr==val?'selected':''}>${o}</option>`;
-    }).join('');
-    return s;
-  }
-
-  function createMonthSelect(val) {
-    let s = document.createElement('select');
-    let months = SEMESTER_MONTHS[selectedSemester];
-    s.innerHTML = `<option value="">ماه</option>` + months.map(m =>
-        `<option value="${m.idx}" ${m.idx.toString()==val?'selected':''}>${m.name}</option>`
-    ).join('');
-    return s;
-  }
-
-  // محاسبه دقیق روز مطلق بر اساس تقویم شمسی
-  function toAbsDayJalali(monthIdx, day) {
-      let days = 0;
-      for(let i=0; i<monthIdx; i++) {
-          if(i <= 5) days += 31;
-          else if(i <= 10) days += 30;
-          else days += 29;
-      }
-      return days + day;
-  }
+  function createSelect(options, val, placeholder) { let s = document.createElement('select'); s.innerHTML = `<option value="">${placeholder}</option>` + options.map((o, i) => { let valueStr = (options === PERSIAN_MONTHS) ? i.toString() : o; return `<option value="${valueStr}" ${valueStr==val?'selected':''}>${o}</option>`; }).join(''); return s; }
+  function createMonthSelect(val) { let s = document.createElement('select'); let months = SEMESTER_MONTHS[selectedSemester]; s.innerHTML = `<option value="">ماه</option>` + months.map(m => `<option value="${m.idx}" ${m.idx.toString()==val?'selected':''}>${m.name}</option>` ).join(''); return s; }
+  function toAbsDayJalali(monthIdx, day) { let days = 0; for(let i=0; i<monthIdx; i++) { if(i <= 5) days += 31; else if(i <= 10) days += 30; else days += 29; } return days + day; }
 
   // ---------------- GPA CALCULATOR LOGIC ----------------
-  let gpaCourses = [];
-  let gpaIdCounter = 0;
-  let gpaDrafts = [];
-  let focusIds = new Set(); // تغییر به مجموعه (چندگانه)
+  let gpaIdCounter = 0; let focusIds = new Set(); 
 
-  function addGpaCourse(name = '', units = '', grade = '') { gpaCourses.push({ id: ++gpaIdCounter, name, units, grade }); renderGpa(); clearTargetResults(); }
-  function removeGpaCourse(id) { 
-      gpaCourses = gpaCourses.filter(c => c.id !== id); 
-      focusIds.delete(id);
-      renderGpa(); clearTargetResults(); 
+  function createGpaRowDOM(c) {
+    let row = document.createElement('div'); row.className = 'gpa-row'; row.id = `gpa-row-${c.id}`;
+    let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
+    let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: مکانیک تحلیلی ۱'; nameInp.value = c.name;
+    nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.gpaCourses, 'gpa');
+
+    let unitInp = document.createElement('input'); unitInp.type = 'number'; unitInp.placeholder = 'واحد'; unitInp.value = c.units; unitInp.style.textAlign='center';
+    unitInp.addEventListener('input', () => { let v = parseInt(unitInp.value); if (v > 4) unitInp.value = 4; if (v < 1 && unitInp.value !== '') unitInp.value = 1; c.units = unitInp.value; calcGpa(); clearTargetResults(); updateInteractiveSimData(); });
+
+    let gradeInp = document.createElement('input'); gradeInp.type = 'number'; gradeInp.placeholder = '۰ تا ۲۰'; gradeInp.value = c.grade; gradeInp.style.textAlign='center'; gradeInp.step = "0.01";
+    gradeInp.addEventListener('input', () => { 
+        let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); clearTargetResults(); updateInteractiveSimData(); 
+        if (gradeInp.value !== '' && window.gpaCourses.length < 6 && c.id === window.gpaCourses[window.gpaCourses.length - 1].id) {
+            let newCourse = { id: ++gpaIdCounter, name: '', units: '', grade: '' };
+            window.gpaCourses.push(newCourse); document.getElementById('gpa-list').appendChild(createGpaRowDOM(newCourse));
+        }
+    });
+
+    let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; 
+    delBtn.onclick = () => {
+        window.gpaCourses = window.gpaCourses.filter(item => item.id !== c.id); focusIds.delete(c.id); row.remove();
+        if(window.gpaCourses.length === 0) document.getElementById('gpa-list').innerHTML = '<div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div>';
+        calcGpa(); clearTargetResults(); updateInteractiveSimData();
+    };
+
+    row.append(nameWrap, unitInp, gradeInp, delBtn); return row;
+  }
+
+  function addGpaCourse(name = '', units = '', grade = '') { 
+      let newCourse = { id: ++gpaIdCounter, name, units, grade }; window.gpaCourses.push(newCourse); 
+      let list = document.getElementById('gpa-list'); let empty = list.querySelector('.empty-row'); if(empty) empty.remove();
+      list.appendChild(createGpaRowDOM(newCourse)); calcGpa(); clearTargetResults(); updateInteractiveSimData(); 
+  }
+  
+  function importFromProfile() {
+      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return alert('درسی در پنل ذخیره نشده است.');
+      if(window.gpaCourses.length === 1 && !window.gpaCourses[0].name && !window.gpaCourses[0].units && !window.gpaCourses[0].grade) {
+         window.gpaCourses = []; document.getElementById('gpa-list').innerHTML = '';
+      }
+      window.userProfileData.courses.forEach(c => addGpaCourse(c.name, c.units, c.grade));
   }
 
   function renderGpa() {
-    const list = document.getElementById('gpa-list'); closeAllAutocomplete();
-    if (gpaCourses.length === 0) { list.innerHTML = '<div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div>'; calcGpa(); return; }
-    list.innerHTML = '';
-    gpaCourses.forEach(c => {
-      let row = document.createElement('div'); row.className = 'gpa-row'; row.id = `gpa-row-${c.id}`;
-      let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
-      let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: مکانیک تحلیلی ۱'; nameInp.value = c.name;
-      nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, gpaCourses, 'gpa');
-
-      let unitInp = document.createElement('input'); unitInp.type = 'number'; unitInp.placeholder = 'واحد'; unitInp.value = c.units; unitInp.style.textAlign='center';
-      unitInp.addEventListener('input', () => { let v = parseInt(unitInp.value); if (v > 4) { unitInp.value = 4; } if (v < 1 && unitInp.value !== '') { unitInp.value = 1; } c.units = unitInp.value; calcGpa(); clearTargetResults(); });
-
-      let gradeInp = document.createElement('input'); gradeInp.type = 'number'; gradeInp.placeholder = '۰ تا ۲۰'; gradeInp.value = c.grade; gradeInp.style.textAlign='center'; gradeInp.step = "0.01";
-      gradeInp.addEventListener('input', () => { let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); clearTargetResults(); });
-
-      let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removeGpaCourse(c.id);
-      row.append(nameWrap, unitInp, gradeInp, delBtn); list.appendChild(row);
-    });
-    calcGpa();
+    const list = document.getElementById('gpa-list'); window.closeAllAutocomplete(); list.innerHTML = '';
+    if (window.gpaCourses.length === 0) { list.innerHTML = '<div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div>'; calcGpa(); return; }
+    window.gpaCourses.forEach(c => { list.appendChild(createGpaRowDOM(c)); }); calcGpa(); updateInteractiveSimData();
   }
 
-  function calcGpa() {
+  window.calcGpa = function() {
     let weight = 0, units = 0, count = 0;
-    gpaCourses.forEach(c => {
-      let u = parseFloat(c.units), g = parseFloat(c.grade);
-      if (u >= 1 && u <= 4 && g >= 0 && g <= 20) { weight += u * g; units += u; count++; }
-    });
-    document.getElementById('total-units').textContent = toFarsiNum(units);
-    document.getElementById('course-count').textContent = toFarsiNum(count);
+    window.gpaCourses.forEach(c => { let u = parseFloat(c.units), g = parseFloat(c.grade); if (u >= 1 && u <= 4 && g >= 0 && g <= 20) { weight += u * g; units += u; count++; } });
+    
+    document.getElementById('total-units').textContent = toFarsiNum(units); document.getElementById('course-count').textContent = toFarsiNum(count);
     let gpaEl = document.getElementById('gpa-display'), badge = document.getElementById('status-badge');
-    let btnTarget = document.getElementById('target-toggle-btn');
     
-    let totalValidUnits = gpaCourses.reduce((sum, c) => sum + (parseFloat(c.units) > 0 ? parseFloat(c.units) : 0), 0);
-    if(totalValidUnits > 0) { btnTarget.style.opacity = '1'; btnTarget.style.pointerEvents = 'auto'; } 
-    else { btnTarget.style.opacity = '0.4'; btnTarget.style.pointerEvents = 'none'; document.getElementById('gpa-target-panel').style.display = 'none'; }
+    let termGpa = 0;
+    if (count === 0) { 
+        gpaEl.textContent = '—'; gpaEl.className = 'result-value'; badge.className = 'status-badge hidden'; 
+    } else {
+        termGpa = weight / units; gpaEl.textContent = termGpa.toFixed(2);
+        gpaEl.className = 'result-value ' + (termGpa >= 17 ? 'good' : (termGpa >= 12 ? '' : 'bad'));
+        badge.className = 'status-badge ' + (termGpa >= 17 ? 'alef' : (termGpa >= 12 ? 'ok' : 'bad'));
+        document.getElementById('status-icon').textContent = termGpa >= 17 ? '★' : (termGpa >= 12 ? '✔' : '✕');
+        document.getElementById('status-text').textContent = termGpa >= 17 ? 'الف' : (termGpa >= 12 ? 'عدم مشروط' : 'مشروط');
+    }
 
-    if (count === 0) { gpaEl.textContent = '—'; gpaEl.className = 'result-value'; badge.className = 'status-badge hidden'; return; }
-    let gpa = weight / units; gpaEl.textContent = gpa.toFixed(2);
-    gpaEl.className = 'result-value ' + (gpa >= 17 ? 'good' : (gpa > 12 ? '' : 'bad'));
+    let passedU = parseFloat(window.userProfileData?.passedUnits);
+    let pastG = parseFloat(window.userProfileData?.currentGpa);
+    let overallContainer = document.getElementById('overall-gpa-container');
     
-    badge.className = 'status-badge ' + (gpa >= 17 ? 'alef' : (gpa > 12 ? 'ok' : 'bad'));
-    document.getElementById('status-icon').textContent = gpa >= 17 ? '★' : (gpa > 12 ? '✔' : '✕');
-    document.getElementById('status-text').textContent = gpa >= 17 ? 'الف' : (gpa > 12 ? 'عدم مشروط' : 'مشروط');
+    if (!isNaN(passedU) && !isNaN(pastG) && passedU > 0) {
+        let totalOverallUnits = passedU + units;
+        let totalOverallWeight = (pastG * passedU) + weight;
+        let overall = totalOverallWeight / totalOverallUnits;
+        overallContainer.style.display = 'flex';
+        document.getElementById('overall-gpa-val').textContent = overall.toFixed(2);
+        
+        let cColor = overall >= 17 ? 'var(--green)' : (overall >= 12 ? 'var(--accent)' : 'var(--red)');
+        document.getElementById('overall-gpa-val').style.color = cColor;
+        overallContainer.style.borderColor = overall >= 17 ? 'rgba(52,211,153,0.4)' : (overall >= 12 ? 'rgba(79,142,247,0.4)' : 'rgba(248,113,113,0.4)');
+    } else {
+        overallContainer.style.display = 'none';
+    }
   }
 
-  // ---------------- SMART TARGET GPA ALGORITHM (Multi-Select Focus) ----------------
+  // ---------------- SMART TARGET & INTERACTIVE SIMULATOR ----------------
   function toggleTargetPanel() {
+    if (!window.currentUser) {
+        alert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.');
+        window.openAuthModal();
+        return;
+    }
     let panel = document.getElementById('gpa-target-panel');
     panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    if(panel.style.display === 'flex') {
+        updateInteractiveSimData();
+    }
   }
   
-  function clearTargetResults() { 
-      focusIds.clear(); 
-      document.getElementById('target-results').innerHTML = ''; 
+  function toggleSimulator() {
+      let box = document.getElementById('interactive-simulator');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
   }
+
+  function resetTargetSimulation() {
+      focusIds.clear();
+      document.getElementById('target-gpa-input').value = '';
+      document.getElementById('target-results').innerHTML = '';
+      document.getElementById('target-guide-text').style.display = 'none';
+      
+      updateInteractiveSimData();
+      renderGpa(); 
+  }
+
+  function clearTargetResults() { focusIds.clear(); document.getElementById('target-results').innerHTML = ''; document.getElementById('target-guide-text').style.display = 'none'; }
   
   function getDifficulty(name) {
-      if(!name) return 1.0;
-      let n = name.toLowerCase();
+      if(!name) return 1.0; let n = name.toLowerCase();
       let hard = ['کوانتوم', 'ریاضی', 'الکترومغناطیس', 'تحلیلی', 'دیفرانسیل', 'سیالات', 'ترمودینامیک', 'حالت جامد', 'محاسبات', 'فیزیک ۲', 'فیزیک ۳'];
       let easy = ['آزمایشگاه', 'تربیت بدنی', 'اندیشه', 'اسلام', 'اخلاق', 'خانواده', 'قرآن', 'فارسی', 'زبان خارجه', 'کارگاه', 'پروژه'];
-      
-      if (hard.some(k => n.includes(k))) return 3.0; 
-      if (easy.some(k => n.includes(k))) return 0.4; 
-      return 1.0;
+      if (hard.some(k => n.includes(k))) return 3.0; if (easy.some(k => n.includes(k))) return 0.4; return 1.0;
   }
-
+  
   function addClearFocusButton(container) {
-      let btn = document.createElement('button');
-      btn.className = 'btn btn-ghost';
-      btn.style.gridColumn = '1 / -1';
-      btn.style.borderColor = 'var(--accent2)';
-      btn.style.color = 'var(--accent2)';
-      btn.innerHTML = '✖ لغو انتخاب‌ها (توزیع خودکار بین همه)';
-      btn.onclick = () => { focusIds.clear(); calculateTarget('run'); };
-      container.appendChild(btn);
+      let btn = document.createElement('button'); btn.className = 'btn btn-ghost'; btn.style.gridColumn = '1 / -1'; btn.style.borderColor = 'var(--accent2)'; btn.style.color = 'var(--accent2)';
+      btn.innerHTML = '✖ لغو انتخاب‌ها (توزیع خودکار بین همه)'; btn.onclick = () => { focusIds.clear(); calculateTarget('run'); }; container.appendChild(btn);
   }
 
-  function runDistributeDeficit(pool, deficitWeight, isFocusMode) {
-      pool.forEach(item => {
-          item.w_factor = item.is_empty ? (item.u / item.diff) : (item.potential_weight / item.diff);
-          item.assigned_delta_g = 0;
+  function getGradeColor(grade) {
+      if (grade === null || isNaN(grade)) return 'var(--muted)';
+      if (grade >= 17) return 'var(--green)';
+      if (grade >= 14) return 'var(--accent)';
+      if (grade >= 10) return 'var(--gold)';
+      return 'var(--red)';
+  }
+
+  // Simulator Logic
+  let simData = [];
+  function updateInteractiveSimData() {
+      let simBox = document.getElementById('interactive-simulator');
+      let simBtn = document.getElementById('sim-toggle-btn');
+      
+      let validCourses = window.gpaCourses.filter(c => parseFloat(c.units) > 0);
+      if(validCourses.length === 0) { simBox.style.display = 'none'; simBtn.style.display = 'none'; return; }
+      
+      simBtn.style.display = 'inline-block';
+      simData = validCourses.map(c => {
+         let parsedG = parseFloat(c.grade);
+         return { id: c.id, name: c.name, u: parseFloat(c.units), g: isNaN(parsedG) ? null : parsedG };
       });
+      renderSimSliders();
+  }
 
-      let remaining_deficit = deficitWeight;
-      let iterations = 0;
+  function renderSimSliders() {
+      let list = document.getElementById('sim-sliders-list');
+      list.innerHTML = '';
+      simData.forEach(c => {
+          let row = document.createElement('div'); row.className = 'sim-row';
+          let displayG = c.g !== null ? c.g.toFixed(2) : '?';
+          let cColor = getGradeColor(c.g);
+          let sliderVal = c.g !== null ? c.g : 20;
+          
+          row.innerHTML = `
+              <div class="sim-row-top">
+                  <span>${c.name || 'بدون نام'} (${c.u} واحد)</span>
+                  <span class="sim-val" id="sim-val-${c.id}" style="color:${cColor}">${displayG}</span>
+              </div>
+              <input type="range" class="sim-slider" min="0" max="20" step="0.25" value="${sliderVal}" id="sim-slider-${c.id}" style="--thumb-c: ${cColor}"
+                  oninput="updateCourseSim(${c.id}, this.value)">
+          `;
+          list.appendChild(row);
+      });
+      calculateSimGpa();
+  }
 
+  window.updateCourseSim = (id, val) => { 
+      let course = simData.find(x => x.id === id); 
+      if(course) { 
+          course.g = parseFloat(val); 
+          let el = document.getElementById(`sim-slider-${id}`);
+          let vEl = document.getElementById(`sim-val-${id}`);
+          let cColor = getGradeColor(course.g);
+          
+          el.style.setProperty('--thumb-c', cColor);
+          vEl.innerText = course.g.toFixed(2);
+          vEl.style.color = cColor;
+          
+          calculateSimGpa(); 
+      } 
+  };
+  
+  function calculateSimGpa() {
+      let w = 0, u = 0, hasEmpty = false;
+      simData.forEach(c => { 
+          if(c.g !== null && !isNaN(c.g)) { w += c.u * c.g; u += c.u; }
+          else { hasEmpty = true; }
+      });
+      
+      let display = document.getElementById('sim-gpa-val');
+      if (u === 0 && hasEmpty) {
+          display.innerText = '?';
+          display.style.color = 'var(--muted)';
+          display.style.borderColor = 'var(--border)';
+      } else {
+          let res = u > 0 ? (w/u).toFixed(2) : '0.00';
+          display.innerText = res;
+          display.style.color = getGradeColor(res);
+          display.style.borderColor = (res >= 17) ? 'rgba(52,211,153,0.4)' : (res >= 14 ? 'rgba(79,142,247,0.4)' : (res >= 10 ? 'rgba(245,200,66,0.4)' : 'rgba(248,113,113,0.4)'));
+      }
+  }
+
+  // الگوریتم اصولی پیشنهاد هدف
+  function runDistributeDeficit(pool, deficitWeight, isFocusMode) {
+      pool.forEach(item => { item.w_factor = item.is_empty ? (item.u / item.diff) : (item.potential_weight / item.diff); item.assigned_delta_g = 0; });
+      let remaining_deficit = deficitWeight, iterations = 0;
       while (remaining_deficit > 0.01 && iterations < 10) {
-          let uncapped = pool.filter(item => {
-              let current_base = item.is_empty ? 0 : item.g;
-              let max_delta = item.max_g - current_base;
-              return item.assigned_delta_g < max_delta - 0.001;
-          });
-
+          let uncapped = pool.filter(item => { let current_base = item.is_empty ? 0 : item.g; return item.assigned_delta_g < (item.max_g - current_base) - 0.001; });
           if (uncapped.length === 0) return { impossible: true, val: remaining_deficit };
-
           let total_w = uncapped.reduce((sum, item) => sum + item.w_factor, 0);
           uncapped.forEach(item => {
-              let share = (item.w_factor / total_w) * remaining_deficit;
-              let raw_delta = share / item.u;
-
-              let current_base = item.is_empty ? 0 : item.g;
-              let max_delta = item.max_g - current_base;
-
-              let added_delta = Math.min(raw_delta, max_delta - item.assigned_delta_g);
-              item.assigned_delta_g += added_delta;
-              remaining_deficit -= (added_delta * item.u);
-          });
-          iterations++;
+              let share = (item.w_factor / total_w) * remaining_deficit; let raw_delta = share / item.u;
+              let max_delta = item.max_g - (item.is_empty ? 0 : item.g); let added_delta = Math.min(raw_delta, max_delta - item.assigned_delta_g);
+              item.assigned_delta_g += added_delta; remaining_deficit -= (added_delta * item.u);
+          }); iterations++;
       }
-
       if (remaining_deficit > 0.01) return { impossible: true, val: remaining_deficit };
 
-      // اعمال پله های 0.25 نمره ای 
       if (!isFocusMode && pool.length > 1) {
-          pool.sort((a,b) => (b.u / b.diff) - (a.u / a.diff));
-          let absorber = pool[0];
-          let absorbed_by_snapped = 0;
-
+          pool.sort((a,b) => (b.u / b.diff) - (a.u / a.diff)); let absorber = pool[0], absorbed_by_snapped = 0;
           for (let i = 1; i < pool.length; i++) {
-              let item = pool[i];
-              let current_target = (item.is_empty ? 0 : item.g) + item.assigned_delta_g;
-              let snapped = Math.round(current_target * 4) / 4;
-              snapped = Math.max(item.is_empty ? 0 : item.g, Math.min(item.max_g, snapped));
-              
-              item.final_target_g = snapped;
-              absorbed_by_snapped += (snapped - (item.is_empty ? 0 : item.g)) * item.u;
+              let item = pool[i]; let current_target = (item.is_empty ? 0 : item.g) + item.assigned_delta_g;
+              let snapped = Math.max(item.is_empty ? 0 : item.g, Math.min(item.max_g, Math.round(current_target * 4) / 4));
+              item.final_target_g = snapped; absorbed_by_snapped += (snapped - (item.is_empty ? 0 : item.g)) * item.u;
           }
-
-          let needed_for_absorber = deficitWeight - absorbed_by_snapped;
-          let final_absorber_g = (absorber.is_empty ? 0 : absorber.g) + (needed_for_absorber / absorber.u);
-
-          if (final_absorber_g > absorber.max_g + 0.01 || final_absorber_g < (absorber.is_empty ? 0 : absorber.g) - 0.01) {
-              pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
-          } else {
-              absorber.final_target_g = final_absorber_g;
-          }
-      } else {
-          pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
-      }
-
+          let needed_for_absorber = deficitWeight - absorbed_by_snapped; let final_absorber_g = (absorber.is_empty ? 0 : absorber.g) + (needed_for_absorber / absorber.u);
+          if (final_absorber_g > absorber.max_g + 0.01 || final_absorber_g < (absorber.is_empty ? 0 : absorber.g) - 0.01) pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
+          else absorber.final_target_g = final_absorber_g;
+      } else pool.forEach(item => { item.final_target_g = (item.is_empty ? 0 : item.g) + item.assigned_delta_g; });
       return { impossible: false, suggestions: pool };
   }
 
   function calculateTarget(actionStr = null) {
-    if(typeof actionStr === 'number') {
-        if(focusIds.has(actionStr)) focusIds.delete(actionStr);
-        else focusIds.add(actionStr);
-    }
-    
-    let target = parseFloat(document.getElementById('target-gpa-input').value);
-    let resultsDiv = document.getElementById('target-results');
-    resultsDiv.innerHTML = '';
-
-    if(isNaN(target) || target < 10 || target > 20) {
-        resultsDiv.innerHTML = '<div style="color:var(--red); font-size:0.85rem; padding:10px;">لطفاً یک معدل هدف معتبر (بین ۱۰ تا ۲۰) وارد کنید.</div>';
-        return;
-    }
-
-    let validCourses = gpaCourses.filter(c => !isNaN(parseFloat(c.units)) && parseFloat(c.units) > 0);
-    let totalUnits = validCourses.reduce((sum, c) => sum + parseFloat(c.units), 0);
-    let currentWeight = 0;
+    if(typeof actionStr === 'number') { if(focusIds.has(actionStr)) focusIds.delete(actionStr); else focusIds.add(actionStr); }
+    let target = parseFloat(document.getElementById('target-gpa-input').value), resultsDiv = document.getElementById('target-results'); resultsDiv.innerHTML = '';
+    if(isNaN(target) || target < 10 || target > 20) { resultsDiv.innerHTML = '<div style="color:var(--red); font-size:0.85rem; padding:10px;">لطفاً یک معدل هدف معتبر (بین ۱۰ تا ۲۰) وارد کنید.</div>'; return; }
+    let validCourses = window.gpaCourses.filter(c => !isNaN(parseFloat(c.units)) && parseFloat(c.units) > 0);
+    let totalUnits = validCourses.reduce((sum, c) => sum + parseFloat(c.units), 0), currentWeight = 0;
 
     let pool = validCourses.map(c => {
-        let u = parseFloat(c.units);
-        let g = parseFloat(c.grade);
-        let is_empty = isNaN(g);
+        let u = parseFloat(c.units), g = parseFloat(c.grade), is_empty = isNaN(g);
         if (!is_empty) currentWeight += u * g;
-
-        let diff = getDifficulty(c.name);
-        let max_g = 20;
-        
-        if (!is_empty) {
-            if (g <= 4.99) max_g = 9.75; 
-            else if (g < 9.75) max_g = 10.0; 
-        }
-
+        let diff = getDifficulty(c.name), max_g = 20;
+        if (!is_empty) { if (g <= 4.99) max_g = 9.75; else if (g < 9.75) max_g = 10.0; }
         let potential_weight = is_empty ? (20 * u) : ((max_g - g) * u);
-        
-        // اگر انتخاب شده‌ای داریم، بقیه ظرفیتشان صفر میشود
-        if (focusIds.size > 0 && !focusIds.has(c.id)) {
-            return { c, u, g, is_empty, diff, max_g, potential_weight: 0 };
-        }
-
+        if (focusIds.size > 0 && !focusIds.has(c.id)) return { c, u, g, is_empty, diff, max_g, potential_weight: 0 };
         return { c, u, g, is_empty, diff, max_g, potential_weight };
     });
 
     let deficitWeight = (target * totalUnits) - currentWeight;
-
-    if (deficitWeight <= 0) {
-         resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! 🎉</div>';
-         if(focusIds.size > 0) addClearFocusButton(resultsDiv);
-         return;
-    }
+    if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! 🎉</div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
 
     let shiftablePool = pool.filter(p => p.potential_weight > 0);
     if (shiftablePool.length === 0) {
-         let msg = focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی برای رساندن شما به این معدل را ندارند. (درس‌های دیگری هم تیک بزنید)" : "برای رسیدن به هدف، مجموعاً نمره‌ای فراتر از سقف ۲۰ نیاز دارید.";
-         resultsDiv.innerHTML = `<div class="target-impossible">${msg}</div>`;
-         // اجازه می‌دهیم رندر ادامه پیدا کند تا دروس همچنان قابل کلیک باشند
+        resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی ندارند." : "فراتر از سقف ۲۰ نیاز دارید."}</div>`;
+        document.getElementById('target-guide-text').style.display = 'none';
+        return;
     }
 
-    let emptyPool = shiftablePool.filter(p => p.is_empty);
-    let targetPool = (emptyPool.length > 0 && focusIds.size === 0) ? emptyPool : shiftablePool;
-
+    let emptyPool = shiftablePool.filter(p => p.is_empty), targetPool = (emptyPool.length > 0 && focusIds.size === 0) ? emptyPool : shiftablePool;
     let result = runDistributeDeficit(targetPool, deficitWeight, focusIds.size > 0);
-
-    if (result.impossible && emptyPool.length > 0 && emptyPool.length < shiftablePool.length && focusIds.size === 0) {
-        result = runDistributeDeficit(shiftablePool, deficitWeight, false);
-    }
-
+    if (result.impossible && emptyPool.length > 0 && emptyPool.length < shiftablePool.length && focusIds.size === 0) result = runDistributeDeficit(shiftablePool, deficitWeight, false);
+    
     if (result.impossible && shiftablePool.length > 0) {
-        let msg = focusIds.size > 0 ? "دروس انتخاب شده به تنهایی کافی نیستند. لطفاً درس دیگری را نیز انتخاب کنید." : "دسترسی به این معدل غیرممکن است.";
-        resultsDiv.innerHTML = `<div class="target-impossible">${msg}</div>`;
+        resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده کافی نیستند." : "دسترسی غیرممکن است."}</div>`;
+        document.getElementById('target-guide-text').style.display = 'none';
+    } else {
+        document.getElementById('target-guide-text').style.display = 'block';
     }
 
     if(focusIds.size > 0) addClearFocusButton(resultsDiv);
-
-    // همیشه همه کارت های شیفت پذیر را رندر میکنیم تا قابل کلیک باشند
     pool.filter(p => p.is_empty || p.max_g > p.g).forEach(s => {
-        let card = document.createElement('div');
-        let isFocused = focusIds.size > 0 && focusIds.has(s.c.id);
-        let isMuted = focusIds.size > 0 && !focusIds.has(s.c.id);
-        
-        card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : '');
-        card.onclick = () => calculateTarget(s.c.id); 
-        
-        let finalG = s.final_target_g || (s.is_empty ? 0 : s.g);
+        let card = document.createElement('div'), isFocused = focusIds.size > 0 && focusIds.has(s.c.id), isMuted = focusIds.size > 0 && !focusIds.has(s.c.id);
+        card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : ''); card.onclick = () => calculateTarget(s.c.id); 
+        let finalG = s.final_target_g !== undefined ? s.final_target_g : (s.is_empty ? 0 : s.g);
         let delta = finalG - (s.is_empty ? 0 : s.g);
-        let color = getColorForGrade(finalG);
-        
-        let text = "";
-        if (isMuted || result.impossible && isFocused) {
-            text = `<span style="color:var(--muted); font-weight:normal; font-size:0.8rem">خارج از محاسبه</span>`;
-        } else {
-            text = !s.is_empty ? `کمبود: <b style="font-size:1rem">${delta.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${finalG.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}</span>` 
-                               : `پیشنهاد: <b style="font-size:1.1rem">${finalG.toFixed(2).replace(/\.00$/, '').replace(/\.50$/, '.5')}</b>`;
-        }
-
-        card.innerHTML = `
-            <div class="target-card-name" title="${s.c.name || 'بدون نام'}">
-               <span>${s.c.name || '(بدون نام)'}</span>
-               <div class="checkbox-indicator"></div>
-            </div>
-            <div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : color};">${text}</div>
-        `;
+        let text = (isMuted || result.impossible && isFocused) ? `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : (!s.is_empty ? `کمبود: <b>${delta.toFixed(2)}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${finalG.toFixed(2)}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${finalG.toFixed(2)}</b>`);
+        card.innerHTML = `<div class="target-card-name"><span>${s.c.name || '(بدون نام)'}</span></div><div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : getGradeColor(finalG)};">${text}</div>`;
         resultsDiv.appendChild(card);
     });
+
+    if(!result.impossible && shiftablePool.length > 0) {
+        document.getElementById('interactive-simulator').style.display = 'block';
+        pool.forEach(p => {
+           if(p.final_target_g !== undefined) {
+               let targetSliderVal = parseFloat(p.final_target_g).toFixed(2);
+               let courseInSim = simData.find(x => x.id === p.c.id);
+               if(courseInSim) courseInSim.g = parseFloat(targetSliderVal);
+           }
+        });
+        renderSimSliders();
+    }
   }
 
-  function getColorForGrade(grade) {
-      if(grade >= 17) return 'var(--green)';
-      if(grade >= 14) return 'var(--accent)';
-      return 'var(--gold)';
-  }
-
-  function clearGpa() { gpaCourses = []; renderGpa(); clearTargetResults(); document.getElementById('target-gpa-input').value = ''; document.getElementById('gpa-target-panel').style.display='none'; }
+  function clearGpa() { window.gpaCourses = []; renderGpa(); clearTargetResults(); document.getElementById('target-gpa-input').value = ''; document.getElementById('gpa-target-panel').style.display='none'; }
   function newGpa() { clearGpa(); addGpaCourse(); }
 
-  // GPA Drafts
-  function saveGpaDraft() {
-    if (gpaCourses.length === 0) return alert('معدلی برای ذخیره وجود ندارد!');
-    let gpaEl = document.getElementById('gpa-display').textContent;
-    let targetVal = document.getElementById('target-gpa-input').value;
-    let draftName = `معدل ${gpaEl} (${gpaDrafts.length + 1})`;
-    gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(gpaCourses)), target: targetVal });
-    renderGpaDrafts();
-  }
-  function renderGpaDrafts() {
-    const panel = document.getElementById('gpa-drafts-panel');
-    if (gpaDrafts.length === 0) { panel.style.display = 'none'; return; }
-    panel.style.display = 'flex'; panel.innerHTML = '<div style="font-size:0.8rem; color:var(--muted); margin-left:10px;">معدل‌های ذخیره‌شده:</div>';
-    gpaDrafts.forEach((draft) => {
-      let chip = document.createElement('div'); chip.className = 'draft-chip';
-      chip.innerHTML = `${draft.name} <span title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
-      chip.onclick = () => {
-        gpaCourses = JSON.parse(JSON.stringify(draft.data));
-        gpaIdCounter = Math.max(...gpaCourses.map(c => c.id), gpaIdCounter);
-        document.getElementById('target-gpa-input').value = draft.target || '';
-        renderGpa(); clearTargetResults();
-      };
-      panel.appendChild(chip);
-    });
-  }
-  function deleteGpaDraft(event, id) { event.stopPropagation(); gpaDrafts = gpaDrafts.filter(d => d.id !== id); renderGpaDrafts(); }
+  window.renderGpaDrafts = () => {
+    const dashPanel = document.getElementById('dash-gpa-drafts'); dashPanel.innerHTML = '';
+    const bottomPanel = document.getElementById('gpa-drafts-panel'); bottomPanel.innerHTML = '';
+    
+    if (window.gpaDrafts.length > 0) { 
+        bottomPanel.style.display = 'flex';
+        bottomPanel.innerHTML = '<div style="width:100%; font-size:0.85rem; color:var(--text); font-weight:600; margin-bottom:5px;">💾 معدل‌های ذخیره‌شده:</div>';
+        
+        window.gpaDrafts.forEach((draft) => {
+            let dashChip = document.createElement('div'); dashChip.className = 'dash-draft-chip';
+            dashChip.innerHTML = `<span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span> 
+                                  <div class="action-icons">
+                                    <span class="edit-btn" title="تغییر نام" onclick="renameGpaDraft(event, ${draft.id})">✏️</span>
+                                    <span class="del-btn" title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>
+                                  </div>`;
+            dashPanel.appendChild(dashChip);
 
-
-  // ---------------- PLANNER LOGIC & STATS ----------------
-  let pCourses = [];
-  let pIdCounter = 0;
-  let plannerDrafts = [];
-
-  function addPlannerCourse(data = {}) {
-    pCourses.push({
-      id: ++pIdCounter, name: data.name || '', units: data.units || '', 
-      d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '',
-      examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '',
-      hasExamConflict: false, examConflictLevel: 0 
-    });
-    renderPlanner();
-  }
-
-  function removePlannerCourse(id) { pCourses = pCourses.filter(c => c.id !== id); renderPlanner(); }
-
-  function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) {
-    let u = parseInt(c.units) || 1;
-    if (u > 1 && c.d1 && c.t1) {
-      if (isSession1Change || isUnitChange) {
-        let dIdx = DAYS.indexOf(c.d1);
-        if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; }
-      }
+            let btmChip = document.createElement('div'); btmChip.className = 'draft-chip';
+            btmChip.innerHTML = `<span onclick="loadGpaDraft(${draft.id})">${draft.name}</span> <span class="del-btn" title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
+            bottomPanel.appendChild(btmChip);
+        });
+    } else {
+        bottomPanel.style.display = 'none';
     }
-    if (u === 1) { c.d2 = ''; c.t2 = ''; }
   }
+  
+  window.loadGpaDraft = (id) => {
+      let draft = window.gpaDrafts.find(d => d.id === id);
+      if(draft) {
+          window.gpaCourses = JSON.parse(JSON.stringify(draft.data)); 
+          gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), gpaIdCounter); 
+          document.getElementById('target-gpa-input').value = draft.target || ''; 
+          renderGpa(); clearTargetResults(); updateInteractiveSimData(); 
+          window.switchTab('gpa-tool'); window.closeDashboardModal();
+      }
+  }
+
+  // ---------------- PLANNER LOGIC (بدون تغییر) ----------------
+  let pIdCounter = 0;
+  function addPlannerCourse(data = {}) { window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); renderPlanner(); }
+  function removePlannerCourse(id) { window.pCourses = window.pCourses.filter(c => c.id !== id); renderPlanner(); }
+  function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { let u = parseInt(c.units) || 1; if (u > 1 && c.d1 && c.t1) { if (isSession1Change || isUnitChange) { let dIdx = DAYS.indexOf(c.d1); if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; } } } if (u === 1) { c.d2 = ''; c.t2 = ''; } }
 
   function renderPlanner() {
-    const list = document.getElementById('planner-list'); closeAllAutocomplete();
-    if (pCourses.length === 0) { 
-        list.innerHTML = '<div class="empty-row">درسی برای برنامه‌ریزی اضافه نشده است.</div>'; 
-        drawTimetable(); updatePlannerStats(); drawTimeline(); return; 
-    }
-    list.innerHTML = '';
-    
-    let examDateMap = {};
-    pCourses.forEach(c => {
-        c.hasExamConflict = false; c.examConflictLevel = 0;
-        if (c.examMonth && c.examDay) {
-            let dateKey = `${c.examMonth}-${c.examDay}`;
-            if (!examDateMap[dateKey]) examDateMap[dateKey] = [];
-            examDateMap[dateKey].push(c);
-        }
-    });
-    
-    Object.values(examDateMap).forEach(arr => {
-        if (arr.length > 1) {
-            arr.forEach(c => { c.hasExamConflict = true; c.examConflictLevel = Math.max(c.examConflictLevel, 1); });
-            let timeMap = {};
-            arr.forEach(c => {
-                if(c.examTime) {
-                    if(!timeMap[c.examTime]) timeMap[c.examTime] = [];
-                    timeMap[c.examTime].push(c);
-                }
-            });
-            Object.values(timeMap).forEach(timeArr => {
-                if(timeArr.length > 1) {
-                    timeArr.forEach(c => c.examConflictLevel = 2);
-                }
-            });
-        }
-    });
+    const list = document.getElementById('planner-list'); window.closeAllAutocomplete();
+    if (window.pCourses.length === 0) { list.innerHTML = '<div class="empty-row">درسی برای برنامه‌ریزی اضافه نشده است.</div>'; drawTimetable(); updatePlannerStats(); drawTimeline(); return; }
+    list.innerHTML = ''; let examDateMap = {};
+    window.pCourses.forEach(c => { c.hasExamConflict = false; c.examConflictLevel = 0; if (c.examMonth && c.examDay) { let dateKey = `${c.examMonth}-${c.examDay}`; if (!examDateMap[dateKey]) examDateMap[dateKey] = []; examDateMap[dateKey].push(c); } });
+    Object.values(examDateMap).forEach(arr => { if (arr.length > 1) { arr.forEach(c => { c.hasExamConflict = true; c.examConflictLevel = Math.max(c.examConflictLevel, 1); }); let timeMap = {}; arr.forEach(c => { if(c.examTime) { if(!timeMap[c.examTime]) timeMap[c.examTime] = []; timeMap[c.examTime].push(c); } }); Object.values(timeMap).forEach(timeArr => { if(timeArr.length > 1) { timeArr.forEach(c => c.examConflictLevel = 2); } }); } });
 
-    pCourses.forEach(c => {
+    window.pCourses.forEach(c => {
       let row = document.createElement('div'); row.className = 'planner-row'; row.id = `planner-row-${c.id}`;
-      
-      let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
-      let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name;
-      nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, pCourses, 'planner');
-
-      let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد');
-      unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
-
-      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group';
-      let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت');
-      d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
-      t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); };
-      s1Grp.append(d1Sel, t1Sel);
-
-      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group';
-      let is1Unit = parseInt(c.units) === 1; if (is1Unit) s2Grp.classList.add('disabled-session');
-      let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت');
-      d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); };
-      t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); };
-      if (is1Unit) { d2Sel.disabled = true; t2Sel.disabled = true; }
-      s2Grp.append(d2Sel, t2Sel);
-
-      let examGrp = document.createElement('div'); examGrp.className = 'session-group exam-group';
-      let dateInps = document.createElement('div'); dateInps.className = 'exam-date-inputs';
-      
-      let eMonthSel = createMonthSelect(c.examMonth);
-      let eDayInp = document.createElement('input'); eDayInp.type = 'number'; eDayInp.placeholder = 'روز'; eDayInp.value = c.examDay;
-
-      eMonthSel.onchange = () => {
-          c.examMonth = eMonthSel.value;
-          if(!c.examMonth) c.examDay = ''; 
-          else {
-              let m = parseInt(c.examMonth);
-              let max = m <= 5 ? 31 : (m === 11 ? 29 : 30);
-              if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString();
-          }
-          renderPlanner();
-      };
-
-      eDayInp.addEventListener('input', (e) => {
-          if(!c.examMonth) { e.target.value = ''; return; }
-          let m = parseInt(c.examMonth);
-          let max = m <= 5 ? 31 : (m === 11 ? 29 : 30);
-          let v = parseInt(e.target.value);
-          if (v > max) e.target.value = max;
-          if (v < 1 && e.target.value !== '') e.target.value = 1;
-          c.examDay = e.target.value;
-      });
-      eDayInp.addEventListener('change', () => renderPlanner());
-
-      dateInps.append(eMonthSel, eDayInp);
-      examGrp.appendChild(dateInps);
-
-      if (c.hasExamConflict) {
-          let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت امتحان');
-          eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel';
-          eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); };
-          examGrp.appendChild(eTimeSel);
-      }
-
+      let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap'; let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name; nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.pCourses, 'planner');
+      let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد'); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
+      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; s1Grp.append(d1Sel, t1Sel);
+      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let is1Unit = parseInt(c.units) === 1; if (is1Unit) s2Grp.classList.add('disabled-session'); let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; if (is1Unit) { d2Sel.disabled = true; t2Sel.disabled = true; } s2Grp.append(d2Sel, t2Sel);
+      let examGrp = document.createElement('div'); examGrp.className = 'session-group exam-group'; let dateInps = document.createElement('div'); dateInps.className = 'exam-date-inputs'; let eMonthSel = createMonthSelect(c.examMonth); let eDayInp = document.createElement('input'); eDayInp.type = 'number'; eDayInp.placeholder = 'روز'; eDayInp.value = c.examDay;
+      eMonthSel.onchange = () => { c.examMonth = eMonthSel.value; if(!c.examMonth) c.examDay = ''; else { let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString(); } renderPlanner(); };
+      eDayInp.addEventListener('input', (e) => { if(!c.examMonth) { e.target.value = ''; return; } let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); let v = parseInt(e.target.value); if (v > max) e.target.value = max; if (v < 1 && e.target.value !== '') e.target.value = 1; c.examDay = e.target.value; }); eDayInp.addEventListener('change', () => renderPlanner());
+      dateInps.append(eMonthSel, eDayInp); examGrp.appendChild(dateInps);
+      if (c.hasExamConflict) { let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت امتحان'); eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel'; eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); }; examGrp.appendChild(eTimeSel); }
       let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removePlannerCourse(c.id);
-
-      row.append(nameWrap, unitSel, s1Grp, s2Grp, examGrp, delBtn); 
-      list.appendChild(row);
+      row.append(nameWrap, unitSel, s1Grp, s2Grp, examGrp, delBtn); list.appendChild(row);
     });
-    drawTimetable();
-    updatePlannerStats();
-    drawTimeline();
+    drawTimetable(); updatePlannerStats(); drawTimeline();
   }
 
   function updatePlannerStats() {
-    let total = 0;
-    pCourses.forEach(c => { total += parseInt(c.units) || 0; });
-    
-    document.getElementById('planner-total-units').innerHTML = `<span>${toFarsiNum(total)}</span>`;
-    let fill = document.getElementById('planner-progress-fill');
-    let statusText = document.getElementById('planner-status-text');
-
-    let percentage = Math.min((total / 24) * 100, 100);
-    fill.style.width = percentage + '%';
-
-    if (total === 0) {
-      fill.style.background = 'transparent'; fill.style.boxShadow = 'none';
-      statusText.textContent = '';
-    } else if (total <= 14) {
-      fill.style.background = 'var(--red)'; fill.style.boxShadow = '0 0 12px rgba(248,113,113,0.6)';
-      statusText.innerHTML = '<span style="color: var(--red);">مجاز برای معدل مشروط (سقف ۱۴)</span>';
-    } else if (total <= 20) {
-      fill.style.background = 'var(--accent)'; fill.style.boxShadow = '0 0 12px rgba(79,142,247,0.6)';
-      statusText.innerHTML = '<span style="color: var(--accent);">مجاز برای معدل عادی (سقف ۲۰)</span>';
-    } else if (total <= 24) {
-      fill.style.background = 'var(--green)'; fill.style.boxShadow = '0 0 12px rgba(52,211,153,0.6)';
-      statusText.innerHTML = '<span style="color: var(--green);">مجاز برای معدل الف (سقف ۲۴)</span>';
-    } else {
-      fill.style.background = 'var(--gold)'; fill.style.boxShadow = '0 0 12px rgba(245,200,66,0.6)';
-      statusText.innerHTML = '<span style="color: var(--gold);">⚠️ بیش از حد مجاز!</span>';
-    }
+    let total = 0; window.pCourses.forEach(c => { total += parseInt(c.units) || 0; });
+    document.getElementById('planner-total-units').innerHTML = `<span>${toFarsiNum(total)}</span>`; let fill = document.getElementById('planner-progress-fill'); let statusText = document.getElementById('planner-status-text');
+    let percentage = Math.min((total / 24) * 100, 100); fill.style.width = percentage + '%';
+    if (total === 0) { fill.style.background = 'transparent'; fill.style.boxShadow = 'none'; statusText.textContent = ''; }
+    else if (total <= 14) { fill.style.background = 'var(--red)'; fill.style.boxShadow = '0 0 12px rgba(248,113,113,0.6)'; statusText.innerHTML = '<span style="color: var(--red);">مجاز برای معدل مشروط (سقف ۱۴)</span>'; }
+    else if (total <= 20) { fill.style.background = 'var(--accent)'; fill.style.boxShadow = '0 0 12px rgba(79,142,247,0.6)'; statusText.innerHTML = '<span style="color: var(--accent);">مجاز برای معدل عادی (سقف ۲۰)</span>'; }
+    else if (total <= 24) { fill.style.background = 'var(--green)'; fill.style.boxShadow = '0 0 12px rgba(52,211,153,0.6)'; statusText.innerHTML = '<span style="color: var(--green);">مجاز برای معدل الف (سقف ۲۴)</span>'; }
+    else { fill.style.background = 'var(--gold)'; fill.style.boxShadow = '0 0 12px rgba(245,200,66,0.6)'; statusText.innerHTML = '<span style="color: var(--gold);">⚠️ بیش از حد مجاز!</span>'; }
   }
 
   function drawTimetable() {
-    const grid = document.getElementById('timetable-grid');
-    grid.innerHTML = '<div class="tt-header">ایام / ساعات</div>';
-    TIMES.forEach(t => { grid.innerHTML += `<div class="tt-header">${t}</div>`; });
-
-    let schedule = {};
-    DAYS.forEach(d => { schedule[d] = {}; TIMES.forEach(t => schedule[d][t] = []); });
-
-    pCourses.forEach(c => {
-      let displayName = c.name || '(بدون نام)';
-      if (c.d1 && c.t1 && schedule[c.d1]) schedule[c.d1][c.t1].push({name: displayName, id: c.id});
-      if (c.d2 && c.t2 && schedule[c.d2]) schedule[c.d2][c.t2].push({name: displayName, id: c.id});
-    });
-
-    let hasConflict = false;
-    let conflictMessages = [];
-
+    const grid = document.getElementById('timetable-grid'); grid.innerHTML = '<div class="tt-header">ایام / ساعات</div>'; TIMES.forEach(t => { grid.innerHTML += `<div class="tt-header">${t}</div>`; });
+    let schedule = {}; DAYS.forEach(d => { schedule[d] = {}; TIMES.forEach(t => schedule[d][t] = []); });
+    window.pCourses.forEach(c => { let displayName = c.name || '(بدون نام)'; if (c.d1 && c.t1 && schedule[c.d1]) schedule[c.d1][c.t1].push({name: displayName, id: c.id}); if (c.d2 && c.t2 && schedule[c.d2]) schedule[c.d2][c.t2].push({name: displayName, id: c.id}); });
+    let hasConflict = false; let conflictMessages = [];
     DAYS.forEach(day => {
       grid.innerHTML += `<div class="tt-day">${day}</div>`;
       TIMES.forEach(time => {
-        let classes = schedule[day][time];
-        let isConflict = classes.length > 1; let isSingle = classes.length === 1;
-        if (isConflict) {
-            hasConflict = true;
-            conflictMessages.push(`<strong>${day} (${time}):</strong> ${classes.map(cl => cl.name).join(' و ')}`);
-        }
-        
+        let classes = schedule[day][time]; let isConflict = classes.length > 1; let isSingle = classes.length === 1;
+        if (isConflict) { hasConflict = true; conflictMessages.push(`<strong>${day} (${time}):</strong> ${classes.map(cl => cl.name).join(' و ')}`); }
         let cellHTML = `<div class="${isConflict ? 'tt-cell conflict' : 'tt-cell'}">`;
-        classes.forEach(cls => {
-           cellHTML += `<div class="${isSingle ? 'tt-course single-item' : 'tt-course conflict-item'}" onclick="highlightRow(${cls.id}, 'planner')">${cls.name}</div>`;
-        });
+        classes.forEach(cls => { cellHTML += `<div class="${isSingle ? 'tt-course single-item' : 'tt-course conflict-item'}" onclick="highlightRow(${cls.id}, 'planner')">${cls.name}</div>`; });
         cellHTML += `</div>`; grid.innerHTML += cellHTML;
       });
     });
-
     let alertBox = document.getElementById('conflict-alert');
-    if (hasConflict) {
-        alertBox.style.display = 'flex';
-        alertBox.innerHTML = `<div>⚠️ <b style="color:var(--red);">تداخل ساعتی در کلاس‌ها وجود دارد!</b> لطفاً خانه‌های قرمز رنگ در جدول را بررسی کنید.<br><ul>` + conflictMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`;
-    } else {
-        alertBox.style.display = 'none';
-    }
+    if (hasConflict) { alertBox.style.display = 'flex'; alertBox.innerHTML = `<div>⚠️ <b style="color:var(--red);">تداخل ساعتی در کلاس‌ها وجود دارد!</b> لطفاً خانه‌های قرمز رنگ در جدول را بررسی کنید.<br><ul>` + conflictMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`; } else { alertBox.style.display = 'none'; }
   }
 
-  function setSemester(idx) {
-    selectedSemester = idx;
-    document.getElementById('sem-btn-0').classList.toggle('active', idx === 0);
-    document.getElementById('sem-btn-1').classList.toggle('active', idx === 1);
-    let valid = SEMESTER_MONTHS[idx].map(m => m.idx.toString());
-    pCourses.forEach(c => {
-      if (c.examMonth && !valid.includes(c.examMonth)) { c.examMonth = ''; c.examDay = ''; c.examTime = ''; c.hasExamConflict = false; c.examConflictLevel = 0; }
-    });
-    renderPlanner();
-  }
+  function setSemester(idx) { selectedSemester = idx; document.getElementById('sem-btn-0').classList.toggle('active', idx === 0); document.getElementById('sem-btn-1').classList.toggle('active', idx === 1); let valid = SEMESTER_MONTHS[idx].map(m => m.idx.toString()); window.pCourses.forEach(c => { if (c.examMonth && !valid.includes(c.examMonth)) { c.examMonth = ''; c.examDay = ''; c.examTime = ''; c.hasExamConflict = false; c.examConflictLevel = 0; } }); renderPlanner(); }
 
-  // رسم خط زمانی عمودی مدرن با محاسبه دقیق روزهای فرجه
   function drawTimeline() {
-    let container = document.getElementById('exam-timeline-container');
-    let dateMap = {};
-    pCourses.forEach(c => {
-        if(c.examMonth && c.examDay) {
-            let key = `${c.examMonth}-${c.examDay}`;
-            if(!dateMap[key]) dateMap[key] = { month: parseInt(c.examMonth), day: parseInt(c.examDay), courses: [], level: 0 };
-            dateMap[key].courses.push(c);
-            dateMap[key].level = Math.max(dateMap[key].level, c.examConflictLevel);
-        }
-    });
-    
-    let examDates = Object.values(dateMap);
-    if(examDates.length === 0) {
-        container.style.display = 'none';
-        return;
-    }
-    container.style.display = 'block';
-    examDates.sort((a,b) => toAbsDayJalali(a.month, a.day) - toAbsDayJalali(b.month, b.day));
-
-    // محاسبه بازه کل (از اولین تا آخرین امتحان)
-    let firstAbs = toAbsDayJalali(examDates[0].month, examDates[0].day);
-    let lastAbs  = toAbsDayJalali(examDates[examDates.length-1].month, examDates[examDates.length-1].day);
-
-    // ساخت map از روز مطلق به اطلاعات امتحان
-    let examByAbs = {};
-    examDates.forEach(d => { examByAbs[toAbsDayJalali(d.month, d.day)] = d; });
-
-    // تبدیل روز مطلق به روز/ماه شمسی (تقریبی)
-    function absToJalali(abs) {
-        let monthLengths = [31,31,31,31,31,31,30,30,30,30,30,29];
-        let rem = abs;
-        for(let m=0; m<12; m++) {
-            if(rem <= monthLengths[m]) return { month: m, day: rem };
-            rem -= monthLengths[m];
-        }
-        return { month: 11, day: rem };
-    }
-
-    // تعداد روزهای کل بازه
-    let totalDays = lastAbs - firstAbs + 1;
-    // اگر فاصله خیلی زیاد باشد، فاصله‌های بزرگ را compact کن
-    const MAX_DIRECT_DAYS = 25; // بیشتر از این مستقیم نمایش نده، separator بذار
-
-    let segments = []; // هر segment یا یک بازه پیوسته است یا یک separator
-    let i = firstAbs;
+    let container = document.getElementById('exam-timeline-container'); let dateMap = {}; window.pCourses.forEach(c => { if(c.examMonth && c.examDay) { let key = `${c.examMonth}-${c.examDay}`; if(!dateMap[key]) dateMap[key] = { month: parseInt(c.examMonth), day: parseInt(c.examDay), courses: [], level: 0 }; dateMap[key].courses.push(c); dateMap[key].level = Math.max(dateMap[key].level, c.examConflictLevel); } });
+    let examDates = Object.values(dateMap); if(examDates.length === 0) { container.style.display = 'none'; return; } container.style.display = 'block'; examDates.sort((a,b) => toAbsDayJalali(a.month, a.day) - toAbsDayJalali(b.month, b.day));
+    let firstAbs = toAbsDayJalali(examDates[0].month, examDates[0].day); let lastAbs  = toAbsDayJalali(examDates[examDates.length-1].month, examDates[examDates.length-1].day);
+    let examByAbs = {}; examDates.forEach(d => { examByAbs[toAbsDayJalali(d.month, d.day)] = d; });
+    function absToJalali(abs) { let monthLengths = [31,31,31,31,31,31,30,30,30,30,30,29]; let rem = abs; for(let m=0; m<12; m++) { if(rem <= monthLengths[m]) return { month: m, day: rem }; rem -= monthLengths[m]; } return { month: 11, day: rem }; }
+    const MAX_DIRECT_DAYS = 25; let segments = []; let i = firstAbs;
     while(i <= lastAbs) {
-        // پیدا کردن بعدی امتحان
-        let nextExamAbs = null;
-        for(let j=i; j<=lastAbs; j++) {
-            if(examByAbs[j]) { nextExamAbs = j; break; }
-        }
-        if(nextExamAbs === null) break;
-
-        // فاصله از i تا nextExamAbs
-        let gap = nextExamAbs - i;
-        if(gap > MAX_DIRECT_DAYS && i > firstAbs) {
-            // separator
-            segments.push({ type:'sep', days: gap });
-            i = nextExamAbs;
-        } else {
-            // بازه پیوسته از i تا بعدی امتحان (یا چند روز بعدش)
-            let endOfChunk = nextExamAbs;
-            // ادامه بده تا امتحان بعدی یا خیلی دور نشه
-            while(endOfChunk < lastAbs) {
-                let nextNext = null;
-                for(let j=endOfChunk+1; j<=lastAbs; j++) { if(examByAbs[j]) { nextNext=j; break; } }
-                if(nextNext === null) { endOfChunk = lastAbs; break; }
-                if(nextNext - endOfChunk > MAX_DIRECT_DAYS) break;
-                endOfChunk = nextNext;
-            }
-            // اضافه کردن روزها
-            let days = [];
-            for(let d=i; d<=endOfChunk; d++) {
-                let jal = absToJalali(d);
-                days.push({ abs: d, month: jal.month, day: jal.day, examData: examByAbs[d] || null });
-            }
-            segments.push({ type:'days', days });
-            i = endOfChunk + 1;
-        }
+        let nextExamAbs = null; for(let j=i; j<=lastAbs; j++) { if(examByAbs[j]) { nextExamAbs = j; break; } } if(nextExamAbs === null) break;
+        let gap = nextExamAbs - i; if(gap > MAX_DIRECT_DAYS && i > firstAbs) { segments.push({ type:'sep', days: gap }); i = nextExamAbs; } else { let endOfChunk = nextExamAbs; while(endOfChunk < lastAbs) { let nextNext = null; for(let j=endOfChunk+1; j<=lastAbs; j++) { if(examByAbs[j]) { nextNext=j; break; } } if(nextNext === null) { endOfChunk = lastAbs; break; } if(nextNext - endOfChunk > MAX_DIRECT_DAYS) break; endOfChunk = nextNext; } let days = []; for(let d=i; d<=endOfChunk; d++) { let jal = absToJalali(d); days.push({ abs: d, month: jal.month, day: jal.day, examData: examByAbs[d] || null }); } segments.push({ type:'days', days }); i = endOfChunk + 1; }
     }
-
     let cellsHTML = '';
-    segments.forEach((seg, si) => {
-        if(seg.type === 'sep') {
-            cellsHTML += `
-            <div class="htl-gap-sep">
-              <div class="htl-gap-line"></div>
-              <div class="htl-gap-label">${toFarsiNum(seg.days)} روز</div>
-              <div class="htl-gap-line"></div>
-            </div>`;
-        } else {
+    segments.forEach((seg) => {
+        if(seg.type === 'sep') { cellsHTML += `<div class="htl-gap-sep"><div class="htl-gap-line"></div><div class="htl-gap-label">${toFarsiNum(seg.days)} روز</div><div class="htl-gap-line"></div></div>`; }
+        else {
             seg.days.forEach(d => {
-                let hasExam = !!d.examData;
-                let level = hasExam ? d.examData.level : 0;
-                let cellClass = 'htl-cell';
-                let dotClass = '';
-                if(!hasExam) { cellClass += ' htl-empty'; }
-                else if(level === 2) { cellClass += ' htl-has-exam htl-warn-red'; dotClass = 'warn-r'; }
-                else if(level === 1) { cellClass += ' htl-has-exam htl-warn-yellow'; dotClass = 'warn-y'; }
-                else { cellClass += ' htl-has-exam'; dotClass = 'normal'; }
-
+                let hasExam = !!d.examData; let level = hasExam ? d.examData.level : 0; let cellClass = 'htl-cell'; let dotClass = '';
+                if(!hasExam) { cellClass += ' htl-empty'; } else if(level === 2) { cellClass += ' htl-has-exam htl-warn-red'; dotClass = 'warn-r'; } else if(level === 1) { cellClass += ' htl-has-exam htl-warn-yellow'; dotClass = 'warn-y'; } else { cellClass += ' htl-has-exam'; dotClass = 'normal'; }
                 let chipsHTML = '';
                 if(hasExam) {
                     chipsHTML += `<div class="htl-dot ${dotClass}"></div>`;
-                    d.examData.courses.forEach(c => {
-                        let chipClass = level===2?'warn-r': level===1?'warn-y':'';
-                        let timeHtml = c.examTime ? `<div class="htl-exam-time">${c.examTime}</div>` : '';
-                        chipsHTML += `<div class="htl-exam-chip ${chipClass}" onclick="highlightRow(${c.id},'planner')" title="${c.name||'(بدون نام)'}">
-                            ${c.name||'(بدون نام)'}${timeHtml}
-                        </div>`;
-                    });
+                    d.examData.courses.forEach(c => { let chipClass = level===2?'warn-r': level===1?'warn-y':''; let timeHtml = c.examTime ? `<div class="htl-exam-time">${c.examTime}</div>` : ''; chipsHTML += `<div class="htl-exam-chip ${chipClass}" onclick="highlightRow(${c.id},'planner')" title="${c.name||'(بدون نام)'}">${c.name||'(بدون نام)'}${timeHtml}</div>`; });
                 }
-
-                cellsHTML += `
-                <div class="${cellClass}">
-                  <div class="htl-day-header">
-                    <div class="htl-day-num">${toFarsiNum(d.day)}</div>
-                    <div class="htl-day-month">${PERSIAN_MONTHS[d.month]}</div>
-                  </div>
-                  <div class="htl-day-body">${chipsHTML}</div>
-                </div>`;
+                cellsHTML += `<div class="${cellClass}"><div class="htl-day-header"><div class="htl-day-num">${toFarsiNum(d.day)}</div><div class="htl-day-month">${PERSIAN_MONTHS[d.month]}</div></div><div class="htl-day-body">${chipsHTML}</div></div>`;
             });
         }
     });
-
-    let html = `
-      <div class="timeline-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        مسیر امتحانات شما
-        <span style="font-size:0.75rem; color:var(--muted); font-weight:400;">— هر خانه یک روز</span>
-      </div>
-      <div class="htl-scroll-wrap">
-        <div class="htl-grid">${cellsHTML}</div>
-      </div>
-      <div class="htl-legend">
-        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--muted);opacity:0.4;"></div> روز بدون امتحان</div>
-        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--accent);box-shadow:0 0 5px rgba(79,142,247,0.6)"></div> روز امتحان</div>
-        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--gold);box-shadow:0 0 5px rgba(245,200,66,0.6)"></div> امتحان همروز</div>
-        <div class="htl-legend-item"><div class="htl-legend-dot" style="background:var(--red);box-shadow:0 0 5px rgba(248,113,113,0.6)"></div> تداخل ساعتی</div>
-      </div>
-    `;
-    container.innerHTML = html;
+    container.innerHTML = `<div class="timeline-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> مسیر امتحانات شما <span style="font-size:0.75rem; color:var(--muted); font-weight:400;">— هر خانه یک روز</span></div><div class="htl-scroll-wrap"><div class="htl-grid">${cellsHTML}</div></div>`;
   }
 
-  function clearPlanner() { pCourses = []; renderPlanner(); }
+  function clearPlanner() { window.pCourses = []; renderPlanner(); }
   function newPlanner() { clearPlanner(); addPlannerCourse(); }
 
-  // Planner Drafts
-  function savePlannerDraft() {
-    if (pCourses.length === 0) return alert('برنامه‌ای برای ذخیره وجود ندارد!');
-    let totalU = pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
-    let draftName = `برنامه ${plannerDrafts.length + 1}`;
-    plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(pCourses)) });
-    renderPlannerDrafts();
+  window.renderPlannerDrafts = () => {
+    const dashPanel = document.getElementById('dash-planner-drafts'); dashPanel.innerHTML = '';
+    const bottomPanel = document.getElementById('planner-drafts-panel'); bottomPanel.innerHTML = '';
+    
+    if (window.plannerDrafts.length > 0) { 
+        bottomPanel.style.display = 'flex';
+        bottomPanel.innerHTML = '<div style="width:100%; font-size:0.85rem; color:var(--text); font-weight:600; margin-bottom:5px;">💾 برنامه‌های ذخیره‌شده:</div>';
+        
+        window.plannerDrafts.forEach((draft) => { 
+            let dashChip = document.createElement('div'); dashChip.className = 'dash-draft-chip'; 
+            dashChip.innerHTML = `<span class="name-click" onclick="loadPlannerDraft(${draft.id})">🗓️ ${draft.name} (${toFarsiNum(draft.units)} واحد)</span> 
+                                  <div class="action-icons">
+                                    <span class="edit-btn" title="تغییر نام" onclick="renamePlannerDraft(event, ${draft.id})">✏️</span>
+                                    <span class="del-btn" title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>
+                                  </div>`; 
+            dashPanel.appendChild(dashChip); 
+            
+            let btmChip = document.createElement('div'); btmChip.className = 'draft-chip';
+            btmChip.innerHTML = `<span onclick="loadPlannerDraft(${draft.id})">${draft.name} (${toFarsiNum(draft.units)} واحد)</span> <span class="del-btn" title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
+            bottomPanel.appendChild(btmChip);
+        });
+    } else {
+        bottomPanel.style.display = 'none';
+    }
   }
-  function renderPlannerDrafts() {
-    const panel = document.getElementById('planner-drafts-panel');
-    if (plannerDrafts.length === 0) { panel.style.display = 'none'; return; }
-    panel.style.display = 'flex'; panel.innerHTML = '<div style="font-size:0.8rem; color:var(--muted); margin-left:10px;">برنامه‌های ذخیره‌شده:</div>';
-    plannerDrafts.forEach((draft) => {
-      let chip = document.createElement('div'); chip.className = 'draft-chip';
-      chip.innerHTML = `${draft.name} (${toFarsiNum(draft.units)} واحد) <span title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
-      chip.onclick = () => {
-        pCourses = JSON.parse(JSON.stringify(draft.data));
-        pIdCounter = Math.max(...pCourses.map(c => c.id), pIdCounter);
-        renderPlanner();
-      };
-      panel.appendChild(chip);
-    });
+  
+  window.loadPlannerDraft = (id) => {
+      let draft = window.plannerDrafts.find(d => d.id === id);
+      if(draft) {
+          window.pCourses = JSON.parse(JSON.stringify(draft.data)); 
+          pIdCounter = Math.max(...window.pCourses.map(c => c.id), pIdCounter); 
+          renderPlanner(); window.switchTab('planner-tool'); window.closeDashboardModal(); 
+      }
   }
-  function deletePlannerDraft(event, id) { event.stopPropagation(); plannerDrafts = plannerDrafts.filter(d => d.id !== id); renderPlannerDrafts(); }
 
-  // Init defaults
-  addGpaCourse();
-  addPlannerCourse();
+  window.switchTab = switchTab; window.addPlannerCourse = addPlannerCourse; window.setSemester = setSemester; window.newPlanner = newPlanner; window.addGpaCourse = addGpaCourse; window.toggleTargetPanel = toggleTargetPanel; window.toggleSimulator = toggleSimulator; window.resetTargetSimulation = resetTargetSimulation; window.newGpa = newGpa; window.calculateTarget = calculateTarget; window.highlightRow = highlightRow; window.importFromProfile = importFromProfile;
+
+  addGpaCourse(); addPlannerCourse();
 </script>
 </body>
 </html>

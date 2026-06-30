@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل هدف ویژه دانشجویان.">
 <meta name="keywords" content="محاسبه معدل, انتخاب واحد, برنامه ریزی درسی, معدل دانشگاه, چارت درسی, معدل کل">
 <meta name="author" content="Co-Student">
@@ -53,26 +53,26 @@
   .user-info { display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 18px; border: 1px solid var(--border); }
   .btn-panel { background: var(--accent); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
   .btn-panel:hover { background: #3b76d6; }
-  .btn-logout { background: transparent; color: var(--muted); border: 1px solid transparent; padding: 6px 12px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-  .btn-logout:hover { color: var(--red); background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.2); }
 
-  /* --- Modals --- */
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  /* --- Modals (Global) --- */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 15px; }
   .modal-overlay.active { display: flex; opacity: 1; }
-  .modal-box { background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: 20px; width: 90%; transform: translateY(20px); transition: transform 0.2s; position: relative; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border); padding: 25px; border-radius: 20px; width: 100%; transform: translateY(20px); transition: transform 0.2s; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
   .modal-overlay.active .modal-box { transform: translateY(0); }
   .close-modal { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10; }
   .close-modal:hover { background: rgba(248,113,113,0.1); color: var(--red); }
 
+  /* Auth Modal */
   .auth-modal { max-width: 360px; }
   .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
-  .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn'; font-size: 0.9rem; }
+  .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn'; font-size: 0.95rem; }
+  .auth-modal input[type="email"] { direction: ltr; text-align: left; font-family: sans-serif; }
   .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; }
   .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
   .auth-switch:hover { color: var(--accent); }
   .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
 
-  /* Dashboard Specific */
+  /* Dashboard Modal */
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
   .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
@@ -91,6 +91,11 @@
   .dash-draft-chip .del-btn { color: var(--red); background: rgba(248,113,113,0.1); }
   .dash-draft-chip .del-btn:hover { background: rgba(248,113,113,0.3); color: #fff;}
 
+  /* Custom Alert/Prompt Modals */
+  .custom-alert { max-width: 320px; text-align: center; }
+  .custom-alert h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 20px; line-height: 1.6; font-weight: 600; }
+  .custom-prompt input { margin-bottom: 20px; text-align: center; }
+
   .tool-section { display: none; animation: fadeUp 0.4s ease both; }
   .tool-section.active { display: block; }
   .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; position: relative; z-index: 10; }
@@ -104,13 +109,15 @@
   .btn-ghost:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
   .btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
   .btn-danger:hover { background: rgba(248,113,113,.25); transform: translateY(-1px); }
+  .btn-warning { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+  .btn-warning:hover { background: rgba(245,200,66,0.25); transform: translateY(-1px); }
 
   input, select { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none; }
   input:focus, select:focus { border-color: var(--accent); background: rgba(79,142,247,.1); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
   select option { background: var(--surface); color: var(--text); }
   .empty-row { padding: 32px; text-align: center; color: var(--muted); font-size: .88rem; }
 
-  /* ------------------- Re-Designed GPA Display Cards ------------------- */
+  /* ------------------- GPA Display Cards ------------------- */
   .result-card { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
   .result-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
   .result-group::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
@@ -253,7 +260,6 @@
   .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
   .sem-btn.active { background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,92,252,0.2)); border-color: var(--accent); color: var(--text); }
 
-  /* حفظ فوتر در پس‌زمینه مطلق */
   footer.signature { 
     display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;
     padding: 30px 0; margin-top: 40px; position: relative; z-index: -1;
@@ -262,29 +268,40 @@
   footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
 
+  /* Mobile UX Improvements */
   @media(max-width: 900px) {
     .header-controls { flex-direction: column; gap: 15px; }
     .auth-wrapper { position: static; transform: none; }
     
     .planner-header { display: none; }
-    .planner-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px; padding: 16px; border: 1px solid var(--border); }
+    .planner-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px 0; padding: 16px; border: 1px solid var(--border); }
     .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
-    .gpa-header { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; font-size: 0.72rem; padding: 12px 10px; }
-    .gpa-row { grid-template-columns: 1fr 65px 75px 38px; gap: 6px; padding: 12px 10px; }
+    
+    .gpa-header { display: none; }
+    .gpa-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px 0; padding: 16px; border: 1px solid var(--border); }
+    .gpa-row input { padding: 10px; font-size: 0.9rem; }
+    .gpa-row > *:last-child { align-self: flex-end; margin-top: 4px; }
+    
     .dash-grid { grid-template-columns: 1fr; }
     
-    .result-card { flex-direction: column; gap: 20px; }
+    .result-card { flex-direction: column; gap: 15px; }
     .result-group, .overall-gpa-box { width: 100%; }
-    .result-meta { width: 100%; justify-content: space-between; margin: 0; }
+    .result-meta { width: 100%; justify-content: space-between; margin: 0; flex-wrap: wrap; }
   }
 
-  @media(max-width: 480px) {
+  @media(max-width: 600px) {
+    .dash-course-row { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .dash-course-row input { width: 100%; }
+    .dash-course-row .btn-danger { width: 100%; padding: 10px; }
+    
     .tabs { width: 100%; display: flex; }
-    .tab-btn { flex: 1; text-align: center; }
+    .tab-btn { flex: 1; text-align: center; padding: 10px 5px; font-size: 0.85rem; }
     .actions { flex-direction: column; align-items: stretch; }
-    .actions button { width: 100%; }
-    .result-meta { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .actions button { width: 100%; margin-right: 0 !important; }
+    .actions > div { width: 100%; justify-content: center; }
+    
     .dash-draft-chip { width: 100%; }
+    .modal-box { padding: 20px; }
   }
 </style>
 </head>
@@ -306,14 +323,14 @@
               ورود / ثبت‌نام
           </button>
           <div class="user-info" id="user-info-display">
-            <span id="user-email-text" style="padding: 0 4px;"></span>
+            <span id="user-email-text" style="padding: 0 4px; direction: ltr;"></span>
             <button class="btn-panel" onclick="openDashboardModal()">پنل من ⚙️</button>
-            <button class="btn-logout" onclick="logoutApp()">خروج</button>
           </div>
         </div>
     </div>
   </header>
 
+  <!-- بخش برنامه‌ریز -->
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="planner-header">
@@ -325,6 +342,7 @@
         <button class="btn btn-primary" onclick="addPlannerCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
+        <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
         <button class="btn btn-ghost" onclick="savePlannerDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
         <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
           <span style="font-size:0.78rem; color:var(--muted); white-space:nowrap;">ماه‌های امتحانی:</span>
@@ -350,6 +368,7 @@
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
+  <!-- بخش محاسبه‌گر -->
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
@@ -364,7 +383,7 @@
       </div>
       
       <div class="overall-gpa-box" id="overall-gpa-container">
-        <span class="result-label">معدل کل (با احتساب این ترم)</span>
+        <span class="result-label">معدل کل با احتساب این ترم</span>
         <span class="meta-val" id="overall-gpa-val">—</span>
       </div>
     </div>
@@ -386,7 +405,7 @@
         <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
         <div id="target-results" class="target-results"></div>
         
-        <!-- لابراتوار نمرات (تنظیم دستی) -->
+        <!-- شبیه‌ساز دستی -->
         <div id="interactive-simulator" class="simulator-box">
             <div class="sim-title">
                 🎛️ تنظیم دستی نمرات
@@ -400,7 +419,7 @@
         <button class="btn btn-primary" onclick="addGpaCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="importFromProfile()" id="btn-import-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
+        <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
         <button class="btn btn-ghost" onclick="saveGpaDraft()" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره معدل</button>
         <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
         <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
@@ -417,7 +436,7 @@
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
     <h2 id="auth-title">ورود به حساب کاربری</h2>
     <div id="auth-error" class="auth-error"></div>
-    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)">
+    <input type="email" id="auth-email" placeholder="ایمیل خود را وارد کنید">
     <input type="password" id="auth-password" placeholder="رمز عبور">
     <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">ورود</button>
     <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
@@ -454,7 +473,7 @@
     </div>
     
     <h3 style="font-size: 1.1rem; margin: 25px 0 10px; color: var(--accent);">📚 دروس ثابت ترم من</h3>
-    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا در محاسبه‌گر معدل فقط با یک دکمه فراخوانی شوند.</div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا در سیستم فقط با یک دکمه فراخوانی شوند.</div>
     
     <div id="dash-courses-list"></div>
     <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(255,255,255,0.2);" onclick="addDashCourse()">+ افزودن درس جدید به پنل</button>
@@ -468,19 +487,49 @@
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
 
-    <!-- تنظیمات حساب کاربری -->
-    <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
-    <h3 style="font-size: 1.1rem; color: var(--red); margin-bottom: 15px;">🔐 تنظیمات حساب کاربری</h3>
-    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">برای تغییر نام کاربری یا رمز عبور از گزینه‌های زیر استفاده کنید.</div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button class="btn btn-ghost" style="flex:1;" onclick="changeUsername()">تغییر نام کاربری</button>
-        <button class="btn btn-ghost" style="flex:1;" onclick="changePassword()">تغییر رمز عبور</button>
-        <button class="btn btn-danger" style="flex:1;" onclick="deleteAccount()">حذف حساب کاربری</button>
+    <!-- دکمه‌های کنترلی انتهای پنل -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px;">
+        <div style="display:flex; gap:10px; width: 100%;">
+            <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 12px 24px; flex: 1;">ذخیره اطلاعات پنل</button>
+            <button class="btn btn-ghost" onclick="closeDashboardModal()" style="flex: 1;">بستن پنل</button>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0; width: 100%;">
+        
+        <div style="display:flex; gap:10px; width: 100%; justify-content: space-between; flex-wrap: wrap;">
+            <button class="btn btn-warning" style="flex: 1;" onclick="logoutApp()">خروج از حساب</button>
+            <button class="btn btn-ghost" style="flex: 1;" onclick="triggerChangePassword()">تغییر رمز</button>
+            <button class="btn btn-danger" style="flex: 1;" onclick="triggerDeleteAccount()">حذف حساب</button>
+        </div>
     </div>
+  </div>
+</div>
 
-    <div style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 10px;">
-        <button class="btn btn-ghost" onclick="closeDashboardModal()">بستن</button>
-        <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 10px 24px;">ذخیره اطلاعات پنل</button>
+<!-- Modal هشدارهای اختصاصی سایت (جایگزین Alert و Prompt) -->
+<div class="modal-overlay" id="custom-alert-overlay" style="z-index: 10000;">
+  <div class="modal-box custom-alert">
+    <h3 id="custom-alert-msg"></h3>
+    <button class="btn btn-primary" onclick="closeCustomAlert()" style="width: 100%;">متوجه شدم</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="custom-prompt-overlay" style="z-index: 10000;">
+  <div class="modal-box custom-alert custom-prompt">
+    <h3 id="custom-prompt-msg"></h3>
+    <input type="text" id="custom-prompt-input" style="text-align: center;">
+    <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost" onclick="closeCustomPrompt()" style="flex:1;">انصراف</button>
+        <button class="btn btn-primary" id="custom-prompt-confirm" style="flex:1;">تایید</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="custom-confirm-overlay" style="z-index: 10000;">
+  <div class="modal-box custom-alert">
+    <h3 id="custom-confirm-msg"></h3>
+    <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost" onclick="closeCustomConfirm()" style="flex:1;">خیر، انصراف</button>
+        <button class="btn btn-danger" id="custom-confirm-yes" style="flex:1;">بله، مطمئنم</button>
     </div>
   </div>
 </div>
@@ -494,7 +543,7 @@
 <!-- 1. ماژول اصلی جاوا اسکریپت فایربیس و پنل کاربری -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateEmail, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -513,6 +562,17 @@
   let isLoginMode = true;
   window.userProfileData = { courses: [] };
 
+  // توابع پاپ‌آپ‌های اختصاصی سایت
+  window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
+  window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
+  
+  window.showCustomPrompt = (msg, defaultVal, callback) => { document.getElementById('custom-prompt-msg').innerText = msg; let inp = document.getElementById('custom-prompt-input'); inp.value = defaultVal || ''; document.getElementById('custom-prompt-overlay').classList.add('active'); document.getElementById('custom-prompt-confirm').onclick = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); callback(inp.value); }; };
+  window.closeCustomPrompt = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); };
+
+  window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
+  window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
+
+
   window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
   window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
   window.toggleAuthMode = () => {
@@ -523,43 +583,59 @@
     document.getElementById('auth-error').style.display = 'none';
   }
 
+  // سیستم لاگین/ثبت نام با ایمیل واقعی و تایید
   window.handleAuthSubmit = async () => {
-    const rawUsername = document.getElementById('auth-username').value.trim().toLowerCase();
-    const username = rawUsername.replace(/[^a-z0-9_]/g, '');
+    const email = document.getElementById('auth-email').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
     
-    if(!username || !pass) { errorBox.innerText = "لطفاً نام کاربری و رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
-    if(username !== rawUsername || username.length < 3) { errorBox.innerText = "نام کاربری باید حداقل ۳ حرف انگلیسی باشد (بدون فاصله)."; errorBox.style.display = 'block'; return; }
-    
-    const fakeEmail = username + "@costudent.local";
+    if(!email || !pass) { errorBox.innerText = "لطفاً ایمیل و رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
     
     try {
-      if(isLoginMode) await signInWithEmailAndPassword(auth, fakeEmail, pass);
-      else await createUserWithEmailAndPassword(auth, fakeEmail, pass);
-      closeAuthModal();
+      if(isLoginMode) {
+          const userCred = await signInWithEmailAndPassword(auth, email, pass);
+          if(!userCred.user.emailVerified) {
+              window.showCustomAlert("ایمیل شما تایید نشده است. لطفاً پوشه اینباکس یا اسپم ایمیل خود را بررسی کرده و روی لینک کلیک کنید.");
+              signOut(auth);
+              return;
+          }
+          closeAuthModal();
+      } else {
+          const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+          await sendEmailVerification(userCred.user);
+          window.showCustomAlert("حساب کاربری ایجاد شد! یک لینک تایید به ایمیل شما ارسال گردید. جهت فعالسازی وارد ایمیل خود شوید.");
+          signOut(auth);
+          closeAuthModal();
+      }
     } catch (error) {
       errorBox.style.display = 'block';
-      if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این نام کاربری قبلاً ثبت شده است.";
+      if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
+      else if(error.code === 'auth/invalid-email') errorBox.innerText = "فرمت ایمیل نامعتبر است.";
       else if(error.code === 'auth/weak-password') errorBox.innerText = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
-      else if(error.code === 'auth/invalid-credential') errorBox.innerText = "نام کاربری یا رمز عبور اشتباه است.";
+      else if(error.code === 'auth/invalid-credential') errorBox.innerText = "ایمیل یا رمز عبور اشتباه است.";
       else errorBox.innerText = "خطایی رخ داد. مجدداً تلاش کنید.";
     }
   }
 
-  window.logoutApp = () => { signOut(auth); }
+  window.logoutApp = () => { 
+      window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", () => {
+          signOut(auth); 
+          window.closeDashboardModal();
+      });
+  }
 
   onAuthStateChanged(auth, async (user) => {
     const loginBtn = document.getElementById('login-trigger-btn');
     const userInfo = document.getElementById('user-info-display');
-    const importBtn = document.getElementById('btn-import-profile');
+    const importGpaBtn = document.getElementById('btn-import-gpa-profile');
+    const importPlannerBtn = document.getElementById('btn-import-planner-profile');
     
-    if (user) {
+    if (user && user.emailVerified) {
       window.currentUser = user;
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
-      let displayUsername = user.email.split('@')[0];
-      document.getElementById('user-email-text').innerHTML = `<b>${displayUsername}</b>`;
+      let displayEmail = user.email.split('@')[0];
+      document.getElementById('user-email-text').innerHTML = `<b>${displayEmail}</b>`;
       
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
@@ -567,12 +643,17 @@
         window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
         window.userProfileData = data.profile || { courses: [] };
         window.renderGpaDrafts(); window.renderPlannerDrafts();
-        if(window.userProfileData.courses && window.userProfileData.courses.length > 0) importBtn.style.display = 'inline-flex';
+        
+        if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
+            importGpaBtn.style.display = 'inline-flex';
+            importPlannerBtn.style.display = 'inline-flex';
+        }
         if(typeof window.calcGpa === 'function') window.calcGpa(); 
       }
     } else {
       window.currentUser = null;
-      loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; importBtn.style.display = 'none';
+      loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; 
+      importGpaBtn.style.display = 'none'; importPlannerBtn.style.display = 'none';
       window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
       window.renderGpaDrafts(); window.renderPlannerDrafts();
       if(typeof window.calcGpa === 'function') window.calcGpa();
@@ -580,45 +661,30 @@
   });
 
   // Account Settings Functions
-  window.changeUsername = async () => {
-      let newUsername = prompt("نام کاربری جدید (انگلیسی) را وارد کنید:");
-      if(!newUsername) return;
-      newUsername = newUsername.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
-      if(newUsername.length < 3) return alert("نام کاربری نامعتبر است.");
-      let newEmail = newUsername + "@costudent.local";
-      try {
-          await updateEmail(window.currentUser, newEmail);
-          alert("نام کاربری با موفقیت تغییر کرد.");
-          document.getElementById('user-email-text').innerHTML = `<b>${newUsername}</b>`;
-      } catch(e) {
-          if(e.code === 'auth/requires-recent-login') { alert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
-          else { alert("این نام کاربری از قبل وجود دارد یا خطایی رخ داده است."); }
-      }
+  window.triggerChangePassword = () => {
+      window.showCustomPrompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):", "", async (newPass) => {
+          if(!newPass || newPass.length < 6) return window.showCustomAlert("رمز عبور نامعتبر است. حداقل ۶ کاراکتر الزامی است.");
+          try {
+              await updatePassword(window.currentUser, newPass);
+              window.showCustomAlert("رمز عبور با موفقیت تغییر کرد.");
+          } catch(e) {
+              if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); } 
+              else { window.showCustomAlert("خطا در تغییر رمز عبور."); }
+          }
+      });
   };
 
-  window.changePassword = async () => {
-      let newPass = prompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):");
-      if(!newPass || newPass.length < 6) return alert("رمز عبور نامعتبر است.");
-      try {
-          await updatePassword(window.currentUser, newPass);
-          alert("رمز عبور با موفقیت تغییر کرد.");
-      } catch(e) {
-          if(e.code === 'auth/requires-recent-login') { alert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
-          else { alert("خطا در تغییر رمز عبور."); }
-      }
-  };
-
-  window.deleteAccount = async () => {
-      let conf = confirm("آیا از حذف اکانت و تمام اطلاعات خود مطمئن هستید؟ این کار غیرقابل بازگشت است.");
-      if(!conf) return;
-      try {
-          await deleteUser(window.currentUser);
-          alert("حساب کاربری شما با موفقیت حذف شد.");
-          window.closeDashboardModal();
-      } catch(e) {
-          if(e.code === 'auth/requires-recent-login') { alert("برای حذف حساب باید مجدداً وارد حساب خود شوید."); window.logoutApp(); window.closeDashboardModal(); } 
-          else { alert("خطا در حذف حساب."); }
-      }
+  window.triggerDeleteAccount = () => {
+      window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
+          try {
+              await deleteUser(window.currentUser);
+              window.showCustomAlert("حساب کاربری شما با موفقیت حذف شد.");
+              window.closeDashboardModal();
+          } catch(e) {
+              if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای حذف حساب باید مجدداً وارد سایت شوید."); window.logoutApp(); } 
+              else { window.showCustomAlert("خطا در حذف حساب."); }
+          }
+      });
   };
 
   window.updateTermLabels = () => {
@@ -648,9 +714,7 @@
   window.appendDashCourseRow = (name='', units='', grade='') => {
       const list = document.getElementById('dash-courses-list');
       const id = `dash-course-${Date.now()}-${Math.floor(Math.random()*1000)}`;
-      const div = document.createElement('div');
-      div.className = 'dash-course-row';
-      div.id = id;
+      const div = document.createElement('div'); div.className = 'dash-course-row'; div.id = id;
       
       div.innerHTML = `
           <div class="autocomplete-wrap" style="z-index: 100;"><input type="text" class="dc-name" placeholder="نام درس" value="${name}"></div>
@@ -669,11 +733,7 @@
           let dd = document.createElement('div'); dd.className = 'autocomplete-list';
           sug.forEach(s => {
               let item = document.createElement('div'); item.className='autocomplete-item'; item.innerHTML = window.highlight(s, val);
-              item.onmousedown = (e) => {
-                  e.preventDefault(); nameInp.value = s;
-                  if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s];
-                  window.closeAllAutocomplete();
-              };
+              item.onmousedown = (e) => { e.preventDefault(); nameInp.value = s; if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s]; window.closeAllAutocomplete(); };
               dd.appendChild(item);
           });
           nameInp.parentNode.appendChild(dd);
@@ -700,76 +760,89 @@
       window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses };
       
       try {
-          await setDoc(doc(db, "users", window.currentUser.uid), { profile: window.userProfileData }, { merge: true });
-          closeDashboardModal();
-          if(courses.length > 0) document.getElementById('btn-import-profile').style.display = 'inline-flex';
-          else document.getElementById('btn-import-profile').style.display = 'none';
+          // ذخیره ایمیل برای ردیابی ادمین در فایربیس
+          await setDoc(doc(db, "users", window.currentUser.uid), { email: window.currentUser.email, profile: window.userProfileData }, { merge: true });
+          window.showCustomAlert('اطلاعات پنل با موفقیت ذخیره شد.');
+          
+          if(courses.length > 0) {
+              document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex';
+              document.getElementById('btn-import-planner-profile').style.display = 'inline-flex';
+          } else {
+              document.getElementById('btn-import-gpa-profile').style.display = 'none';
+              document.getElementById('btn-import-planner-profile').style.display = 'none';
+          }
           if(typeof window.calcGpa === 'function') window.calcGpa();
-      } catch(e) { alert('خطا در ذخیره اطلاعات!'); }
+      } catch(e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
   }
 
   // --- مدیریت فایل‌های ابری (معدل و برنامه) ---
   window.saveGpaDraft = async () => {
-    if (!window.currentUser) { alert('ابتدا وارد حساب کاربری شوید.'); window.openAuthModal(); return; }
-    if (window.gpaCourses.length === 0) return alert('معدلی برای ذخیره وجود ندارد!');
+    if (!window.currentUser) return window.openAuthModal();
+    if (window.gpaCourses.length === 0 || (window.gpaCourses.length === 1 && !window.gpaCourses[0].name)) return window.showCustomAlert('معدلی برای ذخیره وجود ندارد!');
     let gpaEl = document.getElementById('gpa-display').textContent;
     let targetVal = document.getElementById('target-gpa-input').value;
     let draftName = `معدل ${gpaEl} (${window.gpaDrafts.length + 1})`;
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     try {
       await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
-      window.renderGpaDrafts();
-      alert('معدل در پنل ذخیره شد.');
-    } catch (e) { alert('خطا در ذخیره اطلاعات!'); }
+      window.renderGpaDrafts(); window.showCustomAlert('معدل در پنل ذخیره شد.');
+    } catch (e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
   }
   
   window.deleteGpaDraft = async (event, id) => {
-    event.stopPropagation(); window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-    if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
-    window.renderGpaDrafts(); 
+    event.stopPropagation(); 
+    window.showCustomConfirm("از حذف این معدل ذخیره‌شده مطمئن هستید؟", async () => {
+        window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
+        if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+        window.renderGpaDrafts(); 
+    });
   }
 
   window.renameGpaDraft = async (event, id) => {
       event.stopPropagation();
       let draft = window.gpaDrafts.find(d => d.id === id);
       if(!draft) return;
-      let newName = prompt("نام جدید را وارد کنید:", draft.name);
-      if(newName && newName.trim() !== "") {
-          draft.name = newName.trim();
-          if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
-          window.renderGpaDrafts();
-      }
+      window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
+          if(newName && newName.trim() !== "") {
+              draft.name = newName.trim();
+              if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+              window.renderGpaDrafts();
+          }
+      });
   }
 
   window.savePlannerDraft = async () => {
-    if (!window.currentUser) { alert('ابتدا وارد حساب کاربری شوید.'); window.openAuthModal(); return; }
-    if (window.pCourses.length === 0) return alert('برنامه‌ای برای ذخیره وجود ندارد!');
+    if (!window.currentUser) return window.openAuthModal();
+    if (window.pCourses.length === 0 || (window.pCourses.length === 1 && !window.pCourses[0].name)) return window.showCustomAlert('برنامه‌ای برای ذخیره وجود ندارد!');
     let totalU = window.pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
     let draftName = `برنامه ${window.plannerDrafts.length + 1}`;
     window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
     try {
       await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
-      window.renderPlannerDrafts();
-      alert('برنامه در پنل ذخیره شد.');
-    } catch (e) { alert('خطا در ذخیره اطلاعات!'); }
+      window.renderPlannerDrafts(); window.showCustomAlert('برنامه در پنل ذخیره شد.');
+    } catch (e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
   }
   
   window.deletePlannerDraft = async (event, id) => {
-    event.stopPropagation(); window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
-    if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
-    window.renderPlannerDrafts(); 
+    event.stopPropagation(); 
+    window.showCustomConfirm("از حذف این برنامه ذخیره‌شده مطمئن هستید؟", async () => {
+        window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
+        if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+        window.renderPlannerDrafts(); 
+    });
   }
 
   window.renamePlannerDraft = async (event, id) => {
       event.stopPropagation();
       let draft = window.plannerDrafts.find(d => d.id === id);
       if(!draft) return;
-      let newName = prompt("نام جدید را وارد کنید:", draft.name);
-      if(newName && newName.trim() !== "") {
-          draft.name = newName.trim();
-          if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
-          window.renderPlannerDrafts();
-      }
+      window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
+          if(newName && newName.trim() !== "") {
+              draft.name = newName.trim();
+              if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+              window.renderPlannerDrafts();
+          }
+      });
   }
 </script>
 
@@ -785,7 +858,7 @@
   let selectedSemester = 0; 
   const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
 
-  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
+  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "ان انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
   const PHYSICS_CHART = Object.keys(window.COURSE_DB);
 
   function switchTab(tabId) { document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(event && event.currentTarget) event.currentTarget.classList.add('active'); else document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active'); window.closeAllAutocomplete(); }
@@ -833,7 +906,7 @@
     let gradeInp = document.createElement('input'); gradeInp.type = 'number'; gradeInp.placeholder = '۰ تا ۲۰'; gradeInp.value = c.grade; gradeInp.style.textAlign='center'; gradeInp.step = "0.01";
     gradeInp.addEventListener('input', () => { 
         let v = parseFloat(gradeInp.value); if (v > 20) gradeInp.value = 20; if (v < 0) gradeInp.value = 0; c.grade = gradeInp.value; calcGpa(); clearTargetResults(); updateInteractiveSimData(); 
-        if (gradeInp.value !== '' && window.gpaCourses.length < 6 && c.id === window.gpaCourses[window.gpaCourses.length - 1].id) {
+        if (gradeInp.value !== '' && window.gpaCourses.length < 5 && c.id === window.gpaCourses[window.gpaCourses.length - 1].id) {
             let newCourse = { id: ++gpaIdCounter, name: '', units: '', grade: '' };
             window.gpaCourses.push(newCourse); document.getElementById('gpa-list').appendChild(createGpaRowDOM(newCourse));
         }
@@ -855,12 +928,21 @@
       list.appendChild(createGpaRowDOM(newCourse)); calcGpa(); clearTargetResults(); updateInteractiveSimData(); 
   }
   
-  function importFromProfile() {
-      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return alert('درسی در پنل ذخیره نشده است.');
-      if(window.gpaCourses.length === 1 && !window.gpaCourses[0].name && !window.gpaCourses[0].units && !window.gpaCourses[0].grade) {
-         window.gpaCourses = []; document.getElementById('gpa-list').innerHTML = '';
-      }
-      window.userProfileData.courses.forEach(c => addGpaCourse(c.name, c.units, c.grade));
+  function importGpaFromProfile() {
+      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showCustomAlert('درسی در پنل ذخیره نشده است.');
+      let importedCount = 0;
+      window.userProfileData.courses.forEach(pc => {
+          let exists = window.gpaCourses.some(c => c.name === pc.name);
+          if(!exists) {
+              if(window.gpaCourses.length === 1 && !window.gpaCourses[0].name && !window.gpaCourses[0].units) {
+                 window.gpaCourses = []; document.getElementById('gpa-list').innerHTML = '';
+              }
+              addGpaCourse(pc.name, pc.units, pc.grade);
+              importedCount++;
+          }
+      });
+      if(importedCount === 0) window.showCustomAlert('دروس پنل قبلاً در لیست موجود هستند.');
+      else window.showCustomAlert(`${importedCount} درس از پنل فراخوانی شد.`);
   }
 
   function renderGpa() {
@@ -909,13 +991,15 @@
   // ---------------- SMART TARGET & INTERACTIVE SIMULATOR ----------------
   function toggleTargetPanel() {
     if (!window.currentUser) {
-        alert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.');
+        window.showCustomAlert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.');
         window.openAuthModal();
         return;
     }
     let panel = document.getElementById('gpa-target-panel');
     panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
     if(panel.style.display === 'flex') {
+        document.getElementById('interactive-simulator').style.display = 'none';
+        document.getElementById('sim-toggle-btn').style.display = 'inline-block';
         updateInteractiveSimData();
     }
   }
@@ -988,7 +1072,7 @@
                   <span>${c.name || 'بدون نام'} (${c.u} واحد)</span>
                   <span class="sim-val" id="sim-val-${c.id}" style="color:${cColor}">${displayG}</span>
               </div>
-              <input type="range" class="sim-slider" min="0" max="20" step="0.25" value="${sliderVal}" id="sim-slider-${c.id}" style="--thumb-c: ${cColor}"
+              <input type="range" class="sim-slider" min="0" max="20" step="0.25" value="${sliderVal}" id="sim-slider-${c.id}" style="--thumb-c: ${c.g === null ? 'var(--muted)' : cColor}"
                   oninput="updateCourseSim(${c.id}, this.value)">
           `;
           list.appendChild(row);
@@ -1032,7 +1116,6 @@
       }
   }
 
-  // الگوریتم اصولی پیشنهاد هدف
   function runDistributeDeficit(pool, deficitWeight, isFocusMode) {
       pool.forEach(item => { item.w_factor = item.is_empty ? (item.u / item.diff) : (item.potential_weight / item.diff); item.assigned_delta_g = 0; });
       let remaining_deficit = deficitWeight, iterations = 0;
@@ -1105,20 +1188,24 @@
         let card = document.createElement('div'), isFocused = focusIds.size > 0 && focusIds.has(s.c.id), isMuted = focusIds.size > 0 && !focusIds.has(s.c.id);
         card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : ''); card.onclick = () => calculateTarget(s.c.id); 
         let finalG = s.final_target_g !== undefined ? s.final_target_g : (s.is_empty ? 0 : s.g);
+        
         let delta = finalG - (s.is_empty ? 0 : s.g);
-        let text = (isMuted || result.impossible && isFocused) ? `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : (!s.is_empty ? `کمبود: <b>${delta.toFixed(2)}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${finalG.toFixed(2)}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${finalG.toFixed(2)}</b>`);
+        let formatG = finalG.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
+        let formatDelta = delta.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
+        
+        let text = (isMuted || (result.impossible && isFocused)) ? 
+            `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : 
+            (!s.is_empty ? `کمبود: <b>${formatDelta}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${formatG}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${formatG}</b>`);
+        
         card.innerHTML = `<div class="target-card-name"><span>${s.c.name || '(بدون نام)'}</span></div><div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : getGradeColor(finalG)};">${text}</div>`;
         resultsDiv.appendChild(card);
     });
 
-    if(!result.impossible && shiftablePool.length > 0) {
+    if(!result.impossible && pool.some(p => p.is_empty || p.max_g > p.g)) {
         document.getElementById('interactive-simulator').style.display = 'block';
         pool.forEach(p => {
-           if(p.final_target_g !== undefined) {
-               let targetSliderVal = parseFloat(p.final_target_g).toFixed(2);
-               let courseInSim = simData.find(x => x.id === p.c.id);
-               if(courseInSim) courseInSim.g = parseFloat(targetSliderVal);
-           }
+           let courseInSim = simData.find(x => x.id === p.c.id);
+           if(courseInSim && p.final_target_g !== undefined) courseInSim.g = parseFloat(p.final_target_g.toFixed(2));
         });
         renderSimSliders();
     }
@@ -1127,48 +1214,28 @@
   function clearGpa() { window.gpaCourses = []; renderGpa(); clearTargetResults(); document.getElementById('target-gpa-input').value = ''; document.getElementById('gpa-target-panel').style.display='none'; }
   function newGpa() { clearGpa(); addGpaCourse(); }
 
-  window.renderGpaDrafts = () => {
-    const dashPanel = document.getElementById('dash-gpa-drafts'); dashPanel.innerHTML = '';
-    const bottomPanel = document.getElementById('gpa-drafts-panel'); bottomPanel.innerHTML = '';
-    
-    if (window.gpaDrafts.length > 0) { 
-        bottomPanel.style.display = 'flex';
-        bottomPanel.innerHTML = '<div style="width:100%; font-size:0.85rem; color:var(--text); font-weight:600; margin-bottom:5px;">💾 معدل‌های ذخیره‌شده:</div>';
-        
-        window.gpaDrafts.forEach((draft) => {
-            let dashChip = document.createElement('div'); dashChip.className = 'dash-draft-chip';
-            dashChip.innerHTML = `<span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span> 
-                                  <div class="action-icons">
-                                    <span class="edit-btn" title="تغییر نام" onclick="renameGpaDraft(event, ${draft.id})">✏️</span>
-                                    <span class="del-btn" title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>
-                                  </div>`;
-            dashPanel.appendChild(dashChip);
-
-            let btmChip = document.createElement('div'); btmChip.className = 'draft-chip';
-            btmChip.innerHTML = `<span onclick="loadGpaDraft(${draft.id})">${draft.name}</span> <span class="del-btn" title="حذف" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
-            bottomPanel.appendChild(btmChip);
-        });
-    } else {
-        bottomPanel.style.display = 'none';
-    }
-  }
-  
-  window.loadGpaDraft = (id) => {
-      let draft = window.gpaDrafts.find(d => d.id === id);
-      if(draft) {
-          window.gpaCourses = JSON.parse(JSON.stringify(draft.data)); 
-          gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), gpaIdCounter); 
-          document.getElementById('target-gpa-input').value = draft.target || ''; 
-          renderGpa(); clearTargetResults(); updateInteractiveSimData(); 
-          window.switchTab('gpa-tool'); window.closeDashboardModal();
-      }
-  }
-
-  // ---------------- PLANNER LOGIC (بدون تغییر) ----------------
+  // ---------------- PLANNER LOGIC ----------------
   let pIdCounter = 0;
   function addPlannerCourse(data = {}) { window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); renderPlanner(); }
   function removePlannerCourse(id) { window.pCourses = window.pCourses.filter(c => c.id !== id); renderPlanner(); }
   function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { let u = parseInt(c.units) || 1; if (u > 1 && c.d1 && c.t1) { if (isSession1Change || isUnitChange) { let dIdx = DAYS.indexOf(c.d1); if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; } } } if (u === 1) { c.d2 = ''; c.t2 = ''; } }
+
+  window.importPlannerFromProfile = () => {
+      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showCustomAlert('درسی در پنل ذخیره نشده است.');
+      let importedCount = 0;
+      window.userProfileData.courses.forEach(pc => {
+          let exists = window.pCourses.some(c => c.name === pc.name);
+          if(!exists) {
+              if(window.pCourses.length === 1 && !window.pCourses[0].name && !window.pCourses[0].units) {
+                  window.pCourses = []; document.getElementById('planner-list').innerHTML = '';
+              }
+              addPlannerCourse({name: pc.name, units: pc.units});
+              importedCount++;
+          }
+      });
+      if(importedCount === 0) window.showCustomAlert('تمام دروس پنل قبلاً در برنامه وارد شده‌اند.');
+      else window.showCustomAlert(`${importedCount} درس از پنل فراخوانی شد.`);
+  }
 
   function renderPlanner() {
     const list = document.getElementById('planner-list'); window.closeAllAutocomplete();
@@ -1259,42 +1326,7 @@
   function clearPlanner() { window.pCourses = []; renderPlanner(); }
   function newPlanner() { clearPlanner(); addPlannerCourse(); }
 
-  window.renderPlannerDrafts = () => {
-    const dashPanel = document.getElementById('dash-planner-drafts'); dashPanel.innerHTML = '';
-    const bottomPanel = document.getElementById('planner-drafts-panel'); bottomPanel.innerHTML = '';
-    
-    if (window.plannerDrafts.length > 0) { 
-        bottomPanel.style.display = 'flex';
-        bottomPanel.innerHTML = '<div style="width:100%; font-size:0.85rem; color:var(--text); font-weight:600; margin-bottom:5px;">💾 برنامه‌های ذخیره‌شده:</div>';
-        
-        window.plannerDrafts.forEach((draft) => { 
-            let dashChip = document.createElement('div'); dashChip.className = 'dash-draft-chip'; 
-            dashChip.innerHTML = `<span class="name-click" onclick="loadPlannerDraft(${draft.id})">🗓️ ${draft.name} (${toFarsiNum(draft.units)} واحد)</span> 
-                                  <div class="action-icons">
-                                    <span class="edit-btn" title="تغییر نام" onclick="renamePlannerDraft(event, ${draft.id})">✏️</span>
-                                    <span class="del-btn" title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>
-                                  </div>`; 
-            dashPanel.appendChild(dashChip); 
-            
-            let btmChip = document.createElement('div'); btmChip.className = 'draft-chip';
-            btmChip.innerHTML = `<span onclick="loadPlannerDraft(${draft.id})">${draft.name} (${toFarsiNum(draft.units)} واحد)</span> <span class="del-btn" title="حذف" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
-            bottomPanel.appendChild(btmChip);
-        });
-    } else {
-        bottomPanel.style.display = 'none';
-    }
-  }
-  
-  window.loadPlannerDraft = (id) => {
-      let draft = window.plannerDrafts.find(d => d.id === id);
-      if(draft) {
-          window.pCourses = JSON.parse(JSON.stringify(draft.data)); 
-          pIdCounter = Math.max(...window.pCourses.map(c => c.id), pIdCounter); 
-          renderPlanner(); window.switchTab('planner-tool'); window.closeDashboardModal(); 
-      }
-  }
-
-  window.switchTab = switchTab; window.addPlannerCourse = addPlannerCourse; window.setSemester = setSemester; window.newPlanner = newPlanner; window.addGpaCourse = addGpaCourse; window.toggleTargetPanel = toggleTargetPanel; window.toggleSimulator = toggleSimulator; window.resetTargetSimulation = resetTargetSimulation; window.newGpa = newGpa; window.calculateTarget = calculateTarget; window.highlightRow = highlightRow; window.importFromProfile = importFromProfile;
+  window.switchTab = switchTab; window.addPlannerCourse = addPlannerCourse; window.setSemester = setSemester; window.newPlanner = newPlanner; window.addGpaCourse = addGpaCourse; window.toggleTargetPanel = toggleTargetPanel; window.toggleSimulator = toggleSimulator; window.resetTargetSimulation = resetTargetSimulation; window.newGpa = newGpa; window.calculateTarget = calculateTarget; window.highlightRow = highlightRow;
 
   addGpaCourse(); addPlannerCourse();
 </script>

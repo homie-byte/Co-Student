@@ -47,12 +47,25 @@
   .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid var(--border); }
 
   .auth-wrapper { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; align-items: center; z-index: 20; }
-  .auth-btn { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.4); color: var(--text); padding: 10px 20px; border-radius: 14px; font-family: 'Vazirmatn'; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+  .auth-btn { background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,252,0.15)); border: 1px solid rgba(79,142,247,0.4); color: var(--text); padding: 10px 20px; border-radius: 14px; font-family: 'Vazirmatn'; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .auth-btn:hover { background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(124,92,252,0.25)); transform: translateY(-2px); border-color: var(--accent); }
   
   .user-info { display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 18px; border: 1px solid var(--border); }
   .btn-panel { background: var(--accent); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
   .btn-panel:hover { background: #3b76d6; }
+
+  /* --- Loading Spinner --- */
+  .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* --- Toast Notifications (Bottom Alerts) --- */
+  .toast-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 10000; pointer-events: none; }
+  .toast { background: var(--surface); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; font-family: 'Vazirmatn', sans-serif;}
+  .toast.toast-success { border-bottom: 3px solid var(--green); }
+  .toast.toast-error { border-bottom: 3px solid var(--red); }
+  .toast.toast-out { animation: toastOut 0.3s ease forwards; }
+  @keyframes toastIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
 
   /* --- Modals (Global) --- */
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 15px; }
@@ -66,21 +79,9 @@
   .auth-modal { max-width: 360px; }
   .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
   
-  /* LTR typing with RTL placeholder for Auth Inputs */
-  .auth-modal input { 
-      margin-bottom: 12px; 
-      background: rgba(0,0,0,0.3); 
-      font-family: 'Vazirmatn', sans-serif; 
-      font-size: 0.95rem; 
-      direction: ltr; 
-      text-align: left; 
-  }
-  .auth-modal input::placeholder { 
-      direction: rtl; 
-      text-align: right; 
-  }
-
-  .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; }
+  .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; direction: ltr; text-align: left; }
+  .auth-modal input::placeholder { direction: rtl; text-align: right; }
+  .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; height: 48px; }
   .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
   .auth-switch:hover { color: var(--accent); }
   .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
@@ -104,10 +105,16 @@
   .dash-draft-chip .del-btn { color: var(--red); background: rgba(248,113,113,0.1); }
   .dash-draft-chip .del-btn:hover { background: rgba(248,113,113,0.3); color: #fff;}
 
+  /* Text Links Dashboard */
+  .dash-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; transition: 0.2s; font-weight: 600; }
+  .dash-link:hover { color: var(--accent); }
+  .dash-link.delete:hover { color: var(--red); }
+
   /* Custom Alert/Prompt Modals */
   .custom-alert { max-width: 320px; text-align: center; }
   .custom-alert h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 20px; line-height: 1.6; font-weight: 600; }
-  .custom-prompt input { margin-bottom: 20px; text-align: center; }
+  .custom-prompt input, .custom-prompt textarea { margin-bottom: 20px; text-align: center; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--text); padding: 10px; font-family: 'Vazirmatn', sans-serif;}
+  .custom-prompt textarea { resize: vertical; min-height: 80px; text-align: right;}
 
   .tool-section { display: none; animation: fadeUp 0.4s ease both; }
   .tool-section.active { display: block; }
@@ -118,6 +125,7 @@
   .btn:active { transform: scale(0.95); }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
   .btn-primary:hover { opacity: .9; box-shadow: 0 6px 16px rgba(79,142,247,0.4); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-ghost { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border); }
   .btn-ghost:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
   .btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
@@ -134,14 +142,16 @@
   .result-card { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
   .result-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
   .result-group::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .result-group .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .result-group .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
   .result-group .result-value { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
   .result-group .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
   .result-group .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
   
-  .overall-gpa-box { flex: 1; min-width: 200px; display: none; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(79,142,247,0.08), rgba(124,92,252,0.08)); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(79,142,247,0.3); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-  .overall-gpa-box .result-label { font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
-  .overall-gpa-box .meta-val { font-size: 2.8rem; font-weight: 800; color: var(--accent); line-height: 1; }
+  /* Overall GPA Box Styles matching Result Group exactly */
+  .overall-gpa-box { flex: 1; min-width: 200px; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(124,92,252,0.3); position: relative; overflow: hidden;}
+  .overall-gpa-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+  .overall-gpa-box .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
+  .overall-gpa-box .meta-val { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; }
 
   .result-meta { flex: 1.5; min-width: 250px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
   .meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -199,11 +209,14 @@
   .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
   .planner-row:last-child { border-bottom: none; }
   .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
-  .session-group select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); }
+  
+  /* Center Text in Selects */
+  .session-group select, .exam-date-inputs select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); text-align: center; text-align-last: center; }
+  
   .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
   .exam-group { flex-direction: column; gap: 4px; padding: 6px; align-items: stretch; justify-content: center; }
   .exam-date-inputs { display: flex; gap: 4px; width: 100%; }
-  .exam-date-inputs select { flex: 1.3; padding: 6px 4px; font-size: 0.8rem; }
+  .exam-date-inputs select { flex: 1.3; }
   .exam-date-inputs input { flex: 1; padding: 6px 4px; font-size: 0.8rem; text-align: center; }
   .exam-group > select.exam-time-sel { border-color: rgba(245,200,66,0.6); background: rgba(245,200,66,0.1); color: var(--gold); font-size: 0.75rem; padding: 4px; }
   .exam-group > select.exam-time-sel.conflict-red { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
@@ -343,7 +356,6 @@
     </div>
   </header>
 
-  <!-- بخش برنامه‌ریز -->
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="planner-header">
@@ -381,7 +393,6 @@
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
-  <!-- بخش محاسبه‌گر -->
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
@@ -418,7 +429,6 @@
         <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
         <div id="target-results" class="target-results"></div>
         
-        <!-- شبیه‌ساز دستی -->
         <div id="interactive-simulator" class="simulator-box">
             <div class="sim-title">
                 🎛️ تنظیم دستی نمرات
@@ -443,7 +453,8 @@
 
 </div>
 
-<!-- Modal ورود / ثبت‌نام -->
+<div id="toast-container" class="toast-container"></div>
+
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
@@ -452,12 +463,14 @@
     <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)" style="display: none;">
     <input type="text" id="auth-identifier" placeholder="ایمیل یا نام کاربری">
     <input type="password" id="auth-password" placeholder="رمز عبور">
-    <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">ورود</button>
+    <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">
+        <span class="spinner" id="auth-spinner"></span>
+        <span id="auth-btn-text">ورود</span>
+    </button>
     <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
   </div>
 </div>
 
-<!-- Modal داشبورد / پنل کاربری -->
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()">✕</button>
@@ -501,25 +514,28 @@
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
 
-    <!-- دکمه‌های کنترلی انتهای پنل -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px;">
-        <div style="display:flex; gap:10px; width: 100%;">
-            <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 12px 24px; flex: 1;">ذخیره اطلاعات پنل</button>
-            <button class="btn btn-ghost" onclick="closeDashboardModal()" style="flex: 1;">بستن پنل</button>
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات پنل</button>
+    </div>
+
+    <div style="margin-top: 30px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+        <h3 style="font-size: 0.95rem; color: var(--text); margin-bottom: 12px;">ارتباط با ادمین سایت</h3>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-ghost" style="flex:1; font-size: 0.8rem;" onclick="triggerFeedback('bug')">🐞 گزارش مشکل</button>
+            <button class="btn btn-ghost" style="flex:1; font-size: 0.8rem;" onclick="triggerFeedback('suggestion')">💡 ارسال پیشنهاد</button>
         </div>
-        
-        <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0; width: 100%;">
-        
-        <div style="display:flex; gap:10px; width: 100%; justify-content: space-between; flex-wrap: wrap;">
-            <button class="btn btn-warning" style="flex: 1;" onclick="logoutApp()">خروج از حساب</button>
-            <button class="btn btn-ghost" style="flex: 1;" onclick="triggerChangePassword()">تغییر رمز</button>
-            <button class="btn btn-danger" style="flex: 1;" onclick="triggerDeleteAccount()">حذف حساب</button>
-        </div>
+    </div>
+
+    <div style="display:flex; gap:15px; width: 100%; justify-content: center; flex-wrap: wrap; margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border);">
+        <span class="dash-link" onclick="triggerChangePassword()">تغییر رمز عبور</span>
+        <span style="color:var(--border);">|</span>
+        <span class="dash-link" onclick="logoutApp()">خروج از حساب</span>
+        <span style="color:var(--border);">|</span>
+        <span class="dash-link delete" onclick="triggerDeleteAccount()">حذف حساب</span>
     </div>
   </div>
 </div>
 
-<!-- Modal هشدارهای اختصاصی سایت (جایگزین Alert و Prompt) -->
 <div class="modal-overlay" id="custom-alert-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert">
     <h3 id="custom-alert-msg"></h3>
@@ -530,10 +546,10 @@
 <div class="modal-overlay" id="custom-prompt-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert custom-prompt">
     <h3 id="custom-prompt-msg"></h3>
-    <input type="text" id="custom-prompt-input" style="text-align: center;">
+    <textarea id="custom-prompt-input" placeholder="متن خود را بنویسید..."></textarea>
     <div style="display:flex; gap:10px;">
         <button class="btn btn-ghost" onclick="closeCustomPrompt()" style="flex:1;">انصراف</button>
-        <button class="btn btn-primary" id="custom-prompt-confirm" style="flex:1;">تایید</button>
+        <button class="btn btn-primary" id="custom-prompt-confirm" style="flex:1;">تایید و ارسال</button>
     </div>
   </div>
 </div>
@@ -554,11 +570,10 @@
   </a>
 </footer>
 
-<!-- 1. ماژول اصلی جاوا اسکریپت فایربیس و پنل کاربری -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDjvY_yEysjMCpmYGEbETDwKmFYdy8yPAc",
@@ -576,6 +591,19 @@
   let isLoginMode = true;
   window.userProfileData = { courses: [] };
 
+  // سیستم نمایش Toast Notifications
+  window.showToast = (msg, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`;
+      container.appendChild(toast);
+      setTimeout(() => {
+          toast.classList.add('toast-out');
+          setTimeout(() => toast.remove(), 300);
+      }, 3000);
+  };
+
   // توابع پاپ‌آپ‌های اختصاصی سایت
   window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
   window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
@@ -586,13 +614,12 @@
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
   window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
 
-
   window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
   window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
   window.toggleAuthMode = () => {
     isLoginMode = !isLoginMode;
     document.getElementById('auth-title').innerText = isLoginMode ? "ورود به حساب کاربری" : "ثبت‌نام کاربر جدید";
-    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
+    document.getElementById('auth-btn-text').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
     document.getElementById('auth-switch-btn').innerText = isLoginMode ? "حساب ندارید؟ ثبت‌نام کنید" : "قبلاً ثبت‌نام کرده‌اید؟ وارد شوید";
     document.getElementById('auth-error').style.display = 'none';
 
@@ -605,22 +632,29 @@
     }
   }
 
-  // سیستم لاگین/ثبت نام با اعتبارسنجی فرمت ایمیل اما بدون تاییدیه ایمیلی
   window.handleAuthSubmit = async () => {
     const identifier = document.getElementById('auth-identifier').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
     
-    // اعتبارسنجی ساده ایمیل برای ثبت‌نام (برای جلوگیری از فرمت‌های الکی)
+    const btn = document.getElementById('auth-submit-btn');
+    const spinner = document.getElementById('auth-spinner');
+    const btnText = document.getElementById('auth-btn-text');
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
     
+    // فعالسازی Spinner
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    btnText.style.display = 'none';
+    errorBox.style.display = 'none';
+
     try {
       if(isLoginMode) {
           let loginEmail = identifier;
           
-          // پیدا کردن ایمیل در صورت وارد کردن نام کاربری
           if(!identifier.includes('@')) {
               const usersRef = collection(db, "users");
               const q = query(usersRef, where("username", "==", identifier));
@@ -633,47 +667,47 @@
 
           await signInWithEmailAndPassword(auth, loginEmail, pass);
           closeAuthModal();
+          window.showToast('با موفقیت وارد شدید.');
       } else {
           const username = document.getElementById('auth-username').value.trim();
-          if(!username) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
-          if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد."; errorBox.style.display = 'block'; return; }
+          if(!username) { throw new Error("no-username"); }
+          if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { throw new Error("invalid-username"); }
           
-          // بررسی صحت فرمت ایمیل قبل از ارسال به فایربیس
-          if(!emailRegex.test(identifier)) {
-              errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
-              errorBox.style.display = 'block';
-              return;
-          }
+          if(!emailRegex.test(identifier)) { throw new Error("invalid-email-format"); }
 
-          // بررسی یکتا بودن نام کاربری
           const usersRef = collection(db, "users");
           const q = query(usersRef, where("username", "==", username));
           const querySnapshot = await getDocs(q);
-          if(!querySnapshot.empty) {
-              errorBox.innerText = "این نام کاربری قبلاً توسط شخص دیگری گرفته شده است."; errorBox.style.display = 'block'; return;
-          }
+          if(!querySnapshot.empty) { throw new Error("username-taken"); }
 
           const userCred = await createUserWithEmailAndPassword(auth, identifier, pass);
           
-          // ذخیره اطلاعات کاربر از جمله Username در دیتابیس
           await setDoc(doc(db, "users", userCred.user.uid), { 
               email: identifier, 
               username: username,
               profile: { courses: [] }
           }, { merge: true });
 
-          window.showCustomAlert("حساب کاربری شما با موفقیت ایجاد شد!");
-          // با ثبت نام، کاربر به صورت خودکار لاگین می شود. نیاز به خروج نیست.
           closeAuthModal();
+          window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
       }
     } catch (error) {
       errorBox.style.display = 'block';
-      if(error.message === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
+      if(error.message === "no-username") errorBox.innerText = "لطفاً نام کاربری را وارد کنید.";
+      else if(error.message === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
+      else if(error.message === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
+      else if(error.message === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
+      else if(error.message === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
       else if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
       else if(error.code === 'auth/invalid-email') errorBox.innerText = "فرمت ایمیل نامعتبر است.";
       else if(error.code === 'auth/weak-password') errorBox.innerText = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
       else if(error.code === 'auth/invalid-credential') errorBox.innerText = "اطلاعات ورود اشتباه است.";
       else errorBox.innerText = "خطایی رخ داد. مجدداً تلاش کنید.";
+    } finally {
+      // غیرفعالسازی Spinner
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.style.display = 'inline-block';
     }
   }
 
@@ -681,8 +715,30 @@
       window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", () => {
           signOut(auth); 
           window.closeDashboardModal();
+          window.showToast('از حساب کاربری خارج شدید.');
       });
   }
+
+  // ارسال پیام برای ادمین
+  window.triggerFeedback = (type) => {
+      if(!window.currentUser) return;
+      const titles = { 'bug': 'گزارش مشکل', 'suggestion': 'ارسال نظرات و پیشنهادات' };
+      window.showCustomPrompt(`${titles[type]} خود را در کادر زیر بنویسید:`, "", async (text) => {
+          if(!text || text.trim() === "") return;
+          try {
+              await addDoc(collection(db, "feedbacks"), {
+                  uid: window.currentUser.uid,
+                  email: window.currentUser.email,
+                  type: type,
+                  message: text,
+                  timestamp: Date.now()
+              });
+              window.showToast("پیام شما با موفقیت برای ادمین ارسال شد.");
+          } catch(e) {
+              window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error");
+          }
+      });
+  };
 
   onAuthStateChanged(auth, async (user) => {
     const loginBtn = document.getElementById('login-trigger-btn');
@@ -690,7 +746,6 @@
     const importGpaBtn = document.getElementById('btn-import-gpa-profile');
     const importPlannerBtn = document.getElementById('btn-import-planner-profile');
     
-    // شرط تایید ایمیل برداشته شد، فقط لاگین بودن کاربر بررسی می شود
     if (user) {
       window.currentUser = user;
       loginBtn.style.display = 'none';
@@ -700,7 +755,6 @@
       if (docSnap.exists()) {
         const data = docSnap.data();
         
-        // نمایش نام کاربری در صورت وجود، در غیر این‌صورت نمایش پیشوند ایمیل
         let displayString = data.username ? data.username : user.email.split('@')[0];
         document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
 
@@ -713,9 +767,6 @@
             importPlannerBtn.style.display = 'inline-flex';
         }
         if(typeof window.calcGpa === 'function') window.calcGpa(); 
-      } else {
-        let displayEmail = user.email.split('@')[0];
-        document.getElementById('user-email-text').innerHTML = `<b>${displayEmail}</b>`;
       }
     } else {
       window.currentUser = null;
@@ -727,16 +778,15 @@
     }
   });
 
-  // Account Settings Functions
   window.triggerChangePassword = () => {
       window.showCustomPrompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):", "", async (newPass) => {
           if(!newPass || newPass.length < 6) return window.showCustomAlert("رمز عبور نامعتبر است. حداقل ۶ کاراکتر الزامی است.");
           try {
               await updatePassword(window.currentUser, newPass);
-              window.showCustomAlert("رمز عبور با موفقیت تغییر کرد.");
+              window.showToast("رمز عبور با موفقیت تغییر کرد.");
           } catch(e) {
               if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); } 
-              else { window.showCustomAlert("خطا در تغییر رمز عبور."); }
+              else { window.showToast("خطا در تغییر رمز عبور.", "error"); }
           }
       });
   };
@@ -745,11 +795,11 @@
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
               await deleteUser(window.currentUser);
-              window.showCustomAlert("حساب کاربری شما با موفقیت حذف شد.");
+              window.showToast("حساب کاربری شما با موفقیت حذف شد.");
               window.closeDashboardModal();
           } catch(e) {
               if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای حذف حساب باید مجدداً وارد سایت شوید."); window.logoutApp(); } 
-              else { window.showCustomAlert("خطا در حذف حساب."); }
+              else { window.showToast("خطا در حذف حساب.", "error"); }
           }
       });
   };
@@ -827,9 +877,8 @@
       window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses };
       
       try {
-          // ذخیره ایمیل برای ردیابی ادمین در فایربیس
           await setDoc(doc(db, "users", window.currentUser.uid), { email: window.currentUser.email, profile: window.userProfileData }, { merge: true });
-          window.showCustomAlert('اطلاعات پنل با موفقیت ذخیره شد.');
+          window.showToast('اطلاعات پنل با موفقیت ذخیره شد.');
           
           if(courses.length > 0) {
               document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex';
@@ -839,10 +888,93 @@
               document.getElementById('btn-import-planner-profile').style.display = 'none';
           }
           if(typeof window.calcGpa === 'function') window.calcGpa();
-      } catch(e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
+      } catch(e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); }
   }
 
-  // --- مدیریت فایل‌های ابری (معدل و برنامه) ---
+  // --- سیستم رندر فایل‌های ذخیره شده ---
+  window.renderGpaDrafts = () => {
+      const dashContainer = document.getElementById('dash-gpa-drafts');
+      const mainContainer = document.getElementById('gpa-drafts-panel');
+      dashContainer.innerHTML = ''; mainContainer.innerHTML = '';
+      if (window.gpaDrafts.length === 0) {
+          dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل معدلی ذخیره نشده است.</span>';
+          mainContainer.style.display = 'none';
+          return;
+      }
+      mainContainer.style.display = 'flex';
+      window.gpaDrafts.forEach(draft => {
+          const chipHTML = `
+              <div class="dash-draft-chip">
+                  <span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span>
+                  <div class="action-icons">
+                      <span class="edit-btn" onclick="renameGpaDraft(event, ${draft.id})">✎</span>
+                      <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>
+                  </div>
+              </div>
+          `;
+          dashContainer.insertAdjacentHTML('beforeend', chipHTML);
+          
+          const mainChip = document.createElement('div');
+          mainChip.className = 'draft-chip';
+          mainChip.innerHTML = `📊 ${draft.name} <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
+          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadGpaDraft(draft.id); };
+          mainContainer.appendChild(mainChip);
+      });
+  };
+
+  window.renderPlannerDrafts = () => {
+      const dashContainer = document.getElementById('dash-planner-drafts');
+      const mainContainer = document.getElementById('planner-drafts-panel');
+      dashContainer.innerHTML = ''; mainContainer.innerHTML = '';
+      if (window.plannerDrafts.length === 0) {
+          dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل برنامه‌ای ذخیره نشده است.</span>';
+          mainContainer.style.display = 'none';
+          return;
+      }
+      mainContainer.style.display = 'flex';
+      window.plannerDrafts.forEach(draft => {
+          const chipHTML = `
+              <div class="dash-draft-chip">
+                  <span class="name-click" onclick="loadPlannerDraft(${draft.id})">📅 ${draft.name}</span>
+                  <div class="action-icons">
+                      <span class="edit-btn" onclick="renamePlannerDraft(event, ${draft.id})">✎</span>
+                      <span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>
+                  </div>
+              </div>
+          `;
+          dashContainer.insertAdjacentHTML('beforeend', chipHTML);
+          
+          const mainChip = document.createElement('div');
+          mainChip.className = 'draft-chip';
+          mainChip.innerHTML = `📅 ${draft.name} <span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
+          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadPlannerDraft(draft.id); };
+          mainContainer.appendChild(mainChip);
+      });
+  };
+
+  window.loadGpaDraft = (id) => {
+      const draft = window.gpaDrafts.find(d => d.id === id);
+      if(draft && draft.data) {
+          window.gpaCourses = JSON.parse(JSON.stringify(draft.data));
+          window.gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), 0) + 1;
+          document.getElementById('target-gpa-input').value = draft.target || '';
+          renderGpa();
+          window.showToast(`معدل "${draft.name}" بارگذاری شد.`);
+          window.closeDashboardModal();
+      }
+  };
+
+  window.loadPlannerDraft = (id) => {
+      const draft = window.plannerDrafts.find(d => d.id === id);
+      if(draft && draft.data) {
+          window.pCourses = JSON.parse(JSON.stringify(draft.data));
+          window.pIdCounter = Math.max(...window.pCourses.map(c => c.id), 0) + 1;
+          renderPlanner();
+          window.showToast(`برنامه "${draft.name}" بارگذاری شد.`);
+          window.closeDashboardModal();
+      }
+  };
+
   window.saveGpaDraft = async () => {
     if (!window.currentUser) return window.openAuthModal();
     if (window.gpaCourses.length === 0 || (window.gpaCourses.length === 1 && !window.gpaCourses[0].name)) return window.showCustomAlert('معدلی برای ذخیره وجود ندارد!');
@@ -852,17 +984,16 @@
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     try {
       await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
-      window.renderGpaDrafts(); window.showCustomAlert('معدل در پنل ذخیره شد.');
-    } catch (e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
+      window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); }
   }
   
   window.deleteGpaDraft = async (event, id) => {
     event.stopPropagation(); 
-    window.showCustomConfirm("از حذف این معدل ذخیره‌شده مطمئن هستید؟", async () => {
-        window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-        if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
-        window.renderGpaDrafts(); 
-    });
+    window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
+    if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+    window.renderGpaDrafts(); 
+    window.showToast('فایل معدل حذف شد.');
   }
 
   window.renameGpaDraft = async (event, id) => {
@@ -874,6 +1005,7 @@
               draft.name = newName.trim();
               if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
               window.renderGpaDrafts();
+              window.showToast('نام فایل تغییر کرد.');
           }
       });
   }
@@ -886,17 +1018,16 @@
     window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
     try {
       await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
-      window.renderPlannerDrafts(); window.showCustomAlert('برنامه در پنل ذخیره شد.');
-    } catch (e) { window.showCustomAlert('خطا در ذخیره اطلاعات!'); }
+      window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); }
   }
   
   window.deletePlannerDraft = async (event, id) => {
     event.stopPropagation(); 
-    window.showCustomConfirm("از حذف این برنامه ذخیره‌شده مطمئن هستید؟", async () => {
-        window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
-        if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
-        window.renderPlannerDrafts(); 
-    });
+    window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
+    if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+    window.renderPlannerDrafts(); 
+    window.showToast('فایل برنامه حذف شد.');
   }
 
   window.renamePlannerDraft = async (event, id) => {
@@ -908,12 +1039,12 @@
               draft.name = newName.trim();
               if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
               window.renderPlannerDrafts();
+              window.showToast('نام فایل تغییر کرد.');
           }
       });
   }
 </script>
 
-<!-- 2. کدهای محاسباتی، شبیه‌ساز هدف‌گذاری و منطق سایت -->
 <script>
   window.gpaDrafts = []; window.plannerDrafts = [];
   window.gpaCourses = []; window.pCourses = [];
@@ -1008,8 +1139,8 @@
               importedCount++;
           }
       });
-      if(importedCount === 0) window.showCustomAlert('دروس پنل قبلاً در لیست موجود هستند.');
-      else window.showCustomAlert(`${importedCount} درس از پنل فراخوانی شد.`);
+      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error');
+      else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
   }
 
   function renderGpa() {
@@ -1288,7 +1419,7 @@
   function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { let u = parseInt(c.units) || 1; if (u > 1 && c.d1 && c.t1) { if (isSession1Change || isUnitChange) { let dIdx = DAYS.indexOf(c.d1); if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; } } } if (u === 1) { c.d2 = ''; c.t2 = ''; } }
 
   window.importPlannerFromProfile = () => {
-      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showCustomAlert('درسی در پنل ذخیره نشده است.');
+      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showToast('درسی در پنل برای فراخوانی وجود ندارد.', 'error');
       let importedCount = 0;
       window.userProfileData.courses.forEach(pc => {
           let exists = window.pCourses.some(c => c.name === pc.name);
@@ -1300,8 +1431,8 @@
               importedCount++;
           }
       });
-      if(importedCount === 0) window.showCustomAlert('تمام دروس پنل قبلاً در برنامه وارد شده‌اند.');
-      else window.showCustomAlert(`${importedCount} درس از پنل فراخوانی شد.`);
+      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error');
+      else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
   }
 
   function renderPlanner() {

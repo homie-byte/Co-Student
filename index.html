@@ -343,6 +343,7 @@
     </div>
   </header>
 
+  <!-- بخش برنامه‌ریز -->
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="planner-header">
@@ -380,6 +381,7 @@
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
+  <!-- بخش محاسبه‌گر -->
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
@@ -416,6 +418,7 @@
         <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
         <div id="target-results" class="target-results"></div>
         
+        <!-- شبیه‌ساز دستی -->
         <div id="interactive-simulator" class="simulator-box">
             <div class="sim-title">
                 🎛️ تنظیم دستی نمرات
@@ -440,6 +443,7 @@
 
 </div>
 
+<!-- Modal ورود / ثبت‌نام -->
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
@@ -453,6 +457,7 @@
   </div>
 </div>
 
+<!-- Modal داشبورد / پنل کاربری -->
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()">✕</button>
@@ -496,6 +501,7 @@
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
 
+    <!-- دکمه‌های کنترلی انتهای پنل -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px;">
         <div style="display:flex; gap:10px; width: 100%;">
             <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 12px 24px; flex: 1;">ذخیره اطلاعات پنل</button>
@@ -513,6 +519,7 @@
   </div>
 </div>
 
+<!-- Modal هشدارهای اختصاصی سایت (جایگزین Alert و Prompt) -->
 <div class="modal-overlay" id="custom-alert-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert">
     <h3 id="custom-alert-msg"></h3>
@@ -547,9 +554,10 @@
   </a>
 </footer>
 
+<!-- 1. ماژول اصلی جاوا اسکریپت فایربیس و پنل کاربری -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -597,11 +605,14 @@
     }
   }
 
-  // سیستم لاگین/ثبت نام با ایمیل واقعی و تایید
+  // سیستم لاگین/ثبت نام با اعتبارسنجی فرمت ایمیل اما بدون تاییدیه ایمیلی
   window.handleAuthSubmit = async () => {
     const identifier = document.getElementById('auth-identifier').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
+    
+    // اعتبارسنجی ساده ایمیل برای ثبت‌نام (برای جلوگیری از فرمت‌های الکی)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
     
@@ -620,17 +631,19 @@
               loginEmail = querySnapshot.docs[0].data().email;
           }
 
-          const userCred = await signInWithEmailAndPassword(auth, loginEmail, pass);
-          if(!userCred.user.emailVerified) {
-              window.showCustomAlert("ایمیل شما تایید نشده است. لطفاً پوشه اینباکس یا اسپم ایمیل خود را بررسی کرده و روی لینک کلیک کنید.");
-              signOut(auth);
-              return;
-          }
+          await signInWithEmailAndPassword(auth, loginEmail, pass);
           closeAuthModal();
       } else {
           const username = document.getElementById('auth-username').value.trim();
           if(!username) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد."; errorBox.style.display = 'block'; return; }
+          
+          // بررسی صحت فرمت ایمیل قبل از ارسال به فایربیس
+          if(!emailRegex.test(identifier)) {
+              errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
+              errorBox.style.display = 'block';
+              return;
+          }
 
           // بررسی یکتا بودن نام کاربری
           const usersRef = collection(db, "users");
@@ -649,9 +662,8 @@
               profile: { courses: [] }
           }, { merge: true });
 
-          await sendEmailVerification(userCred.user);
-          window.showCustomAlert("حساب کاربری ایجاد شد! یک لینک تایید به ایمیل شما ارسال گردید. جهت فعالسازی وارد ایمیل خود شوید.");
-          signOut(auth);
+          window.showCustomAlert("حساب کاربری شما با موفقیت ایجاد شد!");
+          // با ثبت نام، کاربر به صورت خودکار لاگین می شود. نیاز به خروج نیست.
           closeAuthModal();
       }
     } catch (error) {
@@ -678,7 +690,8 @@
     const importGpaBtn = document.getElementById('btn-import-gpa-profile');
     const importPlannerBtn = document.getElementById('btn-import-planner-profile');
     
-    if (user && user.emailVerified) {
+    // شرط تایید ایمیل برداشته شد، فقط لاگین بودن کاربر بررسی می شود
+    if (user) {
       window.currentUser = user;
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
@@ -900,6 +913,7 @@
   }
 </script>
 
+<!-- 2. کدهای محاسباتی، شبیه‌ساز هدف‌گذاری و منطق سایت -->
 <script>
   window.gpaDrafts = []; window.plannerDrafts = [];
   window.gpaCourses = []; window.pCourses = [];

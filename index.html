@@ -62,16 +62,6 @@
   .close-modal { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10; }
   .close-modal:hover { background: rgba(248,113,113,0.1); color: var(--red); }
 
-  /* Auth Modal */
-  .auth-modal { max-width: 360px; }
-  .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
-  .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn'; font-size: 0.95rem; }
-  .auth-modal input[type="email"] { direction: ltr; text-align: left; font-family: sans-serif; }
-  .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; }
-  .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
-  .auth-switch:hover { color: var(--accent); }
-  .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
-
   /* Dashboard Modal */
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
   .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
@@ -320,7 +310,7 @@
         <div class="auth-wrapper">
           <button class="auth-btn" id="login-trigger-btn" onclick="signInWithGoogle()">
               <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
-              ورود با گوگل
+              ورود با حساب گوگل
           </button>
           <div class="user-info" id="user-info-display">
             <span id="user-email-text" style="padding: 0 4px; direction: ltr;"></span>
@@ -330,7 +320,6 @@
     </div>
   </header>
 
-  <!-- بخش برنامه‌ریز -->
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="planner-header">
@@ -368,7 +357,6 @@
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
-  <!-- بخش محاسبه‌گر -->
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
@@ -405,7 +393,6 @@
         <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
         <div id="target-results" class="target-results"></div>
         
-        <!-- شبیه‌ساز دستی -->
         <div id="interactive-simulator" class="simulator-box">
             <div class="sim-title">
                 🎛️ تنظیم دستی نمرات
@@ -430,7 +417,6 @@
 
 </div>
 
-<!-- Modal داشبورد / پنل کاربری -->
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()">✕</button>
@@ -474,7 +460,6 @@
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
 
-    <!-- دکمه‌های کنترلی انتهای پنل -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px;">
         <div style="display:flex; gap:10px; width: 100%;">
             <button class="btn btn-primary" onclick="saveDashboardProfile()" style="padding: 12px 24px; flex: 1;">ذخیره اطلاعات پنل</button>
@@ -491,7 +476,6 @@
   </div>
 </div>
 
-<!-- Modal هشدارهای اختصاصی سایت (جایگزین Alert و Prompt) -->
 <div class="modal-overlay" id="custom-alert-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert">
     <h3 id="custom-alert-msg"></h3>
@@ -526,7 +510,6 @@
   </a>
 </footer>
 
-<!-- 1. ماژول اصلی جاوا اسکریپت فایربیس و پنل کاربری -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -558,14 +541,13 @@
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
   window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
 
-
-  // ورود با حساب گوگل
+  // سیستم ورود مستقیم با گوگل
   window.signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        window.showCustomAlert("خطا در ورود با حساب گوگل. مجدداً تلاش کنید.");
+        window.showCustomAlert("خطا در ورود با حساب گوگل. لطفاً مجدداً تلاش کنید.");
       }
     }
   }
@@ -587,6 +569,7 @@
       window.currentUser = user;
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
+      
       let displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'کاربر');
       document.getElementById('user-email-text').innerHTML = `<b>${displayName}</b>`;
       
@@ -614,7 +597,6 @@
   });
 
   // Account Settings Functions
-
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
@@ -787,7 +769,6 @@
   }
 </script>
 
-<!-- 2. کدهای محاسباتی، شبیه‌ساز هدف‌گذاری و منطق سایت -->
 <script>
   window.gpaDrafts = []; window.plannerDrafts = [];
   window.gpaCourses = []; window.pCourses = [];

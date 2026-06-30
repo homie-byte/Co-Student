@@ -62,6 +62,29 @@
   .close-modal { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10; }
   .close-modal:hover { background: rgba(248,113,113,0.1); color: var(--red); }
 
+  /* Auth Modal */
+  .auth-modal { max-width: 360px; }
+  .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
+  
+  /* LTR typing with RTL placeholder for Auth Inputs */
+  .auth-modal input { 
+      margin-bottom: 12px; 
+      background: rgba(0,0,0,0.3); 
+      font-family: 'Vazirmatn', sans-serif; 
+      font-size: 0.95rem; 
+      direction: ltr; 
+      text-align: left; 
+  }
+  .auth-modal input::placeholder { 
+      direction: rtl; 
+      text-align: right; 
+  }
+
+  .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; }
+  .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
+  .auth-switch:hover { color: var(--accent); }
+  .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
+
   /* Dashboard Modal */
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
   .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
@@ -308,9 +331,9 @@
         </div>
         
         <div class="auth-wrapper">
-          <button class="auth-btn" id="login-trigger-btn" onclick="signInWithGoogle()">
-              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
-              ورود با حساب گوگل
+          <button class="auth-btn" id="login-trigger-btn" onclick="openAuthModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              ورود / ثبت‌نام
           </button>
           <div class="user-info" id="user-info-display">
             <span id="user-email-text" style="padding: 0 4px; direction: ltr;"></span>
@@ -417,6 +440,19 @@
 
 </div>
 
+<div class="modal-overlay" id="auth-modal-overlay">
+  <div class="modal-box auth-modal">
+    <button class="close-modal" onclick="closeAuthModal()">✕</button>
+    <h2 id="auth-title">ورود به حساب کاربری</h2>
+    <div id="auth-error" class="auth-error"></div>
+    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)" style="display: none;">
+    <input type="text" id="auth-identifier" placeholder="ایمیل یا نام کاربری">
+    <input type="password" id="auth-password" placeholder="رمز عبور">
+    <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">ورود</button>
+    <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()">✕</button>
@@ -470,6 +506,7 @@
         
         <div style="display:flex; gap:10px; width: 100%; justify-content: space-between; flex-wrap: wrap;">
             <button class="btn btn-warning" style="flex: 1;" onclick="logoutApp()">خروج از حساب</button>
+            <button class="btn btn-ghost" style="flex: 1;" onclick="triggerChangePassword()">تغییر رمز</button>
             <button class="btn btn-danger" style="flex: 1;" onclick="triggerDeleteAccount()">حذف حساب</button>
         </div>
     </div>
@@ -512,8 +549,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDjvY_yEysjMCpmYGEbETDwKmFYdy8yPAc",
@@ -527,8 +564,8 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const googleProvider = new GoogleAuthProvider();
 
+  let isLoginMode = true;
   window.userProfileData = { courses: [] };
 
   // توابع پاپ‌آپ‌های اختصاصی سایت
@@ -541,14 +578,90 @@
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
   window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
 
-  // سیستم ورود مستقیم با گوگل
-  window.signInWithGoogle = async () => {
+
+  window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
+  window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
+  window.toggleAuthMode = () => {
+    isLoginMode = !isLoginMode;
+    document.getElementById('auth-title').innerText = isLoginMode ? "ورود به حساب کاربری" : "ثبت‌نام کاربر جدید";
+    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
+    document.getElementById('auth-switch-btn').innerText = isLoginMode ? "حساب ندارید؟ ثبت‌نام کنید" : "قبلاً ثبت‌نام کرده‌اید؟ وارد شوید";
+    document.getElementById('auth-error').style.display = 'none';
+
+    if(isLoginMode) {
+        document.getElementById('auth-username').style.display = 'none';
+        document.getElementById('auth-identifier').placeholder = "ایمیل یا نام کاربری";
+    } else {
+        document.getElementById('auth-username').style.display = 'block';
+        document.getElementById('auth-identifier').placeholder = "ایمیل خود را وارد کنید";
+    }
+  }
+
+  // سیستم لاگین/ثبت نام با ایمیل واقعی و تایید
+  window.handleAuthSubmit = async () => {
+    const identifier = document.getElementById('auth-identifier').value.trim();
+    const pass = document.getElementById('auth-password').value;
+    const errorBox = document.getElementById('auth-error');
+    
+    if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
+    
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        window.showCustomAlert("خطا در ورود با حساب گوگل. لطفاً مجدداً تلاش کنید.");
+      if(isLoginMode) {
+          let loginEmail = identifier;
+          
+          // پیدا کردن ایمیل در صورت وارد کردن نام کاربری
+          if(!identifier.includes('@')) {
+              const usersRef = collection(db, "users");
+              const q = query(usersRef, where("username", "==", identifier));
+              const querySnapshot = await getDocs(q);
+              if(querySnapshot.empty) {
+                  throw new Error("user-not-found");
+              }
+              loginEmail = querySnapshot.docs[0].data().email;
+          }
+
+          const userCred = await signInWithEmailAndPassword(auth, loginEmail, pass);
+          if(!userCred.user.emailVerified) {
+              window.showCustomAlert("ایمیل شما تایید نشده است. لطفاً پوشه اینباکس یا اسپم ایمیل خود را بررسی کرده و روی لینک کلیک کنید.");
+              signOut(auth);
+              return;
+          }
+          closeAuthModal();
+      } else {
+          const username = document.getElementById('auth-username').value.trim();
+          if(!username) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
+          if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد."; errorBox.style.display = 'block'; return; }
+
+          // بررسی یکتا بودن نام کاربری
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("username", "==", username));
+          const querySnapshot = await getDocs(q);
+          if(!querySnapshot.empty) {
+              errorBox.innerText = "این نام کاربری قبلاً توسط شخص دیگری گرفته شده است."; errorBox.style.display = 'block'; return;
+          }
+
+          const userCred = await createUserWithEmailAndPassword(auth, identifier, pass);
+          
+          // ذخیره اطلاعات کاربر از جمله Username در دیتابیس
+          await setDoc(doc(db, "users", userCred.user.uid), { 
+              email: identifier, 
+              username: username,
+              profile: { courses: [] }
+          }, { merge: true });
+
+          await sendEmailVerification(userCred.user);
+          window.showCustomAlert("حساب کاربری ایجاد شد! یک لینک تایید به ایمیل شما ارسال گردید. جهت فعالسازی وارد ایمیل خود شوید.");
+          signOut(auth);
+          closeAuthModal();
       }
+    } catch (error) {
+      errorBox.style.display = 'block';
+      if(error.message === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
+      else if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
+      else if(error.code === 'auth/invalid-email') errorBox.innerText = "فرمت ایمیل نامعتبر است.";
+      else if(error.code === 'auth/weak-password') errorBox.innerText = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+      else if(error.code === 'auth/invalid-credential') errorBox.innerText = "اطلاعات ورود اشتباه است.";
+      else errorBox.innerText = "خطایی رخ داد. مجدداً تلاش کنید.";
     }
   }
 
@@ -565,17 +678,19 @@
     const importGpaBtn = document.getElementById('btn-import-gpa-profile');
     const importPlannerBtn = document.getElementById('btn-import-planner-profile');
     
-    if (user) {
+    if (user && user.emailVerified) {
       window.currentUser = user;
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
       
-      let displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'کاربر');
-      document.getElementById('user-email-text').innerHTML = `<b>${displayName}</b>`;
-      
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
         const data = docSnap.data();
+        
+        // نمایش نام کاربری در صورت وجود، در غیر این‌صورت نمایش پیشوند ایمیل
+        let displayString = data.username ? data.username : user.email.split('@')[0];
+        document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
+
         window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
         window.userProfileData = data.profile || { courses: [] };
         window.renderGpaDrafts(); window.renderPlannerDrafts();
@@ -585,6 +700,9 @@
             importPlannerBtn.style.display = 'inline-flex';
         }
         if(typeof window.calcGpa === 'function') window.calcGpa(); 
+      } else {
+        let displayEmail = user.email.split('@')[0];
+        document.getElementById('user-email-text').innerHTML = `<b>${displayEmail}</b>`;
       }
     } else {
       window.currentUser = null;
@@ -597,6 +715,19 @@
   });
 
   // Account Settings Functions
+  window.triggerChangePassword = () => {
+      window.showCustomPrompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):", "", async (newPass) => {
+          if(!newPass || newPass.length < 6) return window.showCustomAlert("رمز عبور نامعتبر است. حداقل ۶ کاراکتر الزامی است.");
+          try {
+              await updatePassword(window.currentUser, newPass);
+              window.showCustomAlert("رمز عبور با موفقیت تغییر کرد.");
+          } catch(e) {
+              if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); } 
+              else { window.showCustomAlert("خطا در تغییر رمز عبور."); }
+          }
+      });
+  };
+
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
@@ -700,7 +831,7 @@
 
   // --- مدیریت فایل‌های ابری (معدل و برنامه) ---
   window.saveGpaDraft = async () => {
-    if (!window.currentUser) return window.signInWithGoogle();
+    if (!window.currentUser) return window.openAuthModal();
     if (window.gpaCourses.length === 0 || (window.gpaCourses.length === 1 && !window.gpaCourses[0].name)) return window.showCustomAlert('معدلی برای ذخیره وجود ندارد!');
     let gpaEl = document.getElementById('gpa-display').textContent;
     let targetVal = document.getElementById('target-gpa-input').value;
@@ -735,7 +866,7 @@
   }
 
   window.savePlannerDraft = async () => {
-    if (!window.currentUser) return window.signInWithGoogle();
+    if (!window.currentUser) return window.openAuthModal();
     if (window.pCourses.length === 0 || (window.pCourses.length === 1 && !window.pCourses[0].name)) return window.showCustomAlert('برنامه‌ای برای ذخیره وجود ندارد!');
     let totalU = window.pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
     let draftName = `برنامه ${window.plannerDrafts.length + 1}`;
@@ -914,7 +1045,7 @@
   function toggleTargetPanel() {
     if (!window.currentUser) {
         window.showCustomAlert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.');
-        window.signInWithGoogle();
+        window.openAuthModal();
         return;
     }
     let panel = document.getElementById('gpa-target-panel');

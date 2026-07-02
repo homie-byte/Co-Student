@@ -30,7 +30,6 @@
 
   @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: none; } }
   @keyframes fadeUp   { from { opacity:0; transform: translateY(16px);  } to { opacity:1; transform: none; } }
-  @keyframes slideInRow { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
 
   header { text-align: center; margin-bottom: 25px; margin-top: 25px; animation: fadeDown .6s ease both; }
   header h1 {
@@ -79,7 +78,6 @@
   /* Auth Modal */
   .auth-modal { max-width: 360px; }
   .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
-  
   .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; direction: ltr; text-align: left; }
   .auth-modal input::placeholder { direction: rtl; text-align: right; }
   .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; height: 48px; }
@@ -91,7 +89,7 @@
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
   .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-  .dash-course-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .dash-course-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 8px; margin-bottom: 8px; align-items: center; min-width: 500px; }
   .dash-course-row input { padding: 8px; font-size: 0.85rem; }
   .dashboard-modal::-webkit-scrollbar { width: 6px; }
   .dashboard-modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
@@ -115,14 +113,22 @@
   .custom-alert { max-width: 320px; text-align: center; }
   .custom-alert h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 20px; line-height: 1.6; font-weight: 600; }
   
-  /* هوشمند‌سازی ورودی‌های Prompt */
   .custom-prompt input, .custom-prompt textarea { margin-bottom: 20px; text-align: center; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--text); padding: 10px; font-family: 'Vazirmatn', sans-serif;}
   .custom-prompt textarea { resize: vertical; min-height: 80px; text-align: right;}
 
   .tool-section { display: none; animation: fadeUp 0.4s ease both; }
   .tool-section.active { display: block; }
   .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; position: relative; z-index: 10; }
-  .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;}
+  
+  /* --- Horizontal Scroll Core Container --- */
+  .scroll-container { width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; min-height: 220px; padding-bottom: 10px; }
+  .scroll-container::-webkit-scrollbar { height: 6px; }
+  .scroll-container::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
+  
+  /* --- Swipeable Actions Row --- */
+  .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; align-items: center; }
+  .actions::-webkit-scrollbar { height: 0px; display: none; }
+  .actions button, .actions > div { flex-shrink: 0; }
   
   .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
   .btn:active { transform: scale(0.95); }
@@ -141,22 +147,24 @@
   select option { background: var(--surface); color: var(--text); }
   .empty-row { padding: 32px; text-align: center; color: var(--muted); font-size: .88rem; }
 
-  /* ------------------- GPA Display Cards ------------------- */
-  .result-card { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-  .result-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
+  /* ------------------- Swipeable GPA Display Cards ------------------- */
+  .result-card { display: flex; align-items: stretch; justify-content: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
+  .result-card::-webkit-scrollbar { height: 4px; }
+  .result-card::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
+  
+  .result-group { flex: 0 0 auto; min-width: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
   .result-group::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
   .result-group .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
   .result-group .result-value { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
   .result-group .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
   .result-group .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
   
-  /* Overall GPA Box Styles matching Result Group exactly */
-  .overall-gpa-box { flex: 1; min-width: 200px; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(124,92,252,0.3); position: relative; overflow: hidden;}
+  .overall-gpa-box { flex: 0 0 auto; min-width: 250px; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(124,92,252,0.3); position: relative; overflow: hidden;}
   .overall-gpa-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
   .overall-gpa-box .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
   .overall-gpa-box .meta-val { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; }
 
-  .result-meta { flex: 1.5; min-width: 250px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
+  .result-meta { flex: 0 0 auto; min-width: 280px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
   .meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .meta-val  { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1; }
   .meta-lbl  { font-size: .75rem; color: var(--muted); }
@@ -167,10 +175,16 @@
   .status-badge.ok     { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); }
   .status-badge.bad    { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
 
-  .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; position: relative;}
+  /* ------------------- Responsive Rows (PC Layout Enforced) ------------------- */
+  .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; position: relative; min-width: 550px;}
   .gpa-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
   .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
   .gpa-row:last-child { border-bottom: none; }
+  
+  .planner-header, .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; min-width: 850px; }
+  .planner-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
+  .planner-row { padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
+  .planner-row:last-child { border-bottom: none; }
   
   .autocomplete-wrap { position: relative; width: 100%; z-index: 50; }
   .autocomplete-list { position: absolute; top: calc(100% + 4px); right: 0; left: 0; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.6); max-height: 200px; overflow-y: auto; }
@@ -207,15 +221,9 @@
   .target-card-val { font-size: 0.88rem; font-weight: bold; padding: 6px 10px; border-radius: 8px; text-align: left; display: flex; justify-content: space-between; align-items: center;}
   .target-impossible { color: var(--red); font-size: 0.85rem; font-weight: bold; background: rgba(248,113,113,0.1); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(248,113,113,0.3); grid-column: 1 / -1;}
 
-  /* ------------------- Planner Styles ------------------- */
-  .planner-header { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
-  .planner-row { display: grid; grid-template-columns: 1.8fr 0.8fr 2fr 2fr 2fr 44px; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
-  .planner-row:last-child { border-bottom: none; }
+  /* ------------------- Planner Additions ------------------- */
   .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
-  
-  /* Center Text in Selects */
   .session-group select, .exam-date-inputs select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); text-align: center; text-align-last: center; }
-  
   .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
   .exam-group { flex-direction: column; gap: 4px; padding: 6px; align-items: stretch; justify-content: center; }
   .exam-date-inputs { display: flex; gap: 4px; width: 100%; }
@@ -237,8 +245,9 @@
   .bar-wrapper { position: relative; margin-bottom: 20px; }
 
   /* Bottom Panel Draft Chips */
-  .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: wrap; align-items: center; }
-  .draft-chip { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; gap: 6px; align-items: center; transition: 0.2s;}
+  .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; align-items: center; }
+  .drafts-panel::-webkit-scrollbar { height: 0px; display: none; }
+  .draft-chip { flex-shrink: 0; background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; gap: 6px; align-items: center; transition: 0.2s;}
   .draft-chip:hover { background: rgba(79,142,247,0.2); }
   .draft-chip span.del-btn { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; }
 
@@ -286,7 +295,7 @@
   .tt-course.conflict-item { background: linear-gradient(135deg, rgba(248,113,113,0.2), rgba(248,113,113,0.1)); border: 1px solid rgba(248,113,113,0.4); border-right: 4px solid var(--red); color: #ffb3b3; padding: 8px; font-size: 0.75rem; width: 100%; }
   
   .conflict-warning { margin-top: 18px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: #ffb3b3; font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; line-height: 1.6; }
-  .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+  .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0; }
   .sem-btn.active { background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,92,252,0.2)); border-color: var(--accent); color: var(--text); }
 
   footer.signature { 
@@ -297,38 +306,16 @@
   footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
 
-  /* Mobile UX Improvements */
+  /* UX Mobile adjustments (Removing destructive overrides, keeping only essential spacing) */
   @media(max-width: 900px) {
     .header-controls { flex-direction: column; gap: 15px; }
     .auth-wrapper { position: static; transform: none; }
-    
-    .planner-header { display: none; }
-    .planner-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px 0; padding: 16px; border: 1px solid var(--border); }
-    .planner-row > *:last-child { align-self: flex-end; margin-top: 4px; }
-    
-    .gpa-header { display: none; }
-    .gpa-row { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); border-radius: 12px; margin: 12px 0; padding: 16px; border: 1px solid var(--border); }
-    .gpa-row input { padding: 10px; font-size: 0.9rem; }
-    .gpa-row > *:last-child { align-self: flex-end; margin-top: 4px; }
-    
-    .dash-grid { grid-template-columns: 1fr; }
-    
-    .result-card { flex-direction: column; gap: 15px; }
-    .result-group, .overall-gpa-box { width: 100%; }
-    .result-meta { width: 100%; justify-content: space-between; margin: 0; flex-wrap: wrap; }
+    .dash-grid { grid-template-columns: 1fr; } 
   }
 
   @media(max-width: 600px) {
-    .dash-course-row { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    .dash-course-row input { width: 100%; }
-    .dash-course-row .btn-danger { width: 100%; padding: 10px; }
-    
     .tabs { width: 100%; display: flex; }
     .tab-btn { flex: 1; text-align: center; padding: 10px 5px; font-size: 0.85rem; }
-    .actions { flex-direction: column; align-items: stretch; }
-    .actions button { width: 100%; margin-right: 0 !important; }
-    .actions > div { width: 100%; justify-content: center; }
-    
     .dash-draft-chip { width: 100%; }
     .modal-box { padding: 20px; }
   }
@@ -361,10 +348,12 @@
 
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
-      <div class="planner-header">
-        <div>نام درس</div><div>تعداد واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
+      <div class="scroll-container">
+          <div class="planner-header">
+            <div>نام درس</div><div>تعداد واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
+          </div>
+          <div id="planner-list"></div>
       </div>
-      <div id="planner-list"></div>
       
       <div class="actions">
         <button class="btn btn-primary" onclick="addPlannerCourse()">
@@ -372,7 +361,7 @@
         </button>
         <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
         <button class="btn btn-ghost" onclick="savePlannerDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
-        <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px; flex-shrink: 0;">
           <span style="font-size:0.78rem; color:var(--muted); white-space:nowrap;">ماه‌های امتحانی:</span>
           <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد — تیر</button>
           <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی — بهمن</button>
@@ -416,10 +405,12 @@
     </div>
 
     <div class="card-wrapper">
-      <div class="gpa-header">
-        <div>نام درس (اختیاری)</div><div style="text-align:center">واحد</div><div style="text-align:center">نمره (۰–۲۰)</div><div></div>
+      <div class="scroll-container">
+          <div class="gpa-header">
+            <div>نام درس (اختیاری)</div><div style="text-align:center">واحد</div><div style="text-align:center">نمره (۰–۲۰)</div><div></div>
+          </div>
+          <div id="gpa-list"><div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div></div>
       </div>
-      <div id="gpa-list"><div class="empty-row">هنوز درسی اضافه نشده. روی «افزودن درس» کلیک کنید.</div></div>
       
       <div id="gpa-target-panel" class="target-panel">
         <div class="target-header">
@@ -505,7 +496,9 @@
     <h3 style="font-size: 1.1rem; margin: 25px 0 10px; color: var(--accent);">📚 دروس ثابت ترم من</h3>
     <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا در سیستم فقط با یک دکمه فراخوانی شوند.</div>
     
-    <div id="dash-courses-list"></div>
+    <div class="scroll-container" style="min-height: auto; border: 1px solid var(--border); border-radius: 12px; padding: 10px;">
+        <div id="dash-courses-list"></div>
+    </div>
     <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(255,255,255,0.2);" onclick="addDashCourse()">+ افزودن درس جدید به پنل</button>
 
     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
@@ -578,22 +571,12 @@
 </footer>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDjvY_yEysjMCpmYGEbETDwKmFYdy8yPAc",
-    authDomain: "co-student-765de.firebaseapp.com",
-    projectId: "co-student-765de",
-    storageBucket: "co-student-765de.firebasestorage.app",
-    messagingSenderId: "305986820338",
-    appId: "1:305986820338:web:e8971a40cc20c04afe986b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  const supabaseUrl = 'https://mkockoyoiuitzzimeorr.supabase.co';
+  const supabaseKey = '<YOUR_ANON_KEY>';
+  
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   let isLoginMode = true;
   window.userProfileData = { courses: [] };
@@ -611,10 +594,7 @@
       }, 3000);
   };
 
-  // توابع پاپ‌آپ‌های اختصاصی سایت (با قابلیت تغییر ورودی برای پسورد و نوشته)
-  window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
-  window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
-  
+  // توابع پاپ‌آپ‌های اختصاصی سایت
   window.showCustomPrompt = (msg, defaultVal, callback, type = 'text') => { 
       document.getElementById('custom-prompt-msg').innerText = msg; 
       
@@ -635,6 +615,9 @@
           callback(activeInp.value); 
       }; 
   };
+  
+  window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
+  window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
   window.closeCustomPrompt = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); };
 
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
@@ -670,6 +653,7 @@
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(supabaseKey === '<YOUR_ANON_KEY>') { errorBox.innerText = "لطفاً کلید API سوپابیس را در کد قرار دهید."; errorBox.style.display = 'block'; return; }
     
     btn.disabled = true;
     spinner.style.display = 'inline-block';
@@ -681,53 +665,55 @@
           let loginEmail = identifier;
           
           if(!identifier.includes('@')) {
-              const usersRef = collection(db, "users");
-              const q = query(usersRef, where("username", "==", identifier));
-              const querySnapshot = await getDocs(q);
-              if(querySnapshot.empty) {
-                  throw new Error("user-not-found");
-              }
-              loginEmail = querySnapshot.docs[0].data().email;
+              const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
+              if(error || !data) throw new Error("user-not-found");
+              loginEmail = data.email;
           }
 
-          await signInWithEmailAndPassword(auth, loginEmail, pass);
+          const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
+          if(signInError) throw signInError;
+          
           closeAuthModal();
           window.showToast('با موفقیت وارد شدید.');
       } else {
           const username = document.getElementById('auth-username').value.trim();
           if(!username) { throw new Error("no-username"); }
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { throw new Error("invalid-username"); }
-          
           if(!emailRegex.test(identifier)) { throw new Error("invalid-email-format"); }
 
-          const usersRef = collection(db, "users");
-          const q = query(usersRef, where("username", "==", username));
-          const querySnapshot = await getDocs(q);
-          if(!querySnapshot.empty) { throw new Error("username-taken"); }
+          const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).maybeSingle();
+          if(existingUser) throw new Error("username-taken");
 
-          const userCred = await createUserWithEmailAndPassword(auth, identifier, pass);
+          const { data: userCred, error: signUpError } = await supabase.auth.signUp({ email: identifier, password: pass });
+          if(signUpError) throw signUpError;
           
-          await setDoc(doc(db, "users", userCred.user.uid), { 
-              email: identifier, 
-              username: username,
-              profile: { courses: [] }
-          }, { merge: true });
+          if(userCred.user) {
+              const { error: dbError } = await supabase.from('users').insert([{
+                  id: userCred.user.id,
+                  email: identifier,
+                  username: username,
+                  profile: { courses: [] },
+                  "gpaDrafts": [],
+                  "plannerDrafts": []
+              }]);
+              if(dbError) console.error("Error creating profile:", dbError);
+          }
 
           closeAuthModal();
           window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
       }
     } catch (error) {
       errorBox.style.display = 'block';
-      if(error.message === "no-username") errorBox.innerText = "لطفاً نام کاربری را وارد کنید.";
-      else if(error.message === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
-      else if(error.message === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
-      else if(error.message === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
-      else if(error.message === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
-      else if(error.code === 'auth/email-already-in-use') errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
-      else if(error.code === 'auth/invalid-email') errorBox.innerText = "فرمت ایمیل نامعتبر است.";
-      else if(error.code === 'auth/weak-password') errorBox.innerText = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
-      else if(error.code === 'auth/invalid-credential') errorBox.innerText = "اطلاعات ورود اشتباه است.";
-      else errorBox.innerText = "خطایی رخ داد. مجدداً تلاش کنید.";
+      let errStr = error.message || "";
+      if(errStr === "no-username") errorBox.innerText = "لطفاً نام کاربری را وارد کنید.";
+      else if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
+      else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
+      else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
+      else if(errStr === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
+      else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
+      else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
+      else if(errStr.includes("Password should be")) errorBox.innerText = "رمز عبور ضعیف است.";
+      else errorBox.innerText = "خطا: " + errStr;
     } finally {
       btn.disabled = false;
       spinner.style.display = 'none';
@@ -736,28 +722,28 @@
   }
 
   window.logoutApp = () => { 
-      window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", () => {
-          signOut(auth); 
+      window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", async () => {
+          await supabase.auth.signOut(); 
           window.closeDashboardModal();
           window.showToast('از حساب کاربری خارج شدید.');
       });
   }
 
-  // ارسال پیام برای ادمین همراه با Username
   window.triggerFeedback = (type) => {
       if(!window.currentUser) return;
       const titles = { 'bug': 'گزارش مشکل', 'suggestion': 'ارسال نظرات و پیشنهادات' };
       window.showCustomPrompt(`${titles[type]} خود را در کادر زیر بنویسید:`, "", async (text) => {
           if(!text || text.trim() === "") return;
           try {
-              await addDoc(collection(db, "feedbacks"), {
-                  uid: window.currentUser.uid,
+              const { error } = await supabase.from('feedbacks').insert([{
+                  uid: window.currentUser.id,
                   email: window.currentUser.email,
                   username: window.currentUsername || "نامشخص",
                   type: type,
                   message: text,
                   timestamp: Date.now()
-              });
+              }]);
+              if(error) throw error;
               window.showToast("پیام شما با موفقیت برای ادمین ارسال شد.");
           } catch(e) {
               window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error");
@@ -765,26 +751,28 @@
       }, 'textarea');
   };
 
-  onAuthStateChanged(auth, async (user) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
     const loginBtn = document.getElementById('login-trigger-btn');
     const userInfo = document.getElementById('user-info-display');
     const importGpaBtn = document.getElementById('btn-import-gpa-profile');
     const importPlannerBtn = document.getElementById('btn-import-planner-profile');
+    
+    const user = session?.user;
     
     if (user) {
       window.currentUser = user;
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
       
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        
+      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).maybeSingle();
+      
+      if (data && !error) {
         let displayString = data.username ? data.username : user.email.split('@')[0];
         window.currentUsername = displayString;
         document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
 
-        window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
+        window.gpaDrafts = data.gpaDrafts || []; 
+        window.plannerDrafts = data.plannerDrafts || [];
         window.userProfileData = data.profile || { courses: [] };
         window.renderGpaDrafts(); window.renderPlannerDrafts();
         
@@ -813,11 +801,11 @@
       window.showCustomPrompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):", "", async (newPass) => {
           if(!newPass || newPass.length < 6) return window.showCustomAlert("رمز عبور نامعتبر است. حداقل ۶ کاراکتر الزامی است.");
           try {
-              await updatePassword(window.currentUser, newPass);
+              const { error } = await supabase.auth.updateUser({ password: newPass });
+              if(error) throw error;
               window.showToast("رمز عبور با موفقیت تغییر کرد.");
           } catch(e) {
-              if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای این کار باید مجدداً وارد حساب خود شوید."); window.logoutApp(); } 
-              else { window.showToast("خطا در تغییر رمز عبور.", "error"); }
+              window.showToast("خطا در تغییر رمز عبور. در صورت لزوم دوباره وارد شوید.", "error");
           }
       }, 'password');
   };
@@ -825,12 +813,12 @@
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
-              await deleteUser(window.currentUser);
+              await supabase.from('users').delete().eq('id', window.currentUser.id);
+              await supabase.auth.signOut();
               window.showToast("حساب کاربری شما با موفقیت حذف شد.");
               window.closeDashboardModal();
           } catch(e) {
-              if(e.code === 'auth/requires-recent-login') { window.showCustomAlert("برای حذف حساب باید مجدداً وارد سایت شوید."); window.logoutApp(); } 
-              else { window.showToast("خطا در حذف حساب.", "error"); }
+              window.showToast("خطا در حذف حساب.", "error");
           }
       });
   };
@@ -915,7 +903,8 @@
       }
 
       try {
-          await setDoc(doc(db, "users", window.currentUser.uid), { email: window.currentUser.email, profile: window.userProfileData }, { merge: true });
+          const { error } = await supabase.from('users').update({ profile: window.userProfileData }).eq('id', window.currentUser.id);
+          if (error) throw error;
           window.showToast('اطلاعات پنل با موفقیت ذخیره شد.');
           
           if(courses.length > 0) {
@@ -1037,7 +1026,8 @@
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     
     try {
-      await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+      const { error } = await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
+      if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
     } catch (e) { 
       window.showToast('خطا در ذخیره اطلاعات!', 'error'); 
@@ -1052,7 +1042,7 @@
   window.deleteGpaDraft = async (event, id) => {
     event.stopPropagation(); 
     window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-    if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+    if (window.currentUser) await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
     window.renderGpaDrafts(); 
     window.showToast('فایل معدل حذف شد.');
   }
@@ -1064,7 +1054,7 @@
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
           if(newName && newName.trim() !== "") {
               draft.name = newName.trim();
-              if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { gpaDrafts: window.gpaDrafts }, { merge: true });
+              if (window.currentUser) await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
               window.renderGpaDrafts();
               window.showToast('نام فایل تغییر کرد.');
           }
@@ -1087,7 +1077,8 @@
     window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
     
     try {
-      await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+      const { error } = await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
+      if(error) throw error;
       window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
     } catch (e) { 
       window.showToast('خطا در ذخیره اطلاعات!', 'error'); 
@@ -1102,7 +1093,7 @@
   window.deletePlannerDraft = async (event, id) => {
     event.stopPropagation(); 
     window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
-    if(window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+    if(window.currentUser) await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
     window.renderPlannerDrafts(); 
     window.showToast('فایل برنامه حذف شد.');
   }
@@ -1114,7 +1105,7 @@
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
           if(newName && newName.trim() !== "") {
               draft.name = newName.trim();
-              if (window.currentUser) await setDoc(doc(db, "users", window.currentUser.uid), { plannerDrafts: window.plannerDrafts }, { merge: true });
+              if (window.currentUser) await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
               window.renderPlannerDrafts();
               window.showToast('نام فایل تغییر کرد.');
           }

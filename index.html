@@ -571,9 +571,16 @@
 </footer>
 
 <script type="module">
+  // استفاده از نسخه مرورگر Supabase بدون نیاز به Node.js
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+  // آدرس دیتابیس سوپابیس شما
   const supabaseUrl = 'https://mkockoyoiuitzzimeorr.supabase.co';
+  
+  // !!! توجه بسیار مهم !!!
+  // کلیدی که شما فرستادید رمز عبور دیتابیس است، نه کلید اتصال API. 
+  // حتماً عبارت زیر را با کلیدی که با "ey..." شروع می‌شود و در پنل
+  // Project Settings > API > Project API Keys (anon) قرار دارد عوض کنید.
   const supabaseKey = '<YOUR_ANON_KEY>';
   
   const supabase = createClient(supabaseUrl, supabaseKey);
@@ -594,7 +601,7 @@
       }, 3000);
   };
 
-  // توابع پاپ‌آپ‌های اختصاصی سایت
+  // توابع پاپ‌آپ‌های اختصاصی سایت (با قابلیت تغییر ورودی برای پسورد و نوشته)
   window.showCustomPrompt = (msg, defaultVal, callback, type = 'text') => { 
       document.getElementById('custom-prompt-msg').innerText = msg; 
       
@@ -665,11 +672,12 @@
           let loginEmail = identifier;
           
           if(!identifier.includes('@')) {
+              // جستجوی ایمیل با نام کاربری از جدول کاربران
               const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
               if(error || !data) throw new Error("user-not-found");
               loginEmail = data.email;
           }
-
+        
           const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
           if(signInError) throw signInError;
           
@@ -681,23 +689,24 @@
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { throw new Error("invalid-username"); }
           if(!emailRegex.test(identifier)) { throw new Error("invalid-email-format"); }
 
-          const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).maybeSingle();
+          // بررسی اینکه نام کاربری قبلاً وجود نداشته باشد
+          const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
           if(existingUser) throw new Error("username-taken");
 
           const { data: userCred, error: signUpError } = await supabase.auth.signUp({ email: identifier, password: pass });
           if(signUpError) throw signUpError;
           
-          if(userCred.user) {
-              const { error: dbError } = await supabase.from('users').insert([{
-                  id: userCred.user.id,
-                  email: identifier,
-                  username: username,
-                  profile: { courses: [] },
-                  "gpaDrafts": [],
-                  "plannerDrafts": []
-              }]);
-              if(dbError) console.error("Error creating profile:", dbError);
-          }
+          // ساخت رکورد اختصاصی کاربر در دیتابیس سوپابیس
+          const { error: dbError } = await supabase.from('users').insert([{
+              id: userCred.user.id,
+              email: identifier,
+              username: username,
+              profile: { courses: [] },
+              gpaDrafts: [],
+              plannerDrafts: []
+          }]);
+          
+          if(dbError) console.error("Error creating user profile:", dbError);
 
           closeAuthModal();
           window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
@@ -729,6 +738,7 @@
       });
   }
 
+  // ارسال پیام برای ادمین در دیتابیس Supabase
   window.triggerFeedback = (type) => {
       if(!window.currentUser) return;
       const titles = { 'bug': 'گزارش مشکل', 'suggestion': 'ارسال نظرات و پیشنهادات' };
@@ -751,6 +761,7 @@
       }, 'textarea');
   };
 
+  // بررسی وضعیت ورود و تغییرات
   supabase.auth.onAuthStateChange(async (event, session) => {
     const loginBtn = document.getElementById('login-trigger-btn');
     const userInfo = document.getElementById('user-info-display');
@@ -764,7 +775,7 @@
       loginBtn.style.display = 'none';
       userInfo.style.display = 'flex';
       
-      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).maybeSingle();
+      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
       
       if (data && !error) {
         let displayString = data.username ? data.username : user.email.split('@')[0];
@@ -812,6 +823,8 @@
 
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
+          // در Supabase برای امنیت بالاتر حذف کامل کاربر از کلاینت نیازمند تنظیمات خاص یا توابع ادمین است.
+          // با این حال ما دیتای فرد را از دیتابیس پاک کرده و او را خارج می‌کنیم تا اکانت مسدود شود.
           try {
               await supabase.from('users').delete().eq('id', window.currentUser.id);
               await supabase.auth.signOut();
@@ -1026,7 +1039,7 @@
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     
     try {
-      const { error } = await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
+      const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
     } catch (e) { 
@@ -1042,7 +1055,7 @@
   window.deleteGpaDraft = async (event, id) => {
     event.stopPropagation(); 
     window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-    if (window.currentUser) await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
+    if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
     window.renderGpaDrafts(); 
     window.showToast('فایل معدل حذف شد.');
   }
@@ -1054,7 +1067,7 @@
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
           if(newName && newName.trim() !== "") {
               draft.name = newName.trim();
-              if (window.currentUser) await supabase.from('users').update({ "gpaDrafts": window.gpaDrafts }).eq('id', window.currentUser.id);
+              if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
               window.renderGpaDrafts();
               window.showToast('نام فایل تغییر کرد.');
           }
@@ -1077,7 +1090,7 @@
     window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
     
     try {
-      const { error } = await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
+      const { error } = await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
     } catch (e) { 
@@ -1093,7 +1106,7 @@
   window.deletePlannerDraft = async (event, id) => {
     event.stopPropagation(); 
     window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
-    if(window.currentUser) await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
+    if(window.currentUser) await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
     window.renderPlannerDrafts(); 
     window.showToast('فایل برنامه حذف شد.');
   }
@@ -1105,7 +1118,7 @@
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
           if(newName && newName.trim() !== "") {
               draft.name = newName.trim();
-              if (window.currentUser) await supabase.from('users').update({ "plannerDrafts": window.plannerDrafts }).eq('id', window.currentUser.id);
+              if (window.currentUser) await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
               window.renderPlannerDrafts();
               window.showToast('نام فایل تغییر کرد.');
           }

@@ -677,7 +677,7 @@
               if(error || !data) throw new Error("user-not-found");
               loginEmail = data.email;
           }
-        
+
           const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
           if(signInError) throw signInError;
           

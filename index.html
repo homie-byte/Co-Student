@@ -163,17 +163,16 @@
   
   .autocomplete-wrap { position: relative; width: 100%; }
   
-  /* FIXED: Autocomplete to the front layer, fully opaque background */
+  /* Autocomplete - Floating Front Layer */
   .autocomplete-list { position: fixed; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 999999; box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 220px; overflow-y: auto; opacity: 1; }
   .autocomplete-item { padding: 9px 14px; font-size: .84rem; cursor: pointer; border-bottom: 1px solid rgba(42,53,80,.4); text-align: right; }
   .autocomplete-item:last-child { border-bottom: none; }
-  .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
+  .autocomplete-item:hover, .autocomplete-item:active { background: rgba(79,142,247,0.18); color: var(--accent); }
   .autocomplete-item mark { background: none; color: var(--gold); font-weight: 700; }
 
   /* --- Target Panel --- */
   .target-panel { display: none; flex-direction: column; gap: 16px; padding: 20px; background: rgba(0,0,0,0.2); border-top: 1px dashed var(--border); animation: fadeUp 0.3s; }
   
-  /* FIXED: Target header layout for Smart Buttons */
   .target-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .target-header span.lbl { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
   .target-header input { flex: 1 1 100px; max-width: 130px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
@@ -617,8 +616,12 @@
           let loginEmail = identifier;
           if(!identifier.includes('@')) {
               const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
-              if(error || !data) throw new Error("user-not-found");
-              loginEmail = data.email;
+              if(error || !data) {
+                  // Fallback: Use the generated domain in case RLS blocked the lookup read
+                  loginEmail = identifier + "@costudent.local";
+              } else {
+                  loginEmail = data.email;
+              }
           }
           const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
           if(signInError) throw signInError;
@@ -630,7 +633,7 @@
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) throw new Error("invalid-username");
           
           let finalEmail = identifier;
-          if (finalEmail === "") { finalEmail = username + "@costudent.local"; } // ایمیل مجازی در صورت عدم ورود
+          if (finalEmail === "") { finalEmail = username + "@costudent.local"; } 
           else if(!emailRegex.test(finalEmail)) throw new Error("invalid-email-format");
 
           const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
@@ -639,7 +642,7 @@
           const { data: userCred, error: signUpError } = await supabase.auth.signUp({ 
               email: finalEmail, 
               password: pass,
-              options: { data: { username: username } } // ذخیره در دیتای Auth کاربر
+              options: { data: { username: username } }
           });
           if(signUpError) throw signUpError;
           
@@ -648,7 +651,7 @@
               profile: { courses: [] }, gpaDrafts: [], plannerDrafts: []
           }]);
           
-          if(dbError) console.error("Error creating user profile:", dbError);
+          if(dbError) console.error("Database insert blocked/failed, Auth healing will run on next load.", dbError);
           closeAuthModal(); window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
       }
     } catch (error) {
@@ -658,7 +661,6 @@
       else if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
       else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
       else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
-      else if(errStr === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد (مطمئن شوید دستورات SQL سوپابیس اجرا شده باشند).";
       else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل/کاربر قبلاً ثبت شده است.";
       else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
       else if(errStr.includes("Password should be")) errorBox.innerText = "رمز عبور ضعیف است.";
@@ -699,16 +701,33 @@
     
     if (user) {
       window.currentUser = user; loginBtn.style.display = 'none'; userInfo.style.display = 'flex';
-      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
+      
+      // Self-Healing Database Sync: Ensures the users row exists securely!
+      let { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
+      
+      if (error && error.code === 'PGRST116') {
+          const newRow = {
+              id: user.id,
+              email: user.email,
+              username: user.user_metadata?.username || user.email.split('@')[0],
+              profile: { courses: [] },
+              gpaDrafts: [],
+              plannerDrafts: []
+          };
+          await supabase.from('users').insert([newRow]);
+          data = newRow;
+          error = null;
+      }
       
       if (data && !error) {
         let displayString = data.username ? data.username : user.email.split('@')[0];
         window.currentUsername = displayString;
         document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
-        window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
+        window.gpaDrafts = data.gpaDrafts || []; 
+        window.plannerDrafts = data.plannerDrafts || [];
         window.userProfileData = data.profile || { courses: [] };
-        window.renderGpaDrafts(); window.renderPlannerDrafts();
         
+        window.renderGpaDrafts(); window.renderPlannerDrafts();
         if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
             importGpaBtn.style.display = 'inline-flex'; importPlannerBtn.style.display = 'inline-flex';
         }
@@ -742,7 +761,6 @@
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
-              // حذف از دیتابیس جداول
               await supabase.from('feedbacks').delete().eq('uid', window.currentUser.id);
               await supabase.from('users').delete().eq('id', window.currentUser.id);
               await supabase.auth.signOut();
@@ -796,7 +814,16 @@
           let dd = document.createElement('div'); dd.className = 'autocomplete-list';
           sug.forEach(s => {
               let item = document.createElement('div'); item.className='autocomplete-item'; item.innerHTML = window.highlight(s, val);
-              item.onmousedown = (e) => { e.preventDefault(); nameInp.value = s; if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s]; window.closeAllAutocomplete(); };
+              
+              const selectAction = (e) => { 
+                  e.preventDefault(); 
+                  nameInp.value = s; 
+                  if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s]; 
+                  window.closeAllAutocomplete(); 
+              };
+              item.onmousedown = selectAction;
+              item.ontouchstart = selectAction;
+
               dd.appendChild(item);
           });
           document.body.appendChild(dd);
@@ -830,7 +857,7 @@
           window.showToast('اطلاعات پنل با موفقیت ذخیره شد.');
           if(courses.length > 0) { document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex'; document.getElementById('btn-import-planner-profile').style.display = 'inline-flex'; } else { document.getElementById('btn-import-gpa-profile').style.display = 'none'; document.getElementById('btn-import-planner-profile').style.display = 'none'; }
           if(typeof window.calcGpa === 'function') window.calcGpa();
-      } catch(e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally {
+      } catch(e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally {
           if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; }
       }
   }
@@ -883,7 +910,7 @@
       const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
-    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
   window.deleteGpaDraft = async (event, id) => {
@@ -913,7 +940,7 @@
       const { error } = await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
-    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
   window.deletePlannerDraft = async (event, id) => {
@@ -928,6 +955,10 @@
           if(newName && newName.trim() !== "") { draft.name = newName.trim(); if (window.currentUser) await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id); window.renderPlannerDrafts(); window.showToast('نام فایل تغییر کرد.'); }
       }, 'text');
   }
+
+  // Prevent dropdown detachment on scroll
+  window.addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
+  document.querySelector('.dashboard-modal').addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
 </script>
 
 <script>
@@ -951,8 +982,13 @@
   window.getSuggestions = function(query) { if (!query || query.trim().length < 1) return []; let q = query.trim(); let exact = PHYSICS_CHART.filter(s => s.startsWith(q)); let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q)); let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q)); return [...exact, ...includes, ...fuzzy].slice(0, 5); }
   
   window.closeAllAutocomplete = function() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
-  document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-wrap')) window.closeAllAutocomplete(); });
-  window.addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
+  
+  // Exception added for autocomplete-list itself so mobile taps don't close it instantly
+  document.addEventListener('click', (e) => { 
+      if (!e.target.closest('.autocomplete-wrap') && !e.target.closest('.autocomplete-list')) {
+          window.closeAllAutocomplete(); 
+      }
+  });
   
   function setupAutocomplete(id, inputEl, arrayRef, type) {
     inputEl.addEventListener('input', () => {
@@ -965,7 +1001,28 @@
       let dd = document.createElement('div'); dd.className = 'autocomplete-list';
       sug.forEach(s => {
         let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = window.highlight(s, val);
-        item.onmousedown = (e) => { e.preventDefault(); inputEl.value = s; let t = arrayRef.find(c => c.id === id); if(t) { t.name = s; if (window.COURSE_DB[s]) { t.units = window.COURSE_DB[s].toString(); let uInput = inputEl.parentNode.nextElementSibling; if(uInput) uInput.value = t.units; } } window.closeAllAutocomplete(); if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } else { handleUnitOrTimeChange(t, true, false); renderPlanner(); } };
+        
+        // Touch & Mouse Support ensuring logic triggers before blur kills the list
+        const selectAction = (e) => { 
+            e.preventDefault(); 
+            inputEl.value = s; 
+            let t = arrayRef.find(c => c.id === id); 
+            if(t) { 
+                t.name = s; 
+                if (window.COURSE_DB[s]) { 
+                    t.units = window.COURSE_DB[s].toString(); 
+                    let uInput = inputEl.parentNode.nextElementSibling; 
+                    if(uInput) uInput.value = t.units; 
+                } 
+            } 
+            window.closeAllAutocomplete(); 
+            if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } 
+            else { handleUnitOrTimeChange(t, true, false); renderPlanner(); } 
+        };
+        
+        item.onmousedown = selectAction;
+        item.ontouchstart = selectAction;
+        
         dd.appendChild(item);
       });
       
@@ -1248,13 +1305,28 @@
       let row = document.createElement('div'); row.className = 'planner-row'; row.id = `planner-row-${c.id}`;
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap'; let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name; nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.pCourses, 'planner');
       let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد'); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
-      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); if (c.d1 && c.t1 && window.pCourses.length < 5 && c.id === window.pCourses[window.pCourses.length - 1].id) { addPlannerCourse(); } else { renderPlanner(); } }; s1Grp.append(d1Sel, t1Sel);
-      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; s2Grp.append(d2Sel, t2Sel);
+      
+      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); 
+      d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; 
+      t1Sel.onchange = () => { 
+          c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); 
+          if (c.d1 && c.t1 && window.pCourses.length < 5 && c.id === window.pCourses[window.pCourses.length - 1].id) { 
+              addPlannerCourse(); 
+          } else { renderPlanner(); } 
+      }; 
+      s1Grp.append(d1Sel, t1Sel);
+      
+      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); 
+      d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; 
+      t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; 
+      s2Grp.append(d2Sel, t2Sel);
+      
       let examGrp = document.createElement('div'); examGrp.className = 'session-group exam-group'; let dateInps = document.createElement('div'); dateInps.className = 'exam-date-inputs'; let eMonthSel = createMonthSelect(c.examMonth); let eDayInp = document.createElement('input'); eDayInp.type = 'number'; eDayInp.placeholder = 'روز'; eDayInp.value = c.examDay;
       eMonthSel.onchange = () => { c.examMonth = eMonthSel.value; if(!c.examMonth) c.examDay = ''; else { let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString(); } renderPlanner(); };
       eDayInp.addEventListener('input', (e) => { if(!c.examMonth) { e.target.value = ''; return; } let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); let v = parseInt(e.target.value); if (v > max) e.target.value = max; if (v < 1 && e.target.value !== '') e.target.value = 1; c.examDay = e.target.value; }); eDayInp.addEventListener('change', () => renderPlanner());
       dateInps.append(eMonthSel, eDayInp); examGrp.appendChild(dateInps);
       if (c.hasExamConflict) { let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت امتحان'); eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel'; eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); }; examGrp.appendChild(eTimeSel); }
+      
       let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removePlannerCourse(c.id);
       row.append(nameWrap, unitSel, s1Grp, s2Grp, examGrp, delBtn); list.appendChild(row);
     });

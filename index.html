@@ -161,8 +161,10 @@
   .planner-row { padding: 14px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
   .planner-row:last-child { border-bottom: none; }
   
-  .autocomplete-wrap { position: relative; width: 100%; z-index: 50; }
-  .autocomplete-list { position: absolute; top: calc(100% + 4px); right: 0; left: 0; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.6); max-height: 200px; overflow-y: auto; }
+  .autocomplete-wrap { position: relative; width: 100%; }
+  
+  /* FIXED: Autocomplete to the front layer, fully opaque background */
+  .autocomplete-list { position: fixed; background: #1e2d46; border: 1px solid var(--accent); border-radius: 10px; z-index: 999999; box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 220px; overflow-y: auto; opacity: 1; }
   .autocomplete-item { padding: 9px 14px; font-size: .84rem; cursor: pointer; border-bottom: 1px solid rgba(42,53,80,.4); text-align: right; }
   .autocomplete-item:last-child { border-bottom: none; }
   .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
@@ -170,10 +172,15 @@
 
   /* --- Target Panel --- */
   .target-panel { display: none; flex-direction: column; gap: 16px; padding: 20px; background: rgba(0,0,0,0.2); border-top: 1px dashed var(--border); animation: fadeUp 0.3s; }
-  .target-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .target-header input { width: 120px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
+  
+  /* FIXED: Target header layout for Smart Buttons */
+  .target-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .target-header span.lbl { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .target-header input { flex: 1 1 100px; max-width: 130px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
+  .target-header .btn { flex: 1 1 auto; padding: 8px 12px; white-space: nowrap; }
+  
   .target-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-  .target-results:empty { display: none; } /* Fix empty space when empty */
+  .target-results:empty { display: none; }
   .target-guide { font-size: 0.75rem; color: var(--muted); margin-top: 4px; display: none; width: 100%; }
   
   .simulator-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 10px; display: none; animation: fadeUp 0.3s; }
@@ -199,7 +206,6 @@
   /* --- Planner Details --- */
   .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
   .session-group select, .exam-date-inputs select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); text-align: center; text-align-last: center; }
-  .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
   .exam-group { flex-direction: column; gap: 4px; padding: 6px; align-items: stretch; justify-content: center; }
   .exam-date-inputs { display: flex; gap: 4px; width: 100%; }
   .exam-date-inputs select { flex: 1.3; }
@@ -270,11 +276,9 @@
     .header-controls { flex-direction: column; gap: 15px; }
     .auth-wrapper { position: static; transform: none; width: 100%; justify-content: center; }
     
-    /* رفع فضاهای خالی کارت‌های معدل در موبایل */
     .result-card { flex-direction: column; flex-wrap: nowrap; gap: 12px; }
     .result-group, .overall-gpa-box, .result-meta { width: 100%; min-width: unset; margin: 0; }
     
-    /* شبکه‌ای کردن دکمه‌ها در موبایل */
     .actions { padding: 12px; justify-content: stretch; }
     .actions button { flex: 1 1 calc(50% - 10px); min-width: 140px; padding: 10px; }
     .actions > div { flex: 1 1 100%; justify-content: center; margin-bottom: 5px; }
@@ -381,11 +385,11 @@
       
       <div id="gpa-target-panel" class="target-panel">
         <div class="target-header">
-          <span style="font-size: 0.9rem; font-weight: 600;">می‌خواهم معدلم بشود:</span>
+          <span class="lbl">می‌خواهم معدلم بشود:</span>
           <input type="number" id="target-gpa-input" placeholder="مثلاً ۱۷.۵" step="0.1" min="10" max="20">
-          <button class="btn btn-primary" onclick="calculateTarget()" style="padding: 6px 14px;">پیشنهاد هوشمند</button>
+          <button class="btn btn-primary" onclick="calculateTarget()">پیشنهاد هوشمند</button>
           <button class="btn btn-ghost" onclick="toggleSimulator()" id="sim-toggle-btn" style="display:none; color:var(--accent); border-color:var(--accent);">🎛️ تنظیم دستی</button>
-          <button class="btn btn-danger" onclick="resetTargetSimulation()" style="padding: 6px 12px; margin-right: auto;">⟲ بازگرداندن</button>
+          <button class="btn btn-danger" onclick="resetTargetSimulation()">⟲ بازگرداندن</button>
         </div>
         <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها کلیک کنید.</span>
         <div id="target-results" class="target-results"></div>
@@ -468,6 +472,10 @@
     </div>
     <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(255,255,255,0.2);" onclick="addDashCourse()">+ افزودن درس جدید به پنل</button>
 
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="saveDashboardProfile(this)" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات پنل</button>
+    </div>
+
     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
     <h3 style="font-size: 1.1rem; color: var(--gold); margin-bottom: 15px;">💾 فایل‌های ذخیره شده من</h3>
     <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">برای اجرای هر فایل، روی نام آن کلیک کنید.</div>
@@ -475,10 +483,6 @@
     <div id="dash-saved-items-container" style="display:flex; flex-direction:column; gap:15px;">
        <div id="dash-gpa-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-    </div>
-
-    <div style="display: flex; justify-content: center; margin-top: 30px;">
-        <button class="btn btn-primary" onclick="saveDashboardProfile(this)" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات پنل</button>
     </div>
 
     <div style="margin-top: 30px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
@@ -589,7 +593,7 @@
         document.getElementById('auth-identifier').placeholder = "ایمیل یا نام کاربری";
     } else {
         document.getElementById('auth-username').style.display = 'block';
-        document.getElementById('auth-identifier').placeholder = "ایمیل خود را وارد کنید";
+        document.getElementById('auth-identifier').placeholder = "ایمیل خود را وارد کنید (اختیاری)";
     }
   }
 
@@ -602,7 +606,9 @@
     const btnText = document.getElementById('auth-btn-text');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(!isLoginMode && !document.getElementById('auth-username').value.trim()) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(isLoginMode && !identifier) { errorBox.innerText = "لطفاً نام کاربری یا ایمیل را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(!pass) { errorBox.innerText = "لطفاً رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
     
     btn.disabled = true; spinner.style.display = 'inline-block'; btnText.style.display = 'none'; errorBox.style.display = 'none';
 
@@ -622,16 +628,23 @@
           const username = document.getElementById('auth-username').value.trim();
           if(!username) throw new Error("no-username");
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) throw new Error("invalid-username");
-          if(!emailRegex.test(identifier)) throw new Error("invalid-email-format");
+          
+          let finalEmail = identifier;
+          if (finalEmail === "") { finalEmail = username + "@costudent.local"; } // ایمیل مجازی در صورت عدم ورود
+          else if(!emailRegex.test(finalEmail)) throw new Error("invalid-email-format");
 
           const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
           if(existingUser) throw new Error("username-taken");
 
-          const { data: userCred, error: signUpError } = await supabase.auth.signUp({ email: identifier, password: pass });
+          const { data: userCred, error: signUpError } = await supabase.auth.signUp({ 
+              email: finalEmail, 
+              password: pass,
+              options: { data: { username: username } } // ذخیره در دیتای Auth کاربر
+          });
           if(signUpError) throw signUpError;
           
           const { error: dbError } = await supabase.from('users').insert([{
-              id: userCred.user.id, email: identifier, username: username,
+              id: userCred.user.id, email: finalEmail, username: username,
               profile: { courses: [] }, gpaDrafts: [], plannerDrafts: []
           }]);
           
@@ -646,7 +659,7 @@
       else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
       else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
       else if(errStr === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد (مطمئن شوید دستورات SQL سوپابیس اجرا شده باشند).";
-      else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
+      else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل/کاربر قبلاً ثبت شده است.";
       else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
       else if(errStr.includes("Password should be")) errorBox.innerText = "رمز عبور ضعیف است.";
       else errorBox.innerText = "خطا: " + errStr;
@@ -729,6 +742,8 @@
   window.triggerDeleteAccount = () => {
       window.showCustomConfirm("آیا از حذف دائم اکانت و تمام اطلاعات خود مطمئن هستید؟", async () => {
           try {
+              // حذف از دیتابیس جداول
+              await supabase.from('feedbacks').delete().eq('uid', window.currentUser.id);
               await supabase.from('users').delete().eq('id', window.currentUser.id);
               await supabase.auth.signOut();
               window.showToast("حساب کاربری شما با موفقیت حذف شد."); window.closeDashboardModal();
@@ -776,7 +791,7 @@
       let nameInp = div.querySelector('.dc-name'); let unitInp = div.querySelector('.dc-units');
       nameInp.addEventListener('input', () => {
           let val = nameInp.value;
-          let ex = nameInp.parentNode.querySelector('.autocomplete-list'); if(ex) ex.remove();
+          window.closeAllAutocomplete();
           let sug = window.getSuggestions(val); if(sug.length===0) return;
           let dd = document.createElement('div'); dd.className = 'autocomplete-list';
           sug.forEach(s => {
@@ -784,7 +799,12 @@
               item.onmousedown = (e) => { e.preventDefault(); nameInp.value = s; if(window.COURSE_DB[s]) unitInp.value = window.COURSE_DB[s]; window.closeAllAutocomplete(); };
               dd.appendChild(item);
           });
-          nameInp.parentNode.appendChild(dd);
+          document.body.appendChild(dd);
+          
+          let rect = nameInp.getBoundingClientRect();
+          dd.style.top = (rect.bottom + 2) + 'px';
+          dd.style.left = rect.left + 'px';
+          dd.style.width = rect.width + 'px';
       });
   }
   window.addDashCourse = () => { appendDashCourseRow(); }
@@ -929,22 +949,32 @@
   
   window.highlight = function(str, query) { let res = [], s = str, q = query.toLowerCase(), qi = 0; for (let i = 0; i < s.length; i++) { if (qi < q.length && s[i].toLowerCase() === q[qi]) { res.push(`<mark>${s[i]}</mark>`); qi++; } else res.push(s[i]); } return res.join(''); }
   window.getSuggestions = function(query) { if (!query || query.trim().length < 1) return []; let q = query.trim(); let exact = PHYSICS_CHART.filter(s => s.startsWith(q)); let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q)); let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q)); return [...exact, ...includes, ...fuzzy].slice(0, 5); }
+  
   window.closeAllAutocomplete = function() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
   document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-wrap')) window.closeAllAutocomplete(); });
-
+  window.addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
+  
   function setupAutocomplete(id, inputEl, arrayRef, type) {
     inputEl.addEventListener('input', () => {
       let val = inputEl.value; let target = arrayRef.find(c => c.id === id); if(target) target.name = val;
       if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } else { drawTimetable(); updatePlannerStats(); drawTimeline(); }
-      let ex = inputEl.parentNode.querySelector('.autocomplete-list'); if (ex) ex.remove();
+      
+      window.closeAllAutocomplete();
       let sug = window.getSuggestions(val); if (sug.length === 0) return;
+      
       let dd = document.createElement('div'); dd.className = 'autocomplete-list';
       sug.forEach(s => {
         let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = window.highlight(s, val);
         item.onmousedown = (e) => { e.preventDefault(); inputEl.value = s; let t = arrayRef.find(c => c.id === id); if(t) { t.name = s; if (window.COURSE_DB[s]) { t.units = window.COURSE_DB[s].toString(); let uInput = inputEl.parentNode.nextElementSibling; if(uInput) uInput.value = t.units; } } window.closeAllAutocomplete(); if(type === 'gpa') { calcGpa(); clearTargetResults(); updateInteractiveSimData(); } else { handleUnitOrTimeChange(t, true, false); renderPlanner(); } };
         dd.appendChild(item);
       });
-      inputEl.parentNode.appendChild(dd);
+      
+      document.body.appendChild(dd);
+      
+      let rect = inputEl.getBoundingClientRect();
+      dd.style.top = (rect.bottom + 2) + 'px';
+      dd.style.left = rect.left + 'px';
+      dd.style.width = rect.width + 'px';
     });
   }
 
@@ -1186,7 +1216,16 @@
   let pIdCounter = 0;
   function addPlannerCourse(data = {}) { window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); renderPlanner(); }
   function removePlannerCourse(id) { window.pCourses = window.pCourses.filter(c => c.id !== id); renderPlanner(); }
-  function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { let u = parseInt(c.units) || 1; if (u > 1 && c.d1 && c.t1) { if (isSession1Change || isUnitChange) { let dIdx = DAYS.indexOf(c.d1); if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; } } } if (u === 1) { c.d2 = ''; c.t2 = ''; } }
+  function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { 
+      let u = parseInt(c.units) || 1; 
+      // فقط دروس ۳ واحدی و بیشتر به‌صورت خودکار جلسه دوم را پر می‌کنند
+      if (u > 2 && c.d1 && c.t1) { 
+          if (isSession1Change || isUnitChange) { 
+              let dIdx = DAYS.indexOf(c.d1); 
+              if (dIdx >= 0 && dIdx <= 2) { c.d2 = DAYS[dIdx + 2]; c.t2 = c.t1; } 
+          } 
+      } 
+  }
 
   window.importPlannerFromProfile = () => {
       if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showToast('درسی در پنل برای فراخوانی وجود ندارد.', 'error');
@@ -1209,8 +1248,8 @@
       let row = document.createElement('div'); row.className = 'planner-row'; row.id = `planner-row-${c.id}`;
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap'; let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name; nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.pCourses, 'planner');
       let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد'); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
-      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; s1Grp.append(d1Sel, t1Sel);
-      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let is1Unit = parseInt(c.units) === 1; if (is1Unit) s2Grp.classList.add('disabled-session'); let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; if (is1Unit) { d2Sel.disabled = true; t2Sel.disabled = true; } s2Grp.append(d2Sel, t2Sel);
+      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; t1Sel.onchange = () => { c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); if (c.d1 && c.t1 && window.pCourses.length < 5 && c.id === window.pCourses[window.pCourses.length - 1].id) { addPlannerCourse(); } else { renderPlanner(); } }; s1Grp.append(d1Sel, t1Sel);
+      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; s2Grp.append(d2Sel, t2Sel);
       let examGrp = document.createElement('div'); examGrp.className = 'session-group exam-group'; let dateInps = document.createElement('div'); dateInps.className = 'exam-date-inputs'; let eMonthSel = createMonthSelect(c.examMonth); let eDayInp = document.createElement('input'); eDayInp.type = 'number'; eDayInp.placeholder = 'روز'; eDayInp.value = c.examDay;
       eMonthSel.onchange = () => { c.examMonth = eMonthSel.value; if(!c.examMonth) c.examDay = ''; else { let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString(); } renderPlanner(); };
       eDayInp.addEventListener('input', (e) => { if(!c.examMonth) { e.target.value = ''; return; } let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); let v = parseInt(e.target.value); if (v > max) e.target.value = max; if (v < 1 && e.target.value !== '') e.target.value = 1; c.examDay = e.target.value; }); eDayInp.addEventListener('change', () => renderPlanner());

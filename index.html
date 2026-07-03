@@ -76,6 +76,10 @@
   .auth-modal .btn-primary { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; height: 48px; }
   .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
   .auth-switch:hover { color: var(--accent); }
+  
+  .features-link { font-size: 0.85rem; color: var(--accent); text-align: center; margin-top: 12px; cursor: pointer; font-weight: bold; transition: all 0.2s ease; }
+  .features-link:hover { color: var(--accent2); transform: translateY(-2px); }
+  
   .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
 
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
@@ -437,21 +441,19 @@
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
-    <h2 id="auth-title">ورود به حساب کاربری</h2>
-    
-    <div style="font-size: 0.85rem; color: var(--accent); text-align: center; margin-bottom: 20px; cursor: pointer; text-decoration: underline; font-weight: bold;" onclick="openFeaturesModal()">
-        مشاهده قابلیت‌های حساب کاربری
-    </div>
+    <h2 id="auth-title">ثبت‌نام کاربر جدید</h2>
 
     <div id="auth-error" class="auth-error"></div>
-    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" autocomplete="off">
+    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" autocomplete="off" style="display: block;">
+    <input type="text" id="auth-identifier" placeholder="ایمیل خود را وارد کنید (اختیاری)" autocomplete="off">
     <input type="password" id="auth-password" placeholder="رمز عبور" autocomplete="new-password">
     
     <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">
         <span class="spinner" id="auth-spinner"></span>
-        <span id="auth-btn-text">ورود</span>
+        <span id="auth-btn-text">ثبت‌نام</span>
     </button>
-    <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
+    <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">قبلاً ثبت‌نام کرده‌اید؟ وارد شوید</div>
+    <div class="features-link" onclick="openFeaturesModal()">مشاهده قابلیت‌های حساب کاربری</div>
   </div>
 </div>
 
@@ -578,7 +580,7 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rb2Nrb3lvaXVpdHp6aW1lb3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjUwMTUsImV4cCI6MjA5ODYwMTAxNX0.tpjk0PxW7hzdpv2aCSrskq3vS--99dTk-urVwZF_5Rs';
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  let isLoginMode = true;
+  let isLoginMode = false; // حالت پیش‌فرض فرم روی ثبت‌نام قرار گرفت
   window.userProfileData = { courses: [] };
 
   window.showToast = (msg, type = 'success') => {
@@ -622,28 +624,40 @@
     document.getElementById('auth-btn-text').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
     document.getElementById('auth-switch-btn').innerText = isLoginMode ? "حساب ندارید؟ ثبت‌نام کنید" : "قبلاً ثبت‌نام کرده‌اید؟ وارد شوید";
     document.getElementById('auth-error').style.display = 'none';
+
+    if(isLoginMode) {
+        document.getElementById('auth-username').style.display = 'none';
+        document.getElementById('auth-identifier').placeholder = "ایمیل یا نام کاربری";
+        document.getElementById('auth-identifier').value = '';
+    } else {
+        document.getElementById('auth-username').style.display = 'block';
+        document.getElementById('auth-identifier').placeholder = "ایمیل خود را وارد کنید (اختیاری)";
+        document.getElementById('auth-identifier').value = '';
+    }
   }
 
   window.handleAuthSubmit = async () => {
-    const username = document.getElementById('auth-username').value.trim();
+    const identifier = document.getElementById('auth-identifier').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
     const btn = document.getElementById('auth-submit-btn');
     const spinner = document.getElementById('auth-spinner');
     const btnText = document.getElementById('auth-btn-text');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    if(!username) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(!isLoginMode && !document.getElementById('auth-username').value.trim()) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(isLoginMode && !identifier) { errorBox.innerText = "لطفاً نام کاربری یا ایمیل را وارد کنید."; errorBox.style.display = 'block'; return; }
     if(!pass) { errorBox.innerText = "لطفاً رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
     
     btn.disabled = true; spinner.style.display = 'inline-block'; btnText.style.display = 'none'; errorBox.style.display = 'none';
 
     try {
       if(isLoginMode) {
-          let loginEmail = username;
-          if(!username.includes('@')) {
-              const { data, error } = await supabase.from('users').select('email').eq('username', username).single();
+          let loginEmail = identifier;
+          if(!identifier.includes('@')) {
+              const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
               if(error || !data) {
-                  loginEmail = username + "@costudent.local";
+                  loginEmail = identifier + "@costudent.local";
               } else {
                   loginEmail = data.email;
               }
@@ -653,9 +667,15 @@
           
           closeAuthModal(); window.showToast('با موفقیت وارد شدید.');
       } else {
+          const username = document.getElementById('auth-username').value.trim();
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) throw new Error("invalid-username");
           
-          let finalEmail = username + "@costudent.local";
+          let finalEmail = identifier;
+          if (finalEmail === "") { 
+              finalEmail = username + "@costudent.local"; 
+          } else if(!emailRegex.test(finalEmail)) {
+              throw new Error("invalid-email-format");
+          }
 
           const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
           if(existingUser) throw new Error("username-taken");
@@ -682,6 +702,7 @@
       errorBox.style.display = 'block';
       let errStr = error.message || "";
       if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
+      else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
       else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
       else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل/کاربر قبلاً ثبت شده است.";
       else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
@@ -694,7 +715,32 @@
 
   window.logoutApp = () => { 
       window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", async () => {
-          await supabase.auth.signOut(); window.closeDashboardModal(); window.showToast('از حساب کاربری خارج شدید.');
+          try {
+              // تلاش برای خروج امن از دیتابیس
+              await supabase.auth.signOut();
+          } catch(e) {
+              console.error("Sign out issue:", e);
+          } finally {
+              // در هر صورت UI به صورت دستی و آنی آپدیت می‌شود تا باگ گیر کردن لاگین پیش نیاید
+              window.closeDashboardModal();
+              window.currentUser = null;
+              window.currentUsername = null;
+              
+              document.getElementById('login-trigger-btn').style.display = 'flex';
+              document.getElementById('user-info-display').style.display = 'none';
+              document.getElementById('btn-import-gpa-profile').style.display = 'none';
+              document.getElementById('btn-import-planner-profile').style.display = 'none';
+              
+              window.gpaDrafts = []; 
+              window.plannerDrafts = []; 
+              window.userProfileData = { courses: [] };
+              
+              window.renderGpaDrafts(); 
+              window.renderPlannerDrafts();
+              if(typeof window.calcGpa === 'function') window.calcGpa();
+              
+              window.showToast('از حساب کاربری خارج شدید.');
+          }
       });
   }
 

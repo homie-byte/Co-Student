@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل هدف ویژه دانشجویان.">
-<meta name="keywords" content="محاسبه معدل, انتخاب واحد, برنامه ریزی درسی, معدل دانشگاه, چارت درسی, معدل کل">
-<meta name="author" content="Co-Student">
+<meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل ویژه دانشجویان.">
 <title>Co-Student</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -38,7 +36,6 @@
     letter-spacing: -0.5px; margin-bottom: 20px;
   }
 
-  /* --- Header Controls --- */
   .header-controls { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; min-height: 50px; }
   
   .tabs { display: inline-flex; background: rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 20px; border: 1px solid var(--border); z-index: 10; margin: 0 auto; }
@@ -53,21 +50,18 @@
   .btn-panel { background: var(--accent); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
   .btn-panel:hover { background: #3b76d6; }
 
-  /* --- Loading Spinners --- */
   .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; margin: 0 auto; }
   .btn-spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; margin-left: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* --- Toast Notifications (Bottom Alerts) --- */
   .toast-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 10000; pointer-events: none; }
-  .toast { background: var(--surface); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; font-family: 'Vazirmatn', sans-serif;}
+  .toast { background: var(--surface); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s forwards; font-family: 'Vazirmatn', sans-serif;}
   .toast.toast-success { border-bottom: 3px solid var(--green); }
   .toast.toast-error { border-bottom: 3px solid var(--red); }
   .toast.toast-out { animation: toastOut 0.3s ease forwards; }
   @keyframes toastIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
 
-  /* --- Modals (Global) --- */
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 15px; }
   .modal-overlay.active { display: flex; opacity: 1; }
   .modal-box { background: var(--surface); border: 1px solid var(--border); padding: 25px; border-radius: 20px; width: 100%; transform: translateY(20px); transition: transform 0.2s; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
@@ -75,7 +69,6 @@
   .close-modal { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10; }
   .close-modal:hover { background: rgba(248,113,113,0.1); color: var(--red); }
 
-  /* Auth Modal */
   .auth-modal { max-width: 360px; }
   .auth-modal h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 20px; text-align: center; font-weight: 700; }
   .auth-modal input { margin-bottom: 12px; background: rgba(0,0,0,0.3); font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; direction: ltr; text-align: left; }
@@ -85,12 +78,10 @@
   .auth-switch:hover { color: var(--accent); }
   .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
 
-  /* Dashboard Modal */
   .dashboard-modal { max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 25px; }
   .dashboard-modal h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
   .dash-course-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 8px; margin-bottom: 8px; align-items: center; min-width: 500px; }
-  .dash-course-row input { padding: 8px; font-size: 0.85rem; }
   .dashboard-modal::-webkit-scrollbar { width: 6px; }
   .dashboard-modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
   
@@ -100,19 +91,14 @@
   .dash-draft-chip .action-icons { display: flex; gap: 6px; }
   .dash-draft-chip .action-icons span { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: 0.2s;}
   .dash-draft-chip .edit-btn { color: var(--gold); background: rgba(245,200,66,0.1); }
-  .dash-draft-chip .edit-btn:hover { background: rgba(245,200,66,0.3); color: #fff; }
   .dash-draft-chip .del-btn { color: var(--red); background: rgba(248,113,113,0.1); }
-  .dash-draft-chip .del-btn:hover { background: rgba(248,113,113,0.3); color: #fff;}
 
-  /* Text Links Dashboard */
   .dash-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; transition: 0.2s; font-weight: 600; }
   .dash-link:hover { color: var(--accent); }
   .dash-link.delete:hover { color: var(--red); }
 
-  /* Custom Alert/Prompt Modals */
   .custom-alert { max-width: 320px; text-align: center; }
   .custom-alert h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 20px; line-height: 1.6; font-weight: 600; }
-  
   .custom-prompt input, .custom-prompt textarea { margin-bottom: 20px; text-align: center; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--text); padding: 10px; font-family: 'Vazirmatn', sans-serif;}
   .custom-prompt textarea { resize: vertical; min-height: 80px; text-align: right;}
 
@@ -120,16 +106,11 @@
   .tool-section.active { display: block; }
   .card-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; margin-bottom: 24px; position: relative; z-index: 10; }
   
-  /* --- Horizontal Scroll Core Container --- */
   .scroll-container { width: 100%; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; min-height: 220px; padding-bottom: 10px; }
   .scroll-container::-webkit-scrollbar { height: 6px; }
   .scroll-container::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
   
-  /* --- Swipeable Actions Row --- */
-  .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; align-items: center; }
-  .actions::-webkit-scrollbar { height: 0px; display: none; }
-  .actions button, .actions > div { flex-shrink: 0; }
-  
+  .actions { display: flex; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,.025); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
   .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Vazirmatn', sans-serif; font-size: .85rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
   .btn:active { transform: scale(0.95); }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
@@ -138,33 +119,28 @@
   .btn-ghost { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border); }
   .btn-ghost:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
   .btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
-  .btn-danger:hover { background: rgba(248,113,113,.25); transform: translateY(-1px); }
   .btn-warning { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
-  .btn-warning:hover { background: rgba(245,200,66,0.25); transform: translateY(-1px); }
 
   input, select { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none; }
   input:focus, select:focus { border-color: var(--accent); background: rgba(79,142,247,.1); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
   select option { background: var(--surface); color: var(--text); }
   .empty-row { padding: 32px; text-align: center; color: var(--muted); font-size: .88rem; }
 
-  /* ------------------- Swipeable GPA Display Cards ------------------- */
-  .result-card { display: flex; align-items: stretch; justify-content: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
-  .result-card::-webkit-scrollbar { height: 4px; }
-  .result-card::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
-  
-  .result-group { flex: 0 0 auto; min-width: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
+  /* --- GPA Display Cards --- */
+  .result-card { display: flex; align-items: stretch; justify-content: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 10px; flex-wrap: wrap; }
+  .result-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden;}
   .result-group::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
   .result-group .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
   .result-group .result-value { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; transition: color 0.4s ease; }
   .result-group .result-value.good { color: var(--green); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
   .result-group .result-value.bad  { color: var(--red); text-shadow: 0 0 20px rgba(248,113,113,0.3); }
   
-  .overall-gpa-box { flex: 0 0 auto; min-width: 250px; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(124,92,252,0.3); position: relative; overflow: hidden;}
+  .overall-gpa-box { flex: 1; min-width: 200px; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(124,92,252,0.3); position: relative; overflow: hidden;}
   .overall-gpa-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
   .overall-gpa-box .result-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
   .overall-gpa-box .meta-val { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; }
 
-  .result-meta { flex: 0 0 auto; min-width: 280px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
+  .result-meta { flex: 1.5; min-width: 250px; display: flex; justify-content: space-evenly; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--border); }
   .meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .meta-val  { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1; }
   .meta-lbl  { font-size: .75rem; color: var(--muted); }
@@ -175,7 +151,6 @@
   .status-badge.ok     { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); }
   .status-badge.bad    { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
 
-  /* ------------------- Responsive Rows (PC Layout Enforced) ------------------- */
   .gpa-header, .gpa-row { display: grid; grid-template-columns: 1fr 90px 110px 44px; gap: 8px; align-items: center; position: relative; min-width: 550px;}
   .gpa-header { padding: 12px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border); font-size: .78rem; color: var(--muted); font-weight: 600; border-radius: var(--radius) var(--radius) 0 0; }
   .gpa-row { padding: 10px 16px; border-bottom: 1px solid rgba(42,53,80,.5); }
@@ -193,14 +168,14 @@
   .autocomplete-item:hover { background: rgba(79,142,247,0.18); color: var(--accent); }
   .autocomplete-item mark { background: none; color: var(--gold); font-weight: 700; }
 
-  /* ------------------- Target GPA & Simulator Panel ------------------- */
+  /* --- Target Panel --- */
   .target-panel { display: none; flex-direction: column; gap: 16px; padding: 20px; background: rgba(0,0,0,0.2); border-top: 1px dashed var(--border); animation: fadeUp 0.3s; }
   .target-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .target-header input { width: 120px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); border-color: var(--gold); }
   .target-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .target-results:empty { display: none; } /* Fix empty space when empty */
   .target-guide { font-size: 0.75rem; color: var(--muted); margin-top: 4px; display: none; width: 100%; }
   
-  /* Simulator Styles - Left to Right */
   .simulator-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 10px; display: none; animation: fadeUp 0.3s; }
   .sim-title { font-size: 1.1rem; color: var(--text); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;}
   .sim-gpa-display { font-size: 1.8rem; font-weight: 800; color: var(--accent); background: rgba(0,0,0,0.3); padding: 4px 16px; border-radius: 12px; border: 1px solid rgba(79,142,247,0.3); }
@@ -221,7 +196,7 @@
   .target-card-val { font-size: 0.88rem; font-weight: bold; padding: 6px 10px; border-radius: 8px; text-align: left; display: flex; justify-content: space-between; align-items: center;}
   .target-impossible { color: var(--red); font-size: 0.85rem; font-weight: bold; background: rgba(248,113,113,0.1); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(248,113,113,0.3); grid-column: 1 / -1;}
 
-  /* ------------------- Planner Additions ------------------- */
+  /* --- Planner Details --- */
   .session-group { display: flex; gap: 6px; width: 100%; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
   .session-group select, .exam-date-inputs select { padding: 6px 4px; font-size: 0.8rem; border-color: transparent; background: rgba(255,255,255,0.05); text-align: center; text-align-last: center; }
   .disabled-session { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
@@ -244,45 +219,30 @@
   .label-14 { right: 58.33%; } .label-20 { right: 83.33%; }
   .bar-wrapper { position: relative; margin-bottom: 20px; }
 
-  /* Bottom Panel Draft Chips */
-  .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; align-items: center; }
+  .drafts-panel { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-top: 1px dashed var(--border); flex-wrap: nowrap; overflow-x: auto; align-items: center; }
   .drafts-panel::-webkit-scrollbar { height: 0px; display: none; }
   .draft-chip { flex-shrink: 0; background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; gap: 6px; align-items: center; transition: 0.2s;}
   .draft-chip:hover { background: rgba(79,142,247,0.2); }
   .draft-chip span.del-btn { color: var(--red); font-weight: bold; padding: 0 4px; border-radius: 50%; }
 
-  /* ================= HORIZONTAL GRID TIMELINE & TIMETABLE ================= */
   .timeline-section { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px 28px; display: none; box-shadow: inset 0 4px 20px rgba(0,0,0,0.1); }
   .timeline-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .htl-scroll-wrap { overflow-x: auto; padding-bottom: 8px; }
-  .htl-scroll-wrap::-webkit-scrollbar { height: 5px; }
-  .htl-scroll-wrap::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 10px; }
   .htl-grid { display: flex; gap: 0; align-items: stretch; min-width: max-content; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
   .htl-cell { position: relative; min-width: 72px; display: flex; flex-direction: column; border-left: 1px solid var(--border); }
-  .htl-cell:first-child { border-left: none; }
   .htl-day-header { padding: 8px 6px 6px; text-align: center; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border); user-select: none; }
   .htl-day-num { font-size: 1.05rem; font-weight: 800; color: var(--text); line-height: 1; }
   .htl-day-month { font-size: 0.62rem; color: var(--muted); margin-top: 2px; white-space: nowrap; }
   .htl-day-body { flex: 1; padding: 6px 5px; display: flex; flex-direction: column; gap: 5px; min-height: 72px; background: transparent; }
   .htl-cell.htl-empty .htl-day-header { background: rgba(0,0,0,0.15); }
   .htl-cell.htl-empty .htl-day-body { background: repeating-linear-gradient(135deg, transparent, transparent 5px, rgba(255,255,255,0.012) 5px, rgba(255,255,255,0.012) 10px); }
-  .htl-cell.htl-has-exam .htl-day-header { background: rgba(79,142,247,0.1); border-bottom-color: rgba(79,142,247,0.3); }
   .htl-cell.htl-has-exam { background: rgba(79,142,247,0.035); }
-  .htl-cell.htl-warn-yellow .htl-day-header { background: rgba(245,200,66,0.1); border-bottom-color: rgba(245,200,66,0.35); }
-  .htl-cell.htl-warn-yellow { background: rgba(245,200,66,0.03); }
-  .htl-cell.htl-warn-red .htl-day-header { background: rgba(248,113,113,0.1); border-bottom-color: rgba(248,113,113,0.35); }
-  .htl-cell.htl-warn-red { background: rgba(248,113,113,0.03); }
   .htl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 auto 2px; flex-shrink: 0; }
   .htl-dot.normal { background: var(--accent); }
-  .htl-dot.warn-y  { background: var(--gold); }
-  .htl-dot.warn-r  { background: var(--red); }
-  .htl-exam-chip { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); border-radius: 7px; padding: 4px 6px; font-size: 0.68rem; font-weight: 600; color: var(--text); line-height: 1.3; text-align: center; cursor: pointer; }
-  .htl-exam-chip.warn-y { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.35); color: var(--gold); }
-  .htl-exam-chip.warn-r { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.35); color: var(--red); }
-  .htl-exam-time { font-size: 0.6rem; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .htl-gap-sep { min-width: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; background: rgba(0,0,0,0.12); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); }
-  .htl-gap-line { flex: 1; width: 2px; background: linear-gradient(to bottom, transparent, var(--border), transparent); border-radius: 2px; min-height: 20px; }
-  .htl-gap-label { font-size: 0.58rem; color: var(--muted); writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
+  .htl-exam-chip { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); border-radius: 7px; padding: 4px 6px; font-size: 0.68rem; font-weight: 600; color: var(--text); text-align: center; cursor: pointer; }
+  .htl-gap-sep { min-width: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; background: rgba(0,0,0,0.12); border-left: 1px solid rgba(255,255,255,0.05); }
+  .htl-gap-line { flex: 1; width: 2px; background: linear-gradient(to bottom, transparent, var(--border), transparent); min-height: 20px; }
+  .htl-gap-label { font-size: 0.58rem; color: var(--muted); writing-mode: vertical-rl; text-orientation: mixed; }
   
   .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
   .timetable { display: grid; grid-template-columns: 90px repeat(5, minmax(140px, 1fr)); gap: 10px; min-width: 800px; }
@@ -300,24 +260,31 @@
 
   footer.signature { 
     display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;
-    padding: 30px 0; margin-top: 40px; position: relative; z-index: -1;
-    font-family: 'Vazirmatn', sans-serif; font-size: 1rem; font-weight: 500; color: #ffffff; opacity: 0.3; transition: opacity 0.3s ease;
+    padding: 30px 0; margin-top: 40px; opacity: 0.3; transition: opacity 0.3s ease;
   }
   footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
 
-  /* UX Mobile adjustments (Removing destructive overrides, keeping only essential spacing) */
-  @media(max-width: 900px) {
+  /* --- Mobile Optimization --- */
+  @media(max-width: 768px) {
     .header-controls { flex-direction: column; gap: 15px; }
-    .auth-wrapper { position: static; transform: none; }
-    .dash-grid { grid-template-columns: 1fr; } 
-  }
+    .auth-wrapper { position: static; transform: none; width: 100%; justify-content: center; }
+    
+    /* رفع فضاهای خالی کارت‌های معدل در موبایل */
+    .result-card { flex-direction: column; flex-wrap: nowrap; gap: 12px; }
+    .result-group, .overall-gpa-box, .result-meta { width: 100%; min-width: unset; margin: 0; }
+    
+    /* شبکه‌ای کردن دکمه‌ها در موبایل */
+    .actions { padding: 12px; justify-content: stretch; }
+    .actions button { flex: 1 1 calc(50% - 10px); min-width: 140px; padding: 10px; }
+    .actions > div { flex: 1 1 100%; justify-content: center; margin-bottom: 5px; }
 
-  @media(max-width: 600px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .dash-course-row { min-width: 100%; grid-template-columns: 1fr 60px 70px 35px; }
+    .modal-box { padding: 20px 15px; }
+    
     .tabs { width: 100%; display: flex; }
     .tab-btn { flex: 1; text-align: center; padding: 10px 5px; font-size: 0.85rem; }
-    .dash-draft-chip { width: 100%; }
-    .modal-box { padding: 20px; }
   }
 </style>
 </head>
@@ -335,18 +302,17 @@
         
         <div class="auth-wrapper">
           <button class="auth-btn" id="login-trigger-btn" onclick="openAuthModal()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               ورود / ثبت‌نام
           </button>
           <div class="user-info" id="user-info-display">
-            <span id="user-email-text" style="padding: 0 4px; direction: ltr;"></span>
+            <span id="user-email-text" style="padding: 0 4px; direction: ltr; font-size: 0.9rem;"></span>
             <button class="btn-panel" onclick="openDashboardModal()">پنل من ⚙️</button>
           </div>
         </div>
     </div>
   </header>
 
-  <!-- بخش برنامه‌ریز -->
   <div id="planner-tool" class="tool-section active">
     <div class="card-wrapper">
       <div class="scroll-container">
@@ -360,14 +326,14 @@
         <button class="btn btn-primary" onclick="addPlannerCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
+        <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
         <button class="btn btn-ghost" onclick="savePlannerDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
-        <div style="display:flex; align-items:center; gap:8px; margin-right:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px; flex-shrink: 0;">
-          <span style="font-size:0.78rem; color:var(--muted); white-space:nowrap;">ماه‌های امتحانی:</span>
-          <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد — تیر</button>
-          <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی — بهمن</button>
+        <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.04); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
+          <span style="font-size:0.75rem; color:var(--muted);">ماه‌های امتحانی:</span>
+          <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد—تیر</button>
+          <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی—بهمن</button>
         </div>
-        <button class="btn btn-ghost" onclick="newPlanner()">📃 برنامه جدید</button>
+        <button class="btn btn-ghost" onclick="newPlanner()" style="margin-right: auto;">📃 برنامه جدید</button>
       </div>
 
       <div class="planner-stats">
@@ -386,7 +352,6 @@
     <div id="exam-timeline-container" class="timeline-section"></div>
   </div>
 
-  <!-- بخش محاسبه‌گر -->
   <div id="gpa-tool" class="tool-section">
     <div class="result-card">
       <div class="result-group">
@@ -395,8 +360,8 @@
       </div>
       
       <div class="result-meta">
-        <div class="meta-item"><span class="meta-val" id="total-units">۰</span><span class="meta-lbl">واحدهای ترم</span></div>
-        <div class="meta-item"><span class="meta-val" id="course-count">۰</span><span class="meta-lbl">تعداد درس</span></div>
+        <div class="meta-item"><span class="meta-val" id="total-units">۰</span><span class="meta-lbl">واحد</span></div>
+        <div class="meta-item"><span class="meta-val" id="course-count">۰</span><span class="meta-lbl">درس</span></div>
         <div id="status-badge" class="status-badge hidden"><span class="status-icon" id="status-icon"></span><span id="status-text"></span></div>
       </div>
       
@@ -419,13 +384,12 @@
           <span style="font-size: 0.9rem; font-weight: 600;">می‌خواهم معدلم بشود:</span>
           <input type="number" id="target-gpa-input" placeholder="مثلاً ۱۷.۵" step="0.1" min="10" max="20">
           <button class="btn btn-primary" onclick="calculateTarget()" style="padding: 6px 14px;">پیشنهاد هوشمند</button>
-          <button class="btn btn-ghost" onclick="toggleSimulator()" id="sim-toggle-btn" style="display:none; color:var(--accent); border-color:var(--accent);">🎛️ تنظیم دستی نمرات</button>
-          <button class="btn btn-danger" onclick="resetTargetSimulation()" style="padding: 6px 12px; margin-right: auto;">⟲ بازگرداندن به حالت اولیه</button>
+          <button class="btn btn-ghost" onclick="toggleSimulator()" id="sim-toggle-btn" style="display:none; color:var(--accent); border-color:var(--accent);">🎛️ تنظیم دستی</button>
+          <button class="btn btn-danger" onclick="resetTargetSimulation()" style="padding: 6px 12px; margin-right: auto;">⟲ بازگرداندن</button>
         </div>
-        <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها در پایین کلیک کنید تا انتخاب شوند.</span>
+        <span class="target-guide" id="target-guide-text">راهنما: برای تمرکز بار معدل روی دروس خاص، روی کارت آن‌ها کلیک کنید.</span>
         <div id="target-results" class="target-results"></div>
         
-        <!-- شبیه‌ساز دستی -->
         <div id="interactive-simulator" class="simulator-box">
             <div class="sim-title">
                 🎛️ تنظیم دستی نمرات
@@ -439,7 +403,7 @@
         <button class="btn btn-primary" onclick="addGpaCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی دروس از پنل</button>
+        <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
         <button class="btn btn-ghost" onclick="saveGpaDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره معدل</button>
         <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
         <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
@@ -450,16 +414,14 @@
 
 </div>
 
-<!-- ظروف نمایش اعلان‌ها (Toast) -->
 <div id="toast-container" class="toast-container"></div>
 
-<!-- Modal ورود / ثبت‌نام -->
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
     <h2 id="auth-title">ورود به حساب کاربری</h2>
     <div id="auth-error" class="auth-error"></div>
-    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)" style="display: none;">
+    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" style="display: none;">
     <input type="text" id="auth-identifier" placeholder="ایمیل یا نام کاربری">
     <input type="password" id="auth-password" placeholder="رمز عبور">
     <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">
@@ -470,7 +432,6 @@
   </div>
 </div>
 
-<!-- Modal داشبورد / پنل کاربری -->
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()">✕</button>
@@ -500,7 +461,7 @@
     </div>
     
     <h3 style="font-size: 1.1rem; margin: 25px 0 10px; color: var(--accent);">📚 دروس ثابت ترم من</h3>
-    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا در سیستم فقط با یک دکمه فراخوانی شوند.</div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:15px;">دروس ترم خود را اینجا اضافه کنید تا فقط با یک دکمه فراخوانی شوند.</div>
     
     <div class="scroll-container" style="min-height: auto; border: 1px solid var(--border); border-radius: 12px; padding: 10px;">
         <div id="dash-courses-list"></div>
@@ -516,12 +477,10 @@
        <div id="dash-planner-drafts" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
 
-    <!-- دکمه ذخیره پروفایل -->
     <div style="display: flex; justify-content: center; margin-top: 30px;">
         <button class="btn btn-primary" onclick="saveDashboardProfile(this)" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات پنل</button>
     </div>
 
-    <!-- بخش ارتباط با ادمین -->
     <div style="margin-top: 30px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
         <h3 style="font-size: 0.95rem; color: var(--text); margin-bottom: 12px;">ارتباط با ادمین سایت</h3>
         <div style="display: flex; gap: 10px;">
@@ -530,7 +489,6 @@
         </div>
     </div>
 
-    <!-- لینک‌های متنی تنظیمات حساب کاربری -->
     <div style="display:flex; gap:15px; width: 100%; justify-content: center; flex-wrap: wrap; margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border);">
         <span class="dash-link" onclick="triggerChangePassword()">تغییر رمز عبور</span>
         <span style="color:var(--border);">|</span>
@@ -541,7 +499,6 @@
   </div>
 </div>
 
-<!-- Modal هشدارهای اختصاصی سایت (جایگزین Alert و Prompt) -->
 <div class="modal-overlay" id="custom-alert-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert">
     <h3 id="custom-alert-msg"></h3>
@@ -552,12 +509,9 @@
 <div class="modal-overlay" id="custom-prompt-overlay" style="z-index: 10000;">
   <div class="modal-box custom-alert custom-prompt">
     <h3 id="custom-prompt-msg"></h3>
-    
-    <!-- ورودی‌های هوشمند برای مقاصد مختلف در پاپ‌آپ -->
     <input type="text" id="custom-prompt-text" style="display:none;" />
     <input type="password" id="custom-prompt-pass" style="display:none; direction: ltr; font-family: sans-serif;" />
     <textarea id="custom-prompt-textarea" style="display:none;" placeholder="متن خود را بنویسید..."></textarea>
-    
     <div style="display:flex; gap:10px;">
         <button class="btn btn-ghost" onclick="closeCustomPrompt()" style="flex:1;">انصراف</button>
         <button class="btn btn-primary" id="custom-prompt-confirm" style="flex:1;">تایید</button>
@@ -581,51 +535,36 @@
   </a>
 </footer>
 
-<!-- 1. ماژول اصلی جاوا اسکریپت سوپابیس (Supabase) و پنل کاربری -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabaseUrl = 'https://mkockoyoiuitzzimeorr.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rb2Nrb3lvaXVpdHp6aW1lb3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjUwMTUsImV4cCI6MjA5ODYwMTAxNX0.tpjk0PxW7hzdpv2aCSrskq3vS--99dTk-urVwZF_5Rs';
-  
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   let isLoginMode = true;
   window.userProfileData = { courses: [] };
 
-  // سیستم نمایش Toast Notifications
   window.showToast = (msg, type = 'success') => {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
       toast.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`;
       container.appendChild(toast);
-      setTimeout(() => {
-          toast.classList.add('toast-out');
-          setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 3000);
   };
 
-  // توابع پاپ‌آپ‌های اختصاصی سایت
   window.showCustomPrompt = (msg, defaultVal, callback, type = 'text') => { 
       document.getElementById('custom-prompt-msg').innerText = msg; 
-      
       let tInp = document.getElementById('custom-prompt-text');
       let pInp = document.getElementById('custom-prompt-pass');
       let aInp = document.getElementById('custom-prompt-textarea');
       tInp.style.display = 'none'; pInp.style.display = 'none'; aInp.style.display = 'none';
-      
       let activeInp = type === 'textarea' ? aInp : (type === 'password' ? pInp : tInp);
-      activeInp.style.display = 'block';
-      activeInp.value = defaultVal || ''; 
-      
+      activeInp.style.display = 'block'; activeInp.value = defaultVal || ''; 
       document.getElementById('custom-prompt-overlay').classList.add('active'); 
       document.getElementById('custom-prompt-confirm').innerText = type === 'textarea' ? 'تایید و ارسال' : 'تایید';
-      
-      document.getElementById('custom-prompt-confirm').onclick = () => { 
-          document.getElementById('custom-prompt-overlay').classList.remove('active'); 
-          callback(activeInp.value); 
-      }; 
+      document.getElementById('custom-prompt-confirm').onclick = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); callback(activeInp.value); }; 
   };
   
   window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
@@ -637,6 +576,7 @@
 
   window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
   window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
+  
   window.toggleAuthMode = () => {
     isLoginMode = !isLoginMode;
     document.getElementById('auth-title').innerText = isLoginMode ? "ورود به حساب کاربری" : "ثبت‌نام کاربر جدید";
@@ -657,61 +597,46 @@
     const identifier = document.getElementById('auth-identifier').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
-    
     const btn = document.getElementById('auth-submit-btn');
     const spinner = document.getElementById('auth-spinner');
     const btnText = document.getElementById('auth-btn-text');
-    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if(!identifier || !pass) { errorBox.innerText = "لطفاً اطلاعات را کامل وارد کنید."; errorBox.style.display = 'block'; return; }
     
-    btn.disabled = true;
-    spinner.style.display = 'inline-block';
-    btnText.style.display = 'none';
-    errorBox.style.display = 'none';
+    btn.disabled = true; spinner.style.display = 'inline-block'; btnText.style.display = 'none'; errorBox.style.display = 'none';
 
     try {
       if(isLoginMode) {
           let loginEmail = identifier;
-          
           if(!identifier.includes('@')) {
               const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
               if(error || !data) throw new Error("user-not-found");
               loginEmail = data.email;
           }
-
           const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
           if(signInError) throw signInError;
           
-          closeAuthModal();
-          window.showToast('با موفقیت وارد شدید.');
+          closeAuthModal(); window.showToast('با موفقیت وارد شدید.');
       } else {
           const username = document.getElementById('auth-username').value.trim();
-          if(!username) { throw new Error("no-username"); }
-          if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) { throw new Error("invalid-username"); }
-          if(!emailRegex.test(identifier)) { throw new Error("invalid-email-format"); }
+          if(!username) throw new Error("no-username");
+          if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) throw new Error("invalid-username");
+          if(!emailRegex.test(identifier)) throw new Error("invalid-email-format");
 
-          const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).maybeSingle();
+          const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
           if(existingUser) throw new Error("username-taken");
 
           const { data: userCred, error: signUpError } = await supabase.auth.signUp({ email: identifier, password: pass });
           if(signUpError) throw signUpError;
           
-          if(userCred.user) {
-              const { error: dbError } = await supabase.from('users').insert([{
-                  id: userCred.user.id,
-                  email: identifier,
-                  username: username,
-                  profile: { courses: [] },
-                  gpaDrafts: [],
-                  plannerDrafts: []
-              }]);
-              if(dbError) console.error("Error creating profile:", dbError);
-          }
-
-          closeAuthModal();
-          window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
+          const { error: dbError } = await supabase.from('users').insert([{
+              id: userCred.user.id, email: identifier, username: username,
+              profile: { courses: [] }, gpaDrafts: [], plannerDrafts: []
+          }]);
+          
+          if(dbError) console.error("Error creating user profile:", dbError);
+          closeAuthModal(); window.showToast("حساب کاربری شما با موفقیت ایجاد شد!");
       }
     } catch (error) {
       errorBox.style.display = 'block';
@@ -720,23 +645,19 @@
       else if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
       else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
       else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
-      else if(errStr === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد.";
+      else if(errStr === "user-not-found") errorBox.innerText = "نام کاربری یافت نشد (مطمئن شوید دستورات SQL سوپابیس اجرا شده باشند).";
       else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل قبلاً ثبت شده است.";
       else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
       else if(errStr.includes("Password should be")) errorBox.innerText = "رمز عبور ضعیف است.";
       else errorBox.innerText = "خطا: " + errStr;
     } finally {
-      btn.disabled = false;
-      spinner.style.display = 'none';
-      btnText.style.display = 'inline-block';
+      btn.disabled = false; spinner.style.display = 'none'; btnText.style.display = 'inline-block';
     }
   }
 
   window.logoutApp = () => { 
       window.showCustomConfirm("آیا می‌خواهید از حساب خود خارج شوید؟", async () => {
-          await supabase.auth.signOut(); 
-          window.closeDashboardModal();
-          window.showToast('از حساب کاربری خارج شدید.');
+          await supabase.auth.signOut(); window.closeDashboardModal(); window.showToast('از حساب کاربری خارج شدید.');
       });
   }
 
@@ -747,18 +668,12 @@
           if(!text || text.trim() === "") return;
           try {
               const { error } = await supabase.from('feedbacks').insert([{
-                  uid: window.currentUser.id,
-                  email: window.currentUser.email,
-                  username: window.currentUsername || "نامشخص",
-                  type: type,
-                  message: text,
-                  timestamp: Date.now()
+                  uid: window.currentUser.id, email: window.currentUser.email,
+                  username: window.currentUsername || "نامشخص", type: type, message: text, timestamp: Date.now()
               }]);
               if(error) throw error;
               window.showToast("پیام شما با موفقیت برای ادمین ارسال شد.");
-          } catch(e) {
-              window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error");
-          }
+          } catch(e) { window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error"); }
       }, 'textarea');
   };
 
@@ -767,43 +682,31 @@
     const userInfo = document.getElementById('user-info-display');
     const importGpaBtn = document.getElementById('btn-import-gpa-profile');
     const importPlannerBtn = document.getElementById('btn-import-planner-profile');
-    
     const user = session?.user;
     
     if (user) {
-      window.currentUser = user;
-      loginBtn.style.display = 'none';
-      userInfo.style.display = 'flex';
-      
-      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).maybeSingle();
+      window.currentUser = user; loginBtn.style.display = 'none'; userInfo.style.display = 'flex';
+      const { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
       
       if (data && !error) {
         let displayString = data.username ? data.username : user.email.split('@')[0];
         window.currentUsername = displayString;
         document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
-
-        window.gpaDrafts = data.gpaDrafts || []; 
-        window.plannerDrafts = data.plannerDrafts || [];
+        window.gpaDrafts = data.gpaDrafts || []; window.plannerDrafts = data.plannerDrafts || [];
         window.userProfileData = data.profile || { courses: [] };
         window.renderGpaDrafts(); window.renderPlannerDrafts();
         
         if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
-            importGpaBtn.style.display = 'inline-flex';
-            importPlannerBtn.style.display = 'inline-flex';
+            importGpaBtn.style.display = 'inline-flex'; importPlannerBtn.style.display = 'inline-flex';
         }
         if(typeof window.calcGpa === 'function') window.calcGpa(); 
       } else {
         let displayEmail = user.email.split('@')[0];
         window.currentUsername = displayEmail;
         document.getElementById('user-email-text').innerHTML = `<b>${displayEmail}</b>`;
-        
-        window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
-        window.renderGpaDrafts(); window.renderPlannerDrafts();
-        if(typeof window.calcGpa === 'function') window.calcGpa();
       }
     } else {
-      window.currentUser = null;
-      window.currentUsername = null;
+      window.currentUser = null; window.currentUsername = null;
       loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; 
       importGpaBtn.style.display = 'none'; importPlannerBtn.style.display = 'none';
       window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
@@ -819,9 +722,7 @@
               const { error } = await supabase.auth.updateUser({ password: newPass });
               if(error) throw error;
               window.showToast("رمز عبور با موفقیت تغییر کرد.");
-          } catch(e) {
-              window.showToast("خطا در تغییر رمز عبور. در صورت لزوم دوباره وارد شوید.", "error");
-          }
+          } catch(e) { window.showToast("خطا در تغییر رمز عبور. در صورت لزوم دوباره وارد شوید.", "error"); }
       }, 'password');
   };
 
@@ -830,11 +731,8 @@
           try {
               await supabase.from('users').delete().eq('id', window.currentUser.id);
               await supabase.auth.signOut();
-              window.showToast("حساب کاربری شما با موفقیت حذف شد.");
-              window.closeDashboardModal();
-          } catch(e) {
-              window.showToast("خطا در حذف حساب.", "error");
-          }
+              window.showToast("حساب کاربری شما با موفقیت حذف شد."); window.closeDashboardModal();
+          } catch(e) { window.showToast("خطا در حذف حساب.", "error"); }
       });
   };
 
@@ -875,8 +773,7 @@
       `;
       list.appendChild(div);
       
-      let nameInp = div.querySelector('.dc-name');
-      let unitInp = div.querySelector('.dc-units');
+      let nameInp = div.querySelector('.dc-name'); let unitInp = div.querySelector('.dc-units');
       nameInp.addEventListener('input', () => {
           let val = nameInp.value;
           let ex = nameInp.parentNode.querySelector('.autocomplete-list'); if(ex) ex.remove();
@@ -893,207 +790,92 @@
   window.addDashCourse = () => { appendDashCourseRow(); }
 
   window.saveDashboardProfile = async (btnElement) => {
-      if(!window.currentUser) return;
-      const major = document.getElementById('dash-major').value;
-      const uni = document.getElementById('dash-uni').value;
-      const term = document.getElementById('dash-term').value;
-      const passedUnits = document.getElementById('dash-passed-units').value;
+      const major = document.getElementById('dash-major').value; const uni = document.getElementById('dash-uni').value;
+      const term = document.getElementById('dash-term').value; const passedUnits = document.getElementById('dash-passed-units').value;
       const currentGpa = document.getElementById('dash-current-gpa').value;
-      
-      const courseRows = document.querySelectorAll('.dash-course-row');
-      const courses = [];
+      const courseRows = document.querySelectorAll('.dash-course-row'); const courses = [];
       courseRows.forEach(row => {
-          const name = row.querySelector('.dc-name').value;
-          const units = row.querySelector('.dc-units').value;
-          const grade = row.querySelector('.dc-grade').value;
+          const name = row.querySelector('.dc-name').value; const units = row.querySelector('.dc-units').value; const grade = row.querySelector('.dc-grade').value;
           if(name || units) courses.push({name, units, grade});
       });
       
       window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses };
       
       let originalBtnHTML;
-      if(btnElement) {
-          originalBtnHTML = btnElement.innerHTML;
-          btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...';
-          btnElement.style.pointerEvents = 'none';
-      }
+      if(btnElement) { originalBtnHTML = btnElement.innerHTML; btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...'; btnElement.style.pointerEvents = 'none'; }
 
       try {
-          const { error } = await supabase.from('users').upsert({
-              id: window.currentUser.id,
-              email: window.currentUser.email,
-              profile: window.userProfileData
-          });
+          const { error } = await supabase.from('users').update({ profile: window.userProfileData }).eq('id', window.currentUser.id);
           if (error) throw error;
           window.showToast('اطلاعات پنل با موفقیت ذخیره شد.');
-          
-          if(courses.length > 0) {
-              document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex';
-              document.getElementById('btn-import-planner-profile').style.display = 'inline-flex';
-          } else {
-              document.getElementById('btn-import-gpa-profile').style.display = 'none';
-              document.getElementById('btn-import-planner-profile').style.display = 'none';
-          }
+          if(courses.length > 0) { document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex'; document.getElementById('btn-import-planner-profile').style.display = 'inline-flex'; } else { document.getElementById('btn-import-gpa-profile').style.display = 'none'; document.getElementById('btn-import-planner-profile').style.display = 'none'; }
           if(typeof window.calcGpa === 'function') window.calcGpa();
-      } catch(e) { 
-          window.showToast('خطا در ذخیره اطلاعات!', 'error'); 
-      } finally {
-          if(btnElement) {
-              btnElement.innerHTML = originalBtnHTML;
-              btnElement.style.pointerEvents = 'auto';
-          }
+      } catch(e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally {
+          if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; }
       }
   }
 
-  // --- سیستم رندر فایل‌های ذخیره شده ---
   window.renderGpaDrafts = () => {
-      const dashContainer = document.getElementById('dash-gpa-drafts');
-      const mainContainer = document.getElementById('gpa-drafts-panel');
+      const dashContainer = document.getElementById('dash-gpa-drafts'); const mainContainer = document.getElementById('gpa-drafts-panel');
       dashContainer.innerHTML = ''; mainContainer.innerHTML = '';
-      if (window.gpaDrafts.length === 0) {
-          dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل معدلی ذخیره نشده است.</span>';
-          mainContainer.style.display = 'none';
-          return;
-      }
+      if (window.gpaDrafts.length === 0) { dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل معدلی ذخیره نشده است.</span>'; mainContainer.style.display = 'none'; return; }
       mainContainer.style.display = 'flex';
       window.gpaDrafts.forEach(draft => {
-          const chipHTML = `
-              <div class="dash-draft-chip">
-                  <span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span>
-                  <div class="action-icons">
-                      <span class="edit-btn" onclick="renameGpaDraft(event, ${draft.id})">✎</span>
-                      <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>
-                  </div>
-              </div>
-          `;
-          dashContainer.insertAdjacentHTML('beforeend', chipHTML);
-          
-          const mainChip = document.createElement('div');
-          mainChip.className = 'draft-chip';
-          mainChip.innerHTML = `📊 ${draft.name} <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
-          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadGpaDraft(draft.id); };
-          mainContainer.appendChild(mainChip);
+          dashContainer.insertAdjacentHTML('beforeend', `<div class="dash-draft-chip"><span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span><div class="action-icons"><span class="edit-btn" onclick="renameGpaDraft(event, ${draft.id})">✎</span><span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span></div></div>`);
+          const mainChip = document.createElement('div'); mainChip.className = 'draft-chip'; mainChip.innerHTML = `📊 ${draft.name} <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
+          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadGpaDraft(draft.id); }; mainContainer.appendChild(mainChip);
       });
   };
 
   window.renderPlannerDrafts = () => {
-      const dashContainer = document.getElementById('dash-planner-drafts');
-      const mainContainer = document.getElementById('planner-drafts-panel');
+      const dashContainer = document.getElementById('dash-planner-drafts'); const mainContainer = document.getElementById('planner-drafts-panel');
       dashContainer.innerHTML = ''; mainContainer.innerHTML = '';
-      if (window.plannerDrafts.length === 0) {
-          dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل برنامه‌ای ذخیره نشده است.</span>';
-          mainContainer.style.display = 'none';
-          return;
-      }
+      if (window.plannerDrafts.length === 0) { dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل برنامه‌ای ذخیره نشده است.</span>'; mainContainer.style.display = 'none'; return; }
       mainContainer.style.display = 'flex';
       window.plannerDrafts.forEach(draft => {
-          const chipHTML = `
-              <div class="dash-draft-chip">
-                  <span class="name-click" onclick="loadPlannerDraft(${draft.id})">📅 ${draft.name}</span>
-                  <div class="action-icons">
-                      <span class="edit-btn" onclick="renamePlannerDraft(event, ${draft.id})">✎</span>
-                      <span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>
-                  </div>
-              </div>
-          `;
-          dashContainer.insertAdjacentHTML('beforeend', chipHTML);
-          
-          const mainChip = document.createElement('div');
-          mainChip.className = 'draft-chip';
-          mainChip.innerHTML = `📅 ${draft.name} <span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
-          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadPlannerDraft(draft.id); };
-          mainContainer.appendChild(mainChip);
+          dashContainer.insertAdjacentHTML('beforeend', `<div class="dash-draft-chip"><span class="name-click" onclick="loadPlannerDraft(${draft.id})">📅 ${draft.name}</span><div class="action-icons"><span class="edit-btn" onclick="renamePlannerDraft(event, ${draft.id})">✎</span><span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span></div></div>`);
+          const mainChip = document.createElement('div'); mainChip.className = 'draft-chip'; mainChip.innerHTML = `📅 ${draft.name} <span class="del-btn" onclick="deletePlannerDraft(event, ${draft.id})">✕</span>`;
+          mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadPlannerDraft(draft.id); }; mainContainer.appendChild(mainChip);
       });
   };
 
   window.loadGpaDraft = (id) => {
       const draft = window.gpaDrafts.find(d => d.id === id);
-      if(draft && draft.data) {
-          window.gpaCourses = JSON.parse(JSON.stringify(draft.data));
-          window.gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), 0) + 1;
-          document.getElementById('target-gpa-input').value = draft.target || '';
-          renderGpa();
-          window.showToast(`معدل "${draft.name}" بارگذاری شد.`);
-          window.closeDashboardModal();
-      }
+      if(draft && draft.data) { window.gpaCourses = JSON.parse(JSON.stringify(draft.data)); window.gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), 0) + 1; document.getElementById('target-gpa-input').value = draft.target || ''; renderGpa(); window.showToast(`معدل "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
   };
 
   window.loadPlannerDraft = (id) => {
       const draft = window.plannerDrafts.find(d => d.id === id);
-      if(draft && draft.data) {
-          window.pCourses = JSON.parse(JSON.stringify(draft.data));
-          window.pIdCounter = Math.max(...window.pCourses.map(c => c.id), 0) + 1;
-          renderPlanner();
-          window.showToast(`برنامه "${draft.name}" بارگذاری شد.`);
-          window.closeDashboardModal();
-      }
+      if(draft && draft.data) { window.pCourses = JSON.parse(JSON.stringify(draft.data)); window.pIdCounter = Math.max(...window.pCourses.map(c => c.id), 0) + 1; renderPlanner(); window.showToast(`برنامه "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
   };
 
   window.saveGpaDraft = async (btnElement) => {
     if (!window.currentUser) return window.openAuthModal();
     if (window.gpaCourses.length === 0 || (window.gpaCourses.length === 1 && !window.gpaCourses[0].name)) return window.showCustomAlert('معدلی برای ذخیره وجود ندارد!');
     
-    let originalBtnHTML;
-    if(btnElement) {
-        originalBtnHTML = btnElement.innerHTML;
-        btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...';
-        btnElement.style.pointerEvents = 'none';
-    }
+    let originalBtnHTML; if(btnElement) { originalBtnHTML = btnElement.innerHTML; btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...'; btnElement.style.pointerEvents = 'none'; }
 
-    let gpaEl = document.getElementById('gpa-display').textContent;
-    let targetVal = document.getElementById('target-gpa-input').value;
+    let gpaEl = document.getElementById('gpa-display').textContent; let targetVal = document.getElementById('target-gpa-input').value;
     let draftName = `معدل ${gpaEl} (${window.gpaDrafts.length + 1})`;
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     
     try {
-      const { error } = await supabase.from('users').upsert({
-          id: window.currentUser.id,
-          email: window.currentUser.email,
-          gpaDrafts: window.gpaDrafts
-      });
+      const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
-    } catch (e) { 
-      window.showToast('خطا در ذخیره اطلاعات!', 'error'); 
-    } finally {
-        if(btnElement) {
-            btnElement.innerHTML = originalBtnHTML;
-            btnElement.style.pointerEvents = 'auto';
-        }
-    }
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
   window.deleteGpaDraft = async (event, id) => {
-    event.stopPropagation(); 
-    window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-    if (window.currentUser) {
-        await supabase.from('users').upsert({
-            id: window.currentUser.id,
-            email: window.currentUser.email,
-            gpaDrafts: window.gpaDrafts
-        });
-    }
-    window.renderGpaDrafts(); 
-    window.showToast('فایل معدل حذف شد.');
+    event.stopPropagation(); window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
+    if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
+    window.renderGpaDrafts(); window.showToast('فایل معدل حذف شد.');
   }
 
   window.renameGpaDraft = async (event, id) => {
-      event.stopPropagation();
-      let draft = window.gpaDrafts.find(d => d.id === id);
-      if(!draft) return;
+      event.stopPropagation(); let draft = window.gpaDrafts.find(d => d.id === id); if(!draft) return;
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
-          if(newName && newName.trim() !== "") {
-              draft.name = newName.trim();
-              if (window.currentUser) {
-                  await supabase.from('users').upsert({
-                      id: window.currentUser.id,
-                      email: window.currentUser.email,
-                      gpaDrafts: window.gpaDrafts
-                  });
-              }
-              window.renderGpaDrafts();
-              window.showToast('نام فایل تغییر کرد.');
-          }
+          if(newName && newName.trim() !== "") { draft.name = newName.trim(); if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id); window.renderGpaDrafts(); window.showToast('نام فایل تغییر کرد.'); }
       }, 'text');
   }
 
@@ -1101,66 +883,29 @@
     if (!window.currentUser) return window.openAuthModal();
     if (window.pCourses.length === 0 || (window.pCourses.length === 1 && !window.pCourses[0].name)) return window.showCustomAlert('برنامه‌ای برای ذخیره وجود ندارد!');
     
-    let originalBtnHTML;
-    if(btnElement) {
-        originalBtnHTML = btnElement.innerHTML;
-        btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...';
-        btnElement.style.pointerEvents = 'none';
-    }
+    let originalBtnHTML; if(btnElement) { originalBtnHTML = btnElement.innerHTML; btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...'; btnElement.style.pointerEvents = 'none'; }
 
     let totalU = window.pCourses.reduce((sum, c) => sum + (parseInt(c.units) || 0), 0);
     let draftName = `برنامه ${window.plannerDrafts.length + 1}`;
     window.plannerDrafts.push({ id: Date.now(), name: draftName, units: totalU, data: JSON.parse(JSON.stringify(window.pCourses)) });
     
     try {
-      const { error } = await supabase.from('users').upsert({
-          id: window.currentUser.id,
-          email: window.currentUser.email,
-          plannerDrafts: window.plannerDrafts
-      });
+      const { error } = await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
-    } catch (e) { 
-      window.showToast('خطا در ذخیره اطلاعات!', 'error'); 
-    } finally {
-        if(btnElement) {
-            btnElement.innerHTML = originalBtnHTML;
-            btnElement.style.pointerEvents = 'auto';
-        }
-    }
+    } catch (e) { window.showToast('خطا در ذخیره اطلاعات!', 'error'); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
   window.deletePlannerDraft = async (event, id) => {
-    event.stopPropagation(); 
-    window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
-    if(window.currentUser) {
-        await supabase.from('users').upsert({
-            id: window.currentUser.id,
-            email: window.currentUser.email,
-            plannerDrafts: window.plannerDrafts
-        });
-    }
-    window.renderPlannerDrafts(); 
-    window.showToast('فایل برنامه حذف شد.');
+    event.stopPropagation(); window.plannerDrafts = window.plannerDrafts.filter(d => d.id !== id); 
+    if(window.currentUser) await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
+    window.renderPlannerDrafts(); window.showToast('فایل برنامه حذف شد.');
   }
 
   window.renamePlannerDraft = async (event, id) => {
-      event.stopPropagation();
-      let draft = window.plannerDrafts.find(d => d.id === id);
-      if(!draft) return;
+      event.stopPropagation(); let draft = window.plannerDrafts.find(d => d.id === id); if(!draft) return;
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
-          if(newName && newName.trim() !== "") {
-              draft.name = newName.trim();
-              if (window.currentUser) {
-                  await supabase.from('users').upsert({
-                      id: window.currentUser.id,
-                      email: window.currentUser.email,
-                      plannerDrafts: window.plannerDrafts
-                  });
-              }
-              window.renderPlannerDrafts();
-              window.showToast('نام فایل تغییر کرد.');
-          }
+          if(newName && newName.trim() !== "") { draft.name = newName.trim(); if (window.currentUser) await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id); window.renderPlannerDrafts(); window.showToast('نام فایل تغییر کرد.'); }
       }, 'text');
   }
 </script>
@@ -1169,12 +914,10 @@
   window.gpaDrafts = []; window.plannerDrafts = [];
   window.gpaCourses = []; window.pCourses = [];
 
-  const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
-  const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
+  const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه']; const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
   const PERSIAN_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   const EXAM_TIMES = ['۰۸:۳۰ - ۱۰:۳۰', '۱۰:۳۰ - ۱۲:۳۰', '۱۳:۳۰ - ۱۵:۳۰', '۱۵:۳۰ - ۱۷:۳۰'];
-  let selectedSemester = 0; 
-  const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
+  let selectedSemester = 0; const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
 
   window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "ان انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
   const PHYSICS_CHART = Object.keys(window.COURSE_DB);
@@ -1209,7 +952,6 @@
   function createMonthSelect(val) { let s = document.createElement('select'); let months = SEMESTER_MONTHS[selectedSemester]; s.innerHTML = `<option value="">ماه</option>` + months.map(m => `<option value="${m.idx}" ${m.idx.toString()==val?'selected':''}>${m.name}</option>` ).join(''); return s; }
   function toAbsDayJalali(monthIdx, day) { let days = 0; for(let i=0; i<monthIdx; i++) { if(i <= 5) days += 31; else if(i <= 10) days += 30; else days += 29; } return days + day; }
 
-  // ---------------- GPA CALCULATOR LOGIC ----------------
   let gpaIdCounter = 0; let focusIds = new Set(); 
 
   function createGpaRowDOM(c) {
@@ -1252,15 +994,11 @@
       window.userProfileData.courses.forEach(pc => {
           let exists = window.gpaCourses.some(c => c.name === pc.name);
           if(!exists) {
-              if(window.gpaCourses.length === 1 && !window.gpaCourses[0].name && !window.gpaCourses[0].units) {
-                 window.gpaCourses = []; document.getElementById('gpa-list').innerHTML = '';
-              }
-              addGpaCourse(pc.name, pc.units, pc.grade);
-              importedCount++;
+              if(window.gpaCourses.length === 1 && !window.gpaCourses[0].name && !window.gpaCourses[0].units) { window.gpaCourses = []; document.getElementById('gpa-list').innerHTML = ''; }
+              addGpaCourse(pc.name, pc.units, pc.grade); importedCount++;
           }
       });
-      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error');
-      else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
+      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error'); else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
   }
 
   function renderGpa() {
@@ -1292,51 +1030,24 @@
     let overallContainer = document.getElementById('overall-gpa-container');
     
     if (!isNaN(passedU) && !isNaN(pastG) && passedU > 0) {
-        let totalOverallUnits = passedU + units;
-        let totalOverallWeight = (pastG * passedU) + weight;
-        let overall = totalOverallWeight / totalOverallUnits;
+        let totalOverallUnits = passedU + units; let totalOverallWeight = (pastG * passedU) + weight; let overall = totalOverallWeight / totalOverallUnits;
         overallContainer.style.display = 'flex';
         document.getElementById('overall-gpa-val').textContent = overall.toFixed(2);
-        
         let cColor = overall >= 17 ? 'var(--green)' : (overall >= 12 ? 'var(--accent)' : 'var(--red)');
         document.getElementById('overall-gpa-val').style.color = cColor;
         overallContainer.style.borderColor = overall >= 17 ? 'rgba(52,211,153,0.4)' : (overall >= 12 ? 'rgba(79,142,247,0.4)' : 'rgba(248,113,113,0.4)');
-    } else {
-        overallContainer.style.display = 'none';
-    }
+    } else { overallContainer.style.display = 'none'; }
   }
 
-  // ---------------- SMART TARGET & INTERACTIVE SIMULATOR ----------------
   function toggleTargetPanel() {
-    if (!window.currentUser) {
-        window.showCustomAlert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.');
-        window.openAuthModal();
-        return;
-    }
+    if (!window.currentUser) { window.showCustomAlert('برای استفاده از هدف‌گذاری هوشمند ابتدا وارد حساب کاربری خود شوید.'); window.openAuthModal(); return; }
     let panel = document.getElementById('gpa-target-panel');
     panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
-    if(panel.style.display === 'flex') {
-        document.getElementById('interactive-simulator').style.display = 'none';
-        document.getElementById('sim-toggle-btn').style.display = 'inline-block';
-        updateInteractiveSimData();
-    }
+    if(panel.style.display === 'flex') { document.getElementById('interactive-simulator').style.display = 'none'; document.getElementById('sim-toggle-btn').style.display = 'inline-block'; updateInteractiveSimData(); }
   }
   
-  function toggleSimulator() {
-      let box = document.getElementById('interactive-simulator');
-      box.style.display = box.style.display === 'block' ? 'none' : 'block';
-  }
-
-  function resetTargetSimulation() {
-      focusIds.clear();
-      document.getElementById('target-gpa-input').value = '';
-      document.getElementById('target-results').innerHTML = '';
-      document.getElementById('target-guide-text').style.display = 'none';
-      
-      updateInteractiveSimData();
-      renderGpa(); 
-  }
-
+  function toggleSimulator() { let box = document.getElementById('interactive-simulator'); box.style.display = box.style.display === 'block' ? 'none' : 'block'; }
+  function resetTargetSimulation() { focusIds.clear(); document.getElementById('target-gpa-input').value = ''; document.getElementById('target-results').innerHTML = ''; document.getElementById('target-guide-text').style.display = 'none'; updateInteractiveSimData(); renderGpa(); }
   function clearTargetResults() { focusIds.clear(); document.getElementById('target-results').innerHTML = ''; document.getElementById('target-guide-text').style.display = 'none'; }
   
   function getDifficulty(name) {
@@ -1351,48 +1062,26 @@
       btn.innerHTML = '✖ لغو انتخاب‌ها (توزیع خودکار بین همه)'; btn.onclick = () => { focusIds.clear(); calculateTarget('run'); }; container.appendChild(btn);
   }
 
-  function getGradeColor(grade) {
-      if (grade === null || isNaN(grade)) return 'var(--muted)';
-      if (grade >= 17) return 'var(--green)';
-      if (grade >= 14) return 'var(--accent)';
-      if (grade >= 10) return 'var(--gold)';
-      return 'var(--red)';
-  }
+  function getGradeColor(grade) { if (grade === null || isNaN(grade)) return 'var(--muted)'; if (grade >= 17) return 'var(--green)'; if (grade >= 14) return 'var(--accent)'; if (grade >= 10) return 'var(--gold)'; return 'var(--red)'; }
 
-  // Simulator Logic
   let simData = [];
   function updateInteractiveSimData() {
-      let simBox = document.getElementById('interactive-simulator');
-      let simBtn = document.getElementById('sim-toggle-btn');
-      
+      let simBox = document.getElementById('interactive-simulator'); let simBtn = document.getElementById('sim-toggle-btn');
       let validCourses = window.gpaCourses.filter(c => parseFloat(c.units) > 0);
       if(validCourses.length === 0) { simBox.style.display = 'none'; simBtn.style.display = 'none'; return; }
-      
       simBtn.style.display = 'inline-block';
-      simData = validCourses.map(c => {
-         let parsedG = parseFloat(c.grade);
-         return { id: c.id, name: c.name, u: parseFloat(c.units), g: isNaN(parsedG) ? null : parsedG };
-      });
+      simData = validCourses.map(c => { let parsedG = parseFloat(c.grade); return { id: c.id, name: c.name, u: parseFloat(c.units), g: isNaN(parsedG) ? null : parsedG }; });
       renderSimSliders();
   }
 
   function renderSimSliders() {
-      let list = document.getElementById('sim-sliders-list');
-      list.innerHTML = '';
+      let list = document.getElementById('sim-sliders-list'); list.innerHTML = '';
       simData.forEach(c => {
           let row = document.createElement('div'); row.className = 'sim-row';
-          let displayG = c.g !== null ? c.g.toFixed(2) : '?';
-          let cColor = getGradeColor(c.g);
-          let sliderVal = c.g !== null ? c.g : 20;
-          
+          let displayG = c.g !== null ? c.g.toFixed(2) : '?'; let cColor = getGradeColor(c.g); let sliderVal = c.g !== null ? c.g : 20;
           row.innerHTML = `
-              <div class="sim-row-top">
-                  <span>${c.name || 'بدون نام'} (${c.u} واحد)</span>
-                  <span class="sim-val" id="sim-val-${c.id}" style="color:${cColor}">${displayG}</span>
-              </div>
-              <input type="range" class="sim-slider" min="0" max="20" step="0.25" value="${sliderVal}" id="sim-slider-${c.id}" style="--thumb-c: ${c.g === null ? 'var(--muted)' : cColor}"
-                  oninput="updateCourseSim(${c.id}, this.value)">
-          `;
+              <div class="sim-row-top"><span>${c.name || 'بدون نام'} (${c.u} واحد)</span><span class="sim-val" id="sim-val-${c.id}" style="color:${cColor}">${displayG}</span></div>
+              <input type="range" class="sim-slider" min="0" max="20" step="0.25" value="${sliderVal}" id="sim-slider-${c.id}" style="--thumb-c: ${c.g === null ? 'var(--muted)' : cColor}" oninput="updateCourseSim(${c.id}, this.value)">`;
           list.appendChild(row);
       });
       calculateSimGpa();
@@ -1401,37 +1090,17 @@
   window.updateCourseSim = (id, val) => { 
       let course = simData.find(x => x.id === id); 
       if(course) { 
-          course.g = parseFloat(val); 
-          let el = document.getElementById(`sim-slider-${id}`);
-          let vEl = document.getElementById(`sim-val-${id}`);
-          let cColor = getGradeColor(course.g);
-          
-          el.style.setProperty('--thumb-c', cColor);
-          vEl.innerText = course.g.toFixed(2);
-          vEl.style.color = cColor;
-          
-          calculateSimGpa(); 
+          course.g = parseFloat(val); let el = document.getElementById(`sim-slider-${id}`); let vEl = document.getElementById(`sim-val-${id}`); let cColor = getGradeColor(course.g);
+          el.style.setProperty('--thumb-c', cColor); vEl.innerText = course.g.toFixed(2); vEl.style.color = cColor; calculateSimGpa(); 
       } 
   };
   
   function calculateSimGpa() {
       let w = 0, u = 0, hasEmpty = false;
-      simData.forEach(c => { 
-          if(c.g !== null && !isNaN(c.g)) { w += c.u * c.g; u += c.u; }
-          else { hasEmpty = true; }
-      });
-      
+      simData.forEach(c => { if(c.g !== null && !isNaN(c.g)) { w += c.u * c.g; u += c.u; } else { hasEmpty = true; } });
       let display = document.getElementById('sim-gpa-val');
-      if (u === 0 && hasEmpty) {
-          display.innerText = '?';
-          display.style.color = 'var(--muted)';
-          display.style.borderColor = 'var(--border)';
-      } else {
-          let res = u > 0 ? (w/u).toFixed(2) : '0.00';
-          display.innerText = res;
-          display.style.color = getGradeColor(res);
-          display.style.borderColor = (res >= 17) ? 'rgba(52,211,153,0.4)' : (res >= 14 ? 'rgba(79,142,247,0.4)' : (res >= 10 ? 'rgba(245,200,66,0.4)' : 'rgba(248,113,113,0.4)'));
-      }
+      if (u === 0 && hasEmpty) { display.innerText = '?'; display.style.color = 'var(--muted)'; display.style.borderColor = 'var(--border)'; } 
+      else { let res = u > 0 ? (w/u).toFixed(2) : '0.00'; display.innerText = res; display.style.color = getGradeColor(res); display.style.borderColor = (res >= 17) ? 'rgba(52,211,153,0.4)' : (res >= 14 ? 'rgba(79,142,247,0.4)' : (res >= 10 ? 'rgba(245,200,66,0.4)' : 'rgba(248,113,113,0.4)')); }
   }
 
   function runDistributeDeficit(pool, deficitWeight, isFocusMode) {
@@ -1484,47 +1153,29 @@
     if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! 🎉</div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
 
     let shiftablePool = pool.filter(p => p.potential_weight > 0);
-    if (shiftablePool.length === 0) {
-        resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی ندارند." : "فراتر از سقف ۲۰ نیاز دارید."}</div>`;
-        document.getElementById('target-guide-text').style.display = 'none';
-        return;
-    }
+    if (shiftablePool.length === 0) { resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی ندارند." : "فراتر از سقف ۲۰ نیاز دارید."}</div>`; document.getElementById('target-guide-text').style.display = 'none'; return; }
 
     let emptyPool = shiftablePool.filter(p => p.is_empty), targetPool = (emptyPool.length > 0 && focusIds.size === 0) ? emptyPool : shiftablePool;
     let result = runDistributeDeficit(targetPool, deficitWeight, focusIds.size > 0);
     if (result.impossible && emptyPool.length > 0 && emptyPool.length < shiftablePool.length && focusIds.size === 0) result = runDistributeDeficit(shiftablePool, deficitWeight, false);
     
-    if (result.impossible && shiftablePool.length > 0) {
-        resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده کافی نیستند." : "دسترسی غیرممکن است."}</div>`;
-        document.getElementById('target-guide-text').style.display = 'none';
-    } else {
-        document.getElementById('target-guide-text').style.display = 'block';
-    }
+    if (result.impossible && shiftablePool.length > 0) { resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده کافی نیستند." : "دسترسی غیرممکن است."}</div>`; document.getElementById('target-guide-text').style.display = 'none'; } 
+    else { document.getElementById('target-guide-text').style.display = 'block'; }
 
     if(focusIds.size > 0) addClearFocusButton(resultsDiv);
     pool.filter(p => p.is_empty || p.max_g > p.g).forEach(s => {
         let card = document.createElement('div'), isFocused = focusIds.size > 0 && focusIds.has(s.c.id), isMuted = focusIds.size > 0 && !focusIds.has(s.c.id);
         card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : ''); card.onclick = () => calculateTarget(s.c.id); 
         let finalG = s.final_target_g !== undefined ? s.final_target_g : (s.is_empty ? 0 : s.g);
-        
-        let delta = finalG - (s.is_empty ? 0 : s.g);
-        let formatG = finalG.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
-        let formatDelta = delta.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
-        
-        let text = (isMuted || (result.impossible && isFocused)) ? 
-            `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : 
-            (!s.is_empty ? `کمبود: <b>${formatDelta}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${formatG}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${formatG}</b>`);
-        
+        let delta = finalG - (s.is_empty ? 0 : s.g); let formatG = finalG.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00'); let formatDelta = delta.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
+        let text = (isMuted || (result.impossible && isFocused)) ? `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : (!s.is_empty ? `کمبود: <b>${formatDelta}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${formatG}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${formatG}</b>`);
         card.innerHTML = `<div class="target-card-name"><span>${s.c.name || '(بدون نام)'}</span></div><div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : getGradeColor(finalG)};">${text}</div>`;
         resultsDiv.appendChild(card);
     });
 
     if(!result.impossible && pool.some(p => p.is_empty || p.max_g > p.g)) {
         document.getElementById('interactive-simulator').style.display = 'block';
-        pool.forEach(p => {
-           let courseInSim = simData.find(x => x.id === p.c.id);
-           if(courseInSim && p.final_target_g !== undefined) courseInSim.g = parseFloat(p.final_target_g.toFixed(2));
-        });
+        pool.forEach(p => { let courseInSim = simData.find(x => x.id === p.c.id); if(courseInSim && p.final_target_g !== undefined) courseInSim.g = parseFloat(p.final_target_g.toFixed(2)); });
         renderSimSliders();
     }
   }
@@ -1532,7 +1183,6 @@
   function clearGpa() { window.gpaCourses = []; renderGpa(); clearTargetResults(); document.getElementById('target-gpa-input').value = ''; document.getElementById('gpa-target-panel').style.display='none'; }
   function newGpa() { clearGpa(); addGpaCourse(); }
 
-  // ---------------- PLANNER LOGIC ----------------
   let pIdCounter = 0;
   function addPlannerCourse(data = {}) { window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); renderPlanner(); }
   function removePlannerCourse(id) { window.pCourses = window.pCourses.filter(c => c.id !== id); renderPlanner(); }
@@ -1543,16 +1193,9 @@
       let importedCount = 0;
       window.userProfileData.courses.forEach(pc => {
           let exists = window.pCourses.some(c => c.name === pc.name);
-          if(!exists) {
-              if(window.pCourses.length === 1 && !window.pCourses[0].name && !window.pCourses[0].units) {
-                  window.pCourses = []; document.getElementById('planner-list').innerHTML = '';
-              }
-              addPlannerCourse({name: pc.name, units: pc.units});
-              importedCount++;
-          }
+          if(!exists) { if(window.pCourses.length === 1 && !window.pCourses[0].name && !window.pCourses[0].units) { window.pCourses = []; document.getElementById('planner-list').innerHTML = ''; } addPlannerCourse({name: pc.name, units: pc.units}); importedCount++; }
       });
-      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error');
-      else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
+      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error'); else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
   }
 
   function renderPlanner() {
@@ -1584,9 +1227,9 @@
     document.getElementById('planner-total-units').innerHTML = `<span>${toFarsiNum(total)}</span>`; let fill = document.getElementById('planner-progress-fill'); let statusText = document.getElementById('planner-status-text');
     let percentage = Math.min((total / 24) * 100, 100); fill.style.width = percentage + '%';
     if (total === 0) { fill.style.background = 'transparent'; fill.style.boxShadow = 'none'; statusText.textContent = ''; }
-    else if (total <= 14) { fill.style.background = 'var(--red)'; fill.style.boxShadow = '0 0 12px rgba(248,113,113,0.6)'; statusText.innerHTML = '<span style="color: var(--red);">مجاز برای معدل مشروط (سقف ۱۴)</span>'; }
-    else if (total <= 20) { fill.style.background = 'var(--accent)'; fill.style.boxShadow = '0 0 12px rgba(79,142,247,0.6)'; statusText.innerHTML = '<span style="color: var(--accent);">مجاز برای معدل عادی (سقف ۲۰)</span>'; }
-    else if (total <= 24) { fill.style.background = 'var(--green)'; fill.style.boxShadow = '0 0 12px rgba(52,211,153,0.6)'; statusText.innerHTML = '<span style="color: var(--green);">مجاز برای معدل الف (سقف ۲۴)</span>'; }
+    else if (total <= 14) { fill.style.background = 'var(--red)'; fill.style.boxShadow = '0 0 12px rgba(248,113,113,0.6)'; statusText.innerHTML = '<span style="color: var(--red);">مجاز (سقف ۱۴)</span>'; }
+    else if (total <= 20) { fill.style.background = 'var(--accent)'; fill.style.boxShadow = '0 0 12px rgba(79,142,247,0.6)'; statusText.innerHTML = '<span style="color: var(--accent);">مجاز (سقف ۲۰)</span>'; }
+    else if (total <= 24) { fill.style.background = 'var(--green)'; fill.style.boxShadow = '0 0 12px rgba(52,211,153,0.6)'; statusText.innerHTML = '<span style="color: var(--green);">مجاز (سقف ۲۴)</span>'; }
     else { fill.style.background = 'var(--gold)'; fill.style.boxShadow = '0 0 12px rgba(245,200,66,0.6)'; statusText.innerHTML = '<span style="color: var(--gold);">⚠️ بیش از حد مجاز!</span>'; }
   }
 
@@ -1606,7 +1249,7 @@
       });
     });
     let alertBox = document.getElementById('conflict-alert');
-    if (hasConflict) { alertBox.style.display = 'flex'; alertBox.innerHTML = `<div>⚠️ <b style="color:var(--red);">تداخل ساعتی در کلاس‌ها وجود دارد!</b> لطفاً خانه‌های قرمز رنگ در جدول را بررسی کنید.<br><ul>` + conflictMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`; } else { alertBox.style.display = 'none'; }
+    if (hasConflict) { alertBox.style.display = 'flex'; alertBox.innerHTML = `<div>⚠️ <b style="color:var(--red);">تداخل ساعتی!</b><br><ul>` + conflictMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`; } else { alertBox.style.display = 'none'; }
   }
 
   function setSemester(idx) { selectedSemester = idx; document.getElementById('sem-btn-0').classList.toggle('active', idx === 0); document.getElementById('sem-btn-1').classList.toggle('active', idx === 1); let valid = SEMESTER_MONTHS[idx].map(m => m.idx.toString()); window.pCourses.forEach(c => { if (c.examMonth && !valid.includes(c.examMonth)) { c.examMonth = ''; c.examDay = ''; c.examTime = ''; c.hasExamConflict = false; c.examConflictLevel = 0; } }); renderPlanner(); }
@@ -1632,13 +1275,13 @@
                 let chipsHTML = '';
                 if(hasExam) {
                     chipsHTML += `<div class="htl-dot ${dotClass}"></div>`;
-                    d.examData.courses.forEach(c => { let chipClass = level===2?'warn-r': level===1?'warn-y':''; let timeHtml = c.examTime ? `<div class="htl-exam-time">${c.examTime}</div>` : ''; chipsHTML += `<div class="htl-exam-chip ${chipClass}" onclick="highlightRow(${c.id},'planner')" title="${c.name||'(بدون نام)'}">${c.name||'(بدون نام)'}${timeHtml}</div>`; });
+                    d.examData.courses.forEach(c => { let chipClass = level===2?'warn-r': level===1?'warn-y':''; chipsHTML += `<div class="htl-exam-chip ${chipClass}" onclick="highlightRow(${c.id},'planner')">${c.name||'(بدون نام)'}</div>`; });
                 }
                 cellsHTML += `<div class="${cellClass}"><div class="htl-day-header"><div class="htl-day-num">${toFarsiNum(d.day)}</div><div class="htl-day-month">${PERSIAN_MONTHS[d.month]}</div></div><div class="htl-day-body">${chipsHTML}</div></div>`;
             });
         }
     });
-    container.innerHTML = `<div class="timeline-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> مسیر امتحانات شما <span style="font-size:0.75rem; color:var(--muted); font-weight:400;">— هر خانه یک روز</span></div><div class="htl-scroll-wrap"><div class="htl-grid">${cellsHTML}</div></div>`;
+    container.innerHTML = `<div class="timeline-title">مسیر امتحانات شما</div><div class="htl-scroll-wrap"><div class="htl-grid">${cellsHTML}</div></div>`;
   }
 
   function clearPlanner() { window.pCourses = []; renderPlanner(); }

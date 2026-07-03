@@ -287,6 +287,17 @@
 
     .dash-grid { grid-template-columns: 1fr; }
     .dash-course-row { min-width: 100%; grid-template-columns: 1fr 60px 70px 35px; }
+    
+    /* تنظیم فشردگی ستون‌های معدل در حالت موبایل */
+    .gpa-header, .gpa-row { 
+        min-width: 100%; 
+        grid-template-columns: 1fr 50px 60px 35px; 
+        gap: 5px; 
+        padding: 10px 5px; 
+    }
+    .gpa-header { font-size: 0.65rem; }
+    .gpa-row input { font-size: 0.8rem; padding: 6px 4px; }
+    
     .modal-box { padding: 20px 15px; }
     
     .tabs { width: 100%; display: flex; }
@@ -428,20 +439,32 @@
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
     <h2 id="auth-title">ورود به حساب کاربری</h2>
     
-    <div style="font-size: 0.75rem; color: var(--muted); text-align: center; margin-bottom: 20px; line-height: 1.6;">
-        ثبت‌نام در سایت کاملاً اختیاری است و صرفاً برای <b>ذخیره ابری</b> برنامه‌ها، معدل‌ها و دسترسی همیشگی به اطلاعات شما استفاده می‌شود.
+    <div style="font-size: 0.85rem; color: var(--accent); text-align: center; margin-bottom: 20px; cursor: pointer; text-decoration: underline; font-weight: bold;" onclick="openFeaturesModal()">
+        مشاهده قابلیت‌های حساب کاربری
     </div>
 
     <div id="auth-error" class="auth-error"></div>
-    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" style="display: none;" autocomplete="off">
+    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" autocomplete="off">
     <input type="password" id="auth-password" placeholder="رمز عبور" autocomplete="new-password">
-    <input type="text" id="auth-identifier" placeholder="ایمیل یا نام کاربری" autocomplete="off">
     
     <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">
         <span class="spinner" id="auth-spinner"></span>
         <span id="auth-btn-text">ورود</span>
     </button>
     <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">حساب ندارید؟ ثبت‌نام کنید</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="features-modal-overlay" style="z-index: 10001;">
+  <div class="modal-box custom-alert" style="text-align: right; max-width: 400px;">
+    <h3 style="color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem;">قابلیت‌های حساب کاربری</h3>
+    <ul style="list-style-type: none; padding: 0; font-size: 0.9rem; line-height: 2; color: var(--text);">
+      <li><span style="color: var(--green);">✔</span> <b>ذخیره ابری اطلاعات:</b> دسترسی همیشگی به معدل‌ها و برنامه‌های انتخاب واحد ذخیره شده از هر دستگاه.</li>
+      <li><span style="color: var(--green);">✔</span> <b>ارتباط با پشتیبانی:</b> امکان ارسال نظرات، گزارش مشکل و پیشنهاد به مدیریت سایت.</li>
+      <li><span style="color: var(--green);">✔</span> <b>پنل کاربری اختصاصی:</b> امکان ثبت اطلاعات تحصیلی و دروس ثابت ترم جهت فراخوانی سریع با یک دکمه.</li>
+      <li><span style="color: var(--green);">✔</span> <b>محیطی امن و ساده:</b> ثبت‌نام سریع تنها با نام کاربری و رمز عبور (بدون نیاز به ایمیل).</li>
+    </ul>
+    <button class="btn btn-primary" onclick="closeFeaturesModal()" style="width: 100%; margin-top: 25px;">متوجه شدم</button>
   </div>
 </div>
 
@@ -502,13 +525,6 @@
         </div>
     </div>
 
-    <div style="margin-top: 15px; background: rgba(124,92,252,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(124,92,252,0.2);">
-        <h3 style="font-size: 0.95rem; color: var(--accent2); margin-bottom: 12px;">✉️ صندوق پیام‌های ادمین</h3>
-        <div id="admin-messages-box" style="font-size: 0.85rem; color: var(--text); min-height: 40px;">
-            <div style="color:var(--muted); text-align:center;">پیامی برای شما ارسال نشده است.</div>
-        </div>
-    </div>
-
     <div style="display:flex; gap:15px; width: 100%; justify-content: center; flex-wrap: wrap; margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border);">
         <span class="dash-link" onclick="triggerChangePassword()">تغییر رمز عبور</span>
         <span style="color:var(--border);">|</span>
@@ -563,7 +579,7 @@
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   let isLoginMode = true;
-  window.userProfileData = { courses: [], adminMessages: [] };
+  window.userProfileData = { courses: [] };
 
   window.showToast = (msg, type = 'success') => {
       const container = document.getElementById('toast-container');
@@ -590,6 +606,9 @@
   window.showCustomAlert = (msg) => { document.getElementById('custom-alert-msg').innerText = msg; document.getElementById('custom-alert-overlay').classList.add('active'); };
   window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
   window.closeCustomPrompt = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); };
+  
+  window.openFeaturesModal = () => { document.getElementById('features-modal-overlay').classList.add('active'); };
+  window.closeFeaturesModal = () => { document.getElementById('features-modal-overlay').classList.remove('active'); };
 
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
   window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
@@ -603,39 +622,28 @@
     document.getElementById('auth-btn-text').innerText = isLoginMode ? "ورود" : "ثبت‌نام";
     document.getElementById('auth-switch-btn').innerText = isLoginMode ? "حساب ندارید؟ ثبت‌نام کنید" : "قبلاً ثبت‌نام کرده‌اید؟ وارد شوید";
     document.getElementById('auth-error').style.display = 'none';
-
-    if(isLoginMode) {
-        document.getElementById('auth-username').style.display = 'none';
-        document.getElementById('auth-identifier').placeholder = "ایمیل یا نام کاربری";
-    } else {
-        document.getElementById('auth-username').style.display = 'block';
-        document.getElementById('auth-identifier').placeholder = "ایمیل خود را وارد کنید (اختیاری)";
-    }
   }
 
   window.handleAuthSubmit = async () => {
-    const identifier = document.getElementById('auth-identifier').value.trim();
+    const username = document.getElementById('auth-username').value.trim();
     const pass = document.getElementById('auth-password').value;
     const errorBox = document.getElementById('auth-error');
     const btn = document.getElementById('auth-submit-btn');
     const spinner = document.getElementById('auth-spinner');
     const btnText = document.getElementById('auth-btn-text');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    if(!isLoginMode && !document.getElementById('auth-username').value.trim()) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
-    if(isLoginMode && !identifier) { errorBox.innerText = "لطفاً نام کاربری یا ایمیل را وارد کنید."; errorBox.style.display = 'block'; return; }
+    if(!username) { errorBox.innerText = "لطفاً نام کاربری را وارد کنید."; errorBox.style.display = 'block'; return; }
     if(!pass) { errorBox.innerText = "لطفاً رمز عبور را وارد کنید."; errorBox.style.display = 'block'; return; }
     
     btn.disabled = true; spinner.style.display = 'inline-block'; btnText.style.display = 'none'; errorBox.style.display = 'none';
 
     try {
       if(isLoginMode) {
-          let loginEmail = identifier;
-          if(!identifier.includes('@')) {
-              const { data, error } = await supabase.from('users').select('email').eq('username', identifier).single();
+          let loginEmail = username;
+          if(!username.includes('@')) {
+              const { data, error } = await supabase.from('users').select('email').eq('username', username).single();
               if(error || !data) {
-                  // Fallback: Use the generated domain in case RLS blocked the lookup read
-                  loginEmail = identifier + "@costudent.local";
+                  loginEmail = username + "@costudent.local";
               } else {
                   loginEmail = data.email;
               }
@@ -645,13 +653,9 @@
           
           closeAuthModal(); window.showToast('با موفقیت وارد شدید.');
       } else {
-          const username = document.getElementById('auth-username').value.trim();
-          if(!username) throw new Error("no-username");
           if(!/^[a-zA-Z0-9_]{3,}$/.test(username)) throw new Error("invalid-username");
           
-          let finalEmail = identifier;
-          if (finalEmail === "") { finalEmail = username + "@costudent.local"; } 
-          else if(!emailRegex.test(finalEmail)) throw new Error("invalid-email-format");
+          let finalEmail = username + "@costudent.local";
 
           const { data: existingUser } = await supabase.from('users').select('id').eq('username', username).single();
           if(existingUser) throw new Error("username-taken");
@@ -665,12 +669,11 @@
           
           const { error: dbError } = await supabase.from('users').insert([{
               id: userCred.user.id, email: finalEmail, username: username,
-              profile: { courses: [], adminMessages: [] }, gpaDrafts: [], plannerDrafts: []
+              profile: { courses: [] }, gpaDrafts: [], plannerDrafts: []
           }]);
           
           if(dbError) console.error("Database insert blocked/failed, Auth healing will run on next load.", dbError);
 
-          // Force auto-login right away so the user goes straight in
           await supabase.auth.signInWithPassword({ email: finalEmail, password: pass });
           
           closeAuthModal(); window.showToast("حساب کاربری ایجاد شد و با موفقیت وارد شدید!");
@@ -678,9 +681,7 @@
     } catch (error) {
       errorBox.style.display = 'block';
       let errStr = error.message || "";
-      if(errStr === "no-username") errorBox.innerText = "لطفاً نام کاربری را وارد کنید.";
-      else if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
-      else if(errStr === "invalid-email-format") errorBox.innerText = "فرمت ایمیل نامعتبر است (مثال: name@domain.com).";
+      if(errStr === "invalid-username") errorBox.innerText = "نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.";
       else if(errStr === "username-taken") errorBox.innerText = "این نام کاربری قبلاً گرفته شده است.";
       else if(errStr.includes("already registered")) errorBox.innerText = "این ایمیل/کاربر قبلاً ثبت شده است.";
       else if(errStr.includes("Invalid login")) errorBox.innerText = "اطلاعات ورود اشتباه است.";
@@ -723,7 +724,6 @@
     if (user) {
       window.currentUser = user; loginBtn.style.display = 'none'; userInfo.style.display = 'flex';
       
-      // Self-Healing Database Sync: Ensures the users row exists securely!
       let { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
       
       if (error && error.code === 'PGRST116') {
@@ -731,7 +731,7 @@
               id: user.id,
               email: user.email,
               username: user.user_metadata?.username || user.email.split('@')[0],
-              profile: { courses: [], adminMessages: [] },
+              profile: { courses: [] },
               gpaDrafts: [],
               plannerDrafts: []
           };
@@ -746,7 +746,7 @@
         document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
         window.gpaDrafts = data.gpaDrafts || []; 
         window.plannerDrafts = data.plannerDrafts || [];
-        window.userProfileData = data.profile || { courses: [], adminMessages: [] };
+        window.userProfileData = data.profile || { courses: [] };
         
         window.renderGpaDrafts(); window.renderPlannerDrafts();
         if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
@@ -762,7 +762,7 @@
       window.currentUser = null; window.currentUsername = null;
       loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; 
       importGpaBtn.style.display = 'none'; importPlannerBtn.style.display = 'none';
-      window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [], adminMessages: [] };
+      window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
       window.renderGpaDrafts(); window.renderPlannerDrafts();
       if(typeof window.calcGpa === 'function') window.calcGpa();
     }
@@ -808,14 +808,6 @@
       const list = document.getElementById('dash-courses-list'); list.innerHTML = '';
       if(window.userProfileData.courses) {
           window.userProfileData.courses.forEach((c) => { appendDashCourseRow(c.name, c.units, c.grade); });
-      }
-
-      let msgs = window.userProfileData.adminMessages || [];
-      let msgBox = document.getElementById('admin-messages-box');
-      if(msgs.length > 0) {
-          msgBox.innerHTML = msgs.map(m => `<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed rgba(255,255,255,0.1); line-height:1.5;">${m}</div>`).join('');
-      } else {
-          msgBox.innerHTML = '<div style="color:var(--muted); text-align:center;">پیامی برای شما ارسال نشده است.</div>';
       }
 
       document.getElementById('dashboard-modal-overlay').classList.add('active');
@@ -876,8 +868,7 @@
           if(name || units) courses.push({name, units, grade});
       });
       
-      const adminMessages = window.userProfileData.adminMessages || [];
-      window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses, adminMessages };
+      window.userProfileData = { major, uni, term, passedUnits, currentGpa, courses };
       
       let originalBtnHTML;
       if(btnElement) { originalBtnHTML = btnElement.innerHTML; btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...'; btnElement.style.pointerEvents = 'none'; }
@@ -1020,7 +1011,7 @@
   
   window.closeAllAutocomplete = function() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
   
-  // Exception added for autocomplete-list itself so mobile taps don't close it instantly
+  // Prevent dropdown detachment on scroll
   document.addEventListener('click', (e) => { 
       if (!e.target.closest('.autocomplete-wrap') && !e.target.closest('.autocomplete-list')) {
           window.closeAllAutocomplete(); 
@@ -1039,7 +1030,6 @@
       sug.forEach(s => {
         let item = document.createElement('div'); item.className = 'autocomplete-item'; item.innerHTML = window.highlight(s, val);
         
-        // Touch & Mouse Support ensuring logic triggers before blur kills the list
         const selectAction = (e) => { 
             e.preventDefault(); 
             inputEl.value = s; 

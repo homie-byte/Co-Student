@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل ویژه دانشجویان.">
+<meta name="description" content="ابزار برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل دانشجویان.">
 <title>Co-Student</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -406,7 +406,7 @@
     <div class="header-controls">
         
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('planner-tool')">برنامه‌ریز انتخاب واحد</button>
+          <button class="tab-btn active" onclick="switchTab('planner-tool')">پلنر انتخاب واحد</button>
           <button class="tab-btn" onclick="switchTab('gpa-tool')">محاسبه‌گر معدل</button>
         </div>
         
@@ -548,7 +548,7 @@
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
     <button class="close-modal" onclick="closeAuthModal()">✕</button>
-    <h2 id="auth-title">ثبت‌نام کاربر جدید</h2>
+    <h2 id="auth-title">ثبت‌نام حساب کاربری</h2>
 
     <div id="auth-error" class="auth-error"></div>
     <input type="text" id="auth-username" placeholder="نام کاربری" autocomplete="off" style="display: block;">
@@ -710,8 +710,8 @@
   // مخفی شدن اتوماتیک پیام چرخش گوشی بعد از 2 دقیقه
   setTimeout(() => {
       let rotateAlert = document.getElementById('mobile-rotate-alert');
-      if(rotateAlert) rotateAlert.style.display = 'none';
-  }, 20000);
+      if(rotateAlert) rotateAlert.style.display = 'none' ;
+  }, 7000);
 
   window.toggleTheme = () => {
       const htmlEl = document.documentElement;
@@ -1517,7 +1517,7 @@
     });
 
     let deficitWeight = (target * totalUnits) - currentWeight;
-    if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن  کرده‌اید! </div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
+    if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! </div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
 
     let shiftablePool = pool.filter(p => p.potential_weight > 0);
     if (shiftablePool.length === 0) { resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی ندارند." : "فراتر از سقف ۲۰ نیاز دارید."}</div>`; document.getElementById('target-guide-text').style.display = 'none'; return; }
@@ -1535,7 +1535,7 @@
         card.className = 'target-card' + (isFocused ? ' focused' : '') + (isMuted ? ' muted' : ''); card.onclick = () => calculateTarget(s.c.id); 
         let finalG = s.final_target_g !== undefined ? s.final_target_g : (s.is_empty ? 0 : s.g);
         let delta = finalG - (s.is_empty ? 0 : s.g); let formatG = finalG.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00'); let formatDelta = delta.toFixed(2).replace(/\.50$/, '.50').replace(/\.00$/, '.00');
-        let text = (isMuted || (result.impossible && isFocused)) ? `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : (!s.is_empty ? `کمبود: <b>${formatDelta}+</b> <br><span style="font-size:0.75rem;opacity:0.8">باید بشود: ${formatG}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${formatG}</b>`);
+        let text = (isMuted || (result.impossible && isFocused)) ? `<span style="color:var(--muted); font-size:0.8rem">خارج از محاسبه</span>` : (!s.is_empty ? `اختلاف: <b>${formatDelta}+</b> <br><span style="font-size:0.9rem;opacity:0.8">نمره مورد نیاز : ${formatG}</span>` : `پیشنهاد هوشمند: <b style="font-size:1.1rem">${formatG}</b>`);
         card.innerHTML = `<div class="target-card-name"><span>${s.c.name || '(بدون نام)'}</span></div><div class="target-card-val" style="color:${isMuted ? 'var(--muted)' : getGradeColor(finalG)};">${text}</div>`;
         resultsDiv.appendChild(card);
     });

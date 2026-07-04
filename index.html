@@ -445,8 +445,8 @@
         
         <div class="exam-months-filter" style="display:flex; align-items:center; gap:8px; background:rgba(124, 142, 160, 0.05); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
           <span style="font-size:0.75rem; color:var(--muted);">ماه‌های امتحانی:</span>
-          <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد—تیر</button>
-          <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی—بهمن</button>
+          <button id="sem-btn-1" class="sem-btn active" onclick="setSemester(1)">دی—بهمن</button>
+          <button id="sem-btn-0" class="sem-btn" onclick="setSemester(0)">خرداد—تیر</button>
         </div>
         <button class="btn btn-ghost" onclick="newPlanner()" style="margin-right: auto;">📃 برنامه جدید</button>
       </div>
@@ -510,7 +510,7 @@
       
       <div id="gpa-target-panel" class="target-panel">
         <div class="target-header">
-          <span class="lbl">می‌خواهم معدلم بشود:</span>
+          <span class="lbl">معدل هدف :</span>
           <input type="number" id="target-gpa-input" placeholder="مثلاً ۱۷.۵" step="0.1" min="10" max="20">
           <button class="btn btn-primary" onclick="calculateTarget()">پیشنهاد هوشمند</button>
           <button class="btn btn-ghost" onclick="toggleSimulator()" id="sim-toggle-btn" style="display:none; color:var(--accent); border-color:var(--accent);">🎛️ تنظیم دستی</button>
@@ -570,8 +570,8 @@
     <h3 style="color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem;">قابلیت‌های حساب کاربری</h3>
     <ul style="list-style-type: none; padding: 0; font-size: 0.9rem; line-height: 2; color: var(--text);">
       <li><span style="color: var(--green);">✔</span> <b>ذخیره ابری اطلاعات:</b> دسترسی همیشگی به معدل‌ها و برنامه‌های انتخاب واحد ذخیره شده از هر دستگاه.</li>
-      <li><span style="color: var(--green);">✔</span> <b>ارتباط با پشتیبانی:</b> امکان ارسال نظرات، گزارش مشکل و پیشنهاد به مدیریت سایت.</li>
       <li><span style="color: var(--green);">✔</span> <b>پنل کاربری اختصاصی:</b> امکان ثبت اطلاعات تحصیلی و دروس ثابت ترم جهت فراخوانی سریع با یک دکمه.</li>
+      <li><span style="color: var(--green);">✔</span> <b>ارتباط با پشتیبانی:</b> امکان ارسال نظرات، گزارش مشکل و پیشنهاد به مدیریت سایت.</li>
       <li><span style="color: var(--green);">✔</span> <b>محیطی امن و ساده:</b> ثبت‌نام سریع تنها با نام کاربری و رمز عبور (بدون نیاز به ایمیل).</li>
     </ul>
     <button class="btn btn-primary" onclick="closeFeaturesModal()" style="width: 100%; margin-top: 25px;">متوجه شدم</button>
@@ -586,23 +586,23 @@
     <div class="dash-grid">
         <div>
             <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">رشته تحصیلی</label>
-            <input type="text" id="dash-major" placeholder="مثلاً فیزیک" autocomplete="off">
+            <input type="text" id="dash-major" placeholder="فیزیک" autocomplete="off">
         </div>
         <div>
             <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">دانشگاه</label>
-            <input type="text" id="dash-uni" placeholder="مثلاً دانشگاه مازندران" autocomplete="off">
+            <input type="text" id="dash-uni" placeholder="دانشگاه مازندران" autocomplete="off">
         </div>
         <div>
             <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;" id="lbl-term">ترم جاری</label>
-            <input type="number" id="dash-term" placeholder="مثلاً 3" oninput="updateTermLabels()" autocomplete="off">
+            <input type="number" id="dash-term" placeholder="3" oninput="updateTermLabels()" autocomplete="off">
         </div>
         <div>
             <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;" id="lbl-passed-units">تعداد واحد پاس شده</label>
-            <input type="number" id="dash-passed-units" placeholder="مثلاً 35" autocomplete="off">
+            <input type="number" id="dash-passed-units" placeholder="35" autocomplete="off">
         </div>
         <div style="grid-column: 1 / -1;">
             <label style="font-size:0.85rem;color:var(--text);margin-bottom:6px;display:block;font-weight:600;">معدل کل تا قبل این ترم</label>
-            <input type="number" step="0.01" id="dash-current-gpa" placeholder="مثلاً 16.50" autocomplete="off">
+            <input type="number" step="0.01" id="dash-current-gpa" placeholder="16.50" autocomplete="off">
         </div>
     </div>
     
@@ -675,10 +675,10 @@
   </div>
 </div>
 
-<footer class="signature">
+<footer class="signature"> <!--
   <a href="https://www.iran-pedia.org/wiki/فاطمه_علی%E2%80%8Cمحمدی" target="_blank" rel="noopener noreferrer">
     به یاد جاویدنام فاطمه علی‌محمدی
-  </a>
+  </a>-->
 </footer>
 
 <script type="module">
@@ -1242,7 +1242,7 @@
   const EXAM_TIMES = ['۰۸:۳۰ - ۱۰:۳۰', '۱۰:۳۰ - ۱۲:۳۰', '۱۳:۳۰ - ۱۵:۳۰', '۱۵:۳۰ - ۱۷:۳۰'];
   let selectedSemester = 0; const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
 
-  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "ان انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
+  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
   const PHYSICS_CHART = Object.keys(window.COURSE_DB);
 
   function switchTab(tabId) { 
@@ -1322,7 +1322,7 @@
   function createGpaRowDOM(c) {
     let row = document.createElement('div'); row.className = 'gpa-row'; row.id = `gpa-row-${c.id}`;
     let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap';
-    let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: مکانیک تحلیلی ۱'; nameInp.value = c.name;
+    let nameInp = document.createElement('input'); nameInp.placeholder = 'مثلاً: ریاضی عمومی ۱'; nameInp.value = c.name;
     nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.gpaCourses, 'gpa');
 
     let unitInp = document.createElement('input'); unitInp.type = 'number'; unitInp.placeholder = 'واحد'; unitInp.value = c.units; unitInp.style.textAlign='center';

@@ -5,15 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="ابزار جامع برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل ویژه دانشجویان.">
 <title>Co-Student</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5PSY4L19NF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5PSY4L19NF');
-</script>    
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -712,7 +703,7 @@
   setTimeout(() => {
       let rotateAlert = document.getElementById('mobile-rotate-alert');
       if(rotateAlert) rotateAlert.style.display = 'none';
-  }, 30000);
+  }, 20000);
 
   window.toggleTheme = () => {
       const htmlEl = document.documentElement;
@@ -762,6 +753,7 @@
           link.href = canvas.toDataURL('image/png');
           link.click();
           window.showToast('📸 تصویر برنامه با موفقیت دانلود شد.');
+          if (typeof gtag === 'function') { gtag('event', 'download_timetable_image'); }
       } catch (err) {
           console.error(err);
           window.showToast('خطا در تهیه عکس. لطفاً دوباره تلاش کنید.', 'error');
@@ -939,6 +931,7 @@
               }]);
               if(error) throw error;
               window.showToast("پیام شما با موفقیت برای ادمین ارسال شد.");
+              if (typeof gtag === 'function') { gtag('event', 'submit_feedback', { feedback_type: type }); }
           } catch(e) { window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error"); }
       }, 'textarea');
   };
@@ -1160,6 +1153,7 @@
       const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
+      if (typeof gtag === 'function') { gtag('event', 'save_gpa_to_cloud'); }
     } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
@@ -1193,6 +1187,7 @@
       const { error } = await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
+      if (typeof gtag === 'function') { gtag('event', 'save_planner_to_cloud'); }
     } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
   
@@ -1242,7 +1237,22 @@
   window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "ان انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
   const PHYSICS_CHART = Object.keys(window.COURSE_DB);
 
-  function switchTab(tabId) { document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(event && event.currentTarget) event.currentTarget.classList.add('active'); else document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active'); window.closeAllAutocomplete(); }
+  function switchTab(tabId) { 
+      document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active')); 
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); 
+      document.getElementById(tabId).classList.add('active'); 
+      if(event && event.currentTarget) event.currentTarget.classList.add('active'); 
+      else document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active'); 
+      window.closeAllAutocomplete(); 
+
+      // --- ارسال آمار تغییر تب به گوگل ---
+      if (typeof gtag === 'function') {
+          gtag('event', 'page_view', {
+              page_title: tabId === 'planner-tool' ? 'برنامه‌ریز انتخاب واحد' : 'محاسبه‌گر معدل',
+              page_path: '/' + tabId
+          });
+      }
+  }
   function toFarsiNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
   function highlightRow(id, type) { let el = document.getElementById(`${type}-row-${id}`); if(el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.remove('highlight'); void el.offsetWidth; el.classList.add('highlight'); } }
   function fuzzyMatch(str, query) { let s = str.toLowerCase(), q = query.toLowerCase(), si = 0, qi = 0; while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; } return qi === q.length; }
@@ -1479,6 +1489,9 @@
   }
 
   function calculateTarget(actionStr = null) {
+    if (actionStr === null && typeof gtag === 'function') { 
+        gtag('event', 'use_smart_gpa_target'); 
+    }
     if(typeof actionStr === 'number') { if(focusIds.has(actionStr)) focusIds.delete(actionStr); else focusIds.add(actionStr); }
     let target = parseFloat(document.getElementById('target-gpa-input').value), resultsDiv = document.getElementById('target-results'); resultsDiv.innerHTML = '';
     if(isNaN(target) || target < 10 || target > 20) { resultsDiv.innerHTML = '<div style="color:var(--red); font-size:0.85rem; padding:10px;">لطفاً یک معدل هدف معتبر (بین ۱۰ تا ۲۰) وارد کنید.</div>'; return; }

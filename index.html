@@ -20,20 +20,26 @@
     --bg: #0a0f1e; --surface: #111827; --card: #1a2235; --border: #2a3550;
     --text: #e8eaf2; --muted: #6b7a99;
     
-    /* متغیرهای رنگی ثابت (در لایت مود هم تغییر نمی‌کنند) */
-    --accent: #4f8ef7; --accent2: #7c5cfc; --gold: #f5c842;
-    --green: #34d399; --red: #f87171;
+    --accent: #4f8ef7; --accent2: #7c5cfc; 
+    --gold: #f5c842; --green: #34d399; --red: #f87171;
     --radius: 16px;
   }
 
-  /* متغیرهای حالت لایت (حذف کامل سفیدی، استفاده از طوسی‌های ملایم و هماهنگ) */
+  /* متغیرهای حالت لایت با کنتراست بالا برای نوشته‌های رنگی */
   html.light-mode {
-    --bg: #d1d5db;        /* پس‌زمینه اصلی: طوسی-نقره‌ای ملایم */
-    --surface: #e5e7eb;   /* رنگ کادرها و فرم‌ها: طوسی خیلی روشن (بدون سفیدی) */
+    --bg: #d1d5db;        /* طوسی-نقره‌ای ملایم */
+    --surface: #e5e7eb;   /* رنگ کادرها */
     --card: #e5e7eb;      /* رنگ کارت‌ها */
-    --border: #9ca3af;    /* رنگ حاشیه‌ها (تیره‌تر برای تفکیک) */
-    --text: #111827;      /* متن تیره برای خوانایی کامل */
+    --border: #9ca3af;    /* رنگ حاشیه‌ها */
+    --text: #111827;      /* متن تیره */
     --muted: #4b5563;     
+    
+    /* اصلاح رنگ‌های ثابت برای دید عالی در لایت مود */
+    --gold: #d97706;      /* زرد تیره‌تر و خواناتر (Amber) */
+    --green: #059669;     /* سبز زمردی تیره */
+    --red: #dc2626;       /* قرمز تیره */
+    --accent: #3b82f6;    /* آبی تیره */
+    --accent2: #6366f1;   /* بنفش-آبی تیره */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -104,8 +110,8 @@
   .auth-switch { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 16px; cursor: pointer; transition: color 0.2s; }
   .auth-switch:hover { color: var(--accent); }
   
-  .features-link { font-size: 0.85rem; color: var(--accent); text-align: center; margin-top: 12px; cursor: pointer; font-weight: bold; transition: all 0.2s ease; }
-  .features-link:hover { color: var(--accent2); transform: translateY(-2px); }
+  .features-link { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 15px; cursor: pointer; transition: all 0.3s ease; text-decoration: underline; text-underline-offset: 4px; }
+  .features-link:hover { color: var(--accent); }
   
   .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 10px; text-align: center; display: none; background: rgba(248,113,113,0.1); padding: 8px; border-radius: 8px; }
 
@@ -303,7 +309,8 @@
   /* رنگ‌بندی جدول به گونه‌ای که در لایت مود هماهنگ با تم جدید باشد */
   html.light-mode .tt-header, html.light-mode .tt-day { background: #d1d5db; border-color: #9ca3af; color: #1f2937; }
   html.light-mode .tt-cell { background: #e5e7eb; border-color: #9ca3af; }
-  html.light-mode .tt-header { color: var(--text); }
+  html.light-mode .tt-header span { color: var(--text) !important; }
+  html.light-mode .tt-header span:last-child { color: var(--muted) !important; }
   
   .tt-header, .tt-day { background: rgba(124, 142, 160, 0.05); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; }
   .tt-header { background: rgba(79,142,247,0.05); color: var(--text); }
@@ -332,7 +339,7 @@
     .header-controls { flex-direction: column; gap: 15px; }
     .auth-wrapper { position: static; transform: none; width: 100%; justify-content: center; }
     
-    /* ترتیب معدل ها در گوشی */
+    /* ترتیب معدل ها در گوشی کاملا برعکس (معدل کل بالا، معدل ترم پایین) */
     .result-card { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 12px; }
     .overall-gpa-box { order: 1; width: 100%; min-width: unset; margin: 0; }
     .result-meta { order: 2; width: 100%; min-width: unset; margin: 0; }
@@ -341,6 +348,9 @@
     .actions { padding: 12px; justify-content: stretch; }
     .actions button { flex: 1 1 calc(50% - 10px); min-width: 140px; padding: 10px; }
     .actions > div { flex: 1 1 100%; justify-content: center; margin-bottom: 5px; }
+    
+    /* اولویت فیلتر ماه‌های امتحانی در موبایل (رفتن به بالاترین ردیف دکمه‌ها) */
+    .exam-months-filter { order: -1; flex: 1 1 100% !important; justify-content: center; margin-bottom: 8px; }
 
     .dash-grid { grid-template-columns: 1fr; }
     .dash-course-row { min-width: 100%; grid-template-columns: 1fr 60px 70px 35px; }
@@ -356,8 +366,8 @@
     
     /* فشرده‌سازی سطر برنامه‌ریز برای حداقل اسکرول در دیوایس‌های خیلی کوچک */
     .planner-header, .planner-row {
-        min-width: 740px; 
-        grid-template-columns: 1.5fr 50px 1.3fr 1.3fr 1.6fr 35px;
+        min-width: 680px; 
+        grid-template-columns: 1.8fr 45px 1.3fr 1.3fr 1.6fr 35px;
         gap: 4px;
         padding: 8px 4px;
     }
@@ -413,7 +423,7 @@
     <div class="card-wrapper">
       <div class="scroll-container">
           <div class="planner-header">
-            <div>نام درس</div><div style="text-align:center;">واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
+            <div style="text-align:center;">نام درس</div><div style="text-align:center;">واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
           </div>
           <div id="planner-list"></div>
       </div>
@@ -425,7 +435,7 @@
         <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
         <button class="btn btn-ghost" onclick="savePlannerDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
         
-        <div style="display:flex; align-items:center; gap:8px; background:rgba(124, 142, 160, 0.05); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
+        <div class="exam-months-filter" style="display:flex; align-items:center; gap:8px; background:rgba(124, 142, 160, 0.05); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
           <span style="font-size:0.75rem; color:var(--muted);">ماه‌های امتحانی:</span>
           <button id="sem-btn-0" class="sem-btn active" onclick="setSemester(0)">خرداد—تیر</button>
           <button id="sem-btn-1" class="sem-btn" onclick="setSemester(1)">دی—بهمن</button>
@@ -514,9 +524,9 @@
         <button class="btn btn-primary" onclick="addGpaCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
+        <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
         <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
         <button class="btn btn-ghost" onclick="saveGpaDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره معدل</button>
-        <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
         <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
       </div>
       <div id="gpa-drafts-panel" class="drafts-panel" style="display: none;"></div>
@@ -533,7 +543,7 @@
     <h2 id="auth-title">ثبت‌نام کاربر جدید</h2>
 
     <div id="auth-error" class="auth-error"></div>
-    <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی، بدون فاصله)" autocomplete="off" style="display: block;">
+    <input type="text" id="auth-username" placeholder="نام کاربری" autocomplete="off" style="display: block;">
     <input type="text" id="auth-identifier" placeholder="ایمیل خود را وارد کنید (اختیاری)" autocomplete="off">
     <input type="password" id="auth-password" placeholder="رمز عبور" autocomplete="new-password">
     
@@ -542,6 +552,7 @@
         <span id="auth-btn-text">ثبت‌نام</span>
     </button>
     <div class="auth-switch" id="auth-switch-btn" onclick="toggleAuthMode()">قبلاً ثبت‌نام کرده‌اید؟ وارد شوید</div>
+    
     <div class="features-link" onclick="openFeaturesModal()">مشاهده قابلیت‌های حساب کاربری</div>
   </div>
 </div>
@@ -667,7 +678,14 @@
 
   const supabaseUrl = 'https://mkockoyoiuitzzimeorr.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rb2Nrb3lvaXVpdHp6aW1lb3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjUwMTUsImV4cCI6MjA5ODYwMTAxNX0.tpjk0PxW7hzdpv2aCSrskq3vS--99dTk-urVwZF_5Rs';
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  
+  // تنظیمات کلاینت برای عدم ذخیره نشست کاربر (همیشه خروج هنگام رفرش)
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false }
+  });
+  
+  // اطمینان از خروج کامل از حساب با هر بار رفرش
+  supabase.auth.signOut();
 
   let isLoginMode = false; 
   window.userProfileData = { courses: [] };
@@ -712,22 +730,20 @@
       btn.innerHTML = '<span class="btn-spinner"></span> در حال تهیه...';
       btn.style.pointerEvents = 'none';
 
-      // ذخیره تنظیمات قبلی جدول
       const origPadding = grid.style.padding;
       const origBg = grid.style.background;
       const origRadius = grid.style.borderRadius;
       const origWidth = grid.style.width;
 
-      // اعمال استایل موقت برای عکس عالی و متقارن (پدینگ مساوی در همه جهات)
+      // اعمال استایل موقت برای عکس عالی و متقارن
       grid.style.padding = '24px';
       grid.style.background = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#111827';
       grid.style.borderRadius = '16px';
-      // max-content جدول را مجبور می‌کند به طور کامل و بدون بریدگی باز شود
       grid.style.width = 'max-content';
 
       try {
           const canvas = await html2canvas(grid, {
-              scale: 2, // کیفیت بالا
+              scale: 2, 
               useCORS: true,
               backgroundColor: null
           });
@@ -741,7 +757,6 @@
           console.error(err);
           window.showToast('خطا در تهیه عکس. لطفاً دوباره تلاش کنید.', 'error');
       } finally {
-          // بازگردانی جدول به حالت ریسپانسیو اصلی
           grid.style.padding = origPadding;
           grid.style.background = origBg;
           grid.style.borderRadius = origRadius;
@@ -929,40 +944,34 @@
     if (user) {
       window.currentUser = user; loginBtn.style.display = 'none'; userInfo.style.display = 'flex';
       
-      let { data, error } = await supabase.from('users').select('*').eq('id', user.id).single();
-      
-      if (error && error.code === 'PGRST116') {
-          const newRow = {
-              id: user.id,
-              email: user.email,
-              username: user.user_metadata?.username || user.email.split('@')[0],
-              profile: { courses: [] },
-              gpaDrafts: [],
-              plannerDrafts: []
-          };
-          await supabase.from('users').insert([newRow]);
-          data = newRow;
-          error = null;
+      let displayString = user.user_metadata?.username || user.email.split('@')[0];
+      window.currentUsername = displayString;
+
+      try {
+          let { data, error } = await supabase.from('users').select('*').eq('id', user.id).maybeSingle();
+          if (error) throw error;
+          if (!data) {
+              const newRow = { id: user.id, email: user.email, username: user.user_metadata?.username || user.email.split('@')[0], profile: { courses: [] }, gpaDrafts: [], plannerDrafts: [] };
+              const { error: insertError } = await supabase.from('users').insert([newRow]);
+              if (insertError) throw insertError;
+              data = newRow;
+          }
+          
+          document.getElementById('user-email-text').innerHTML = `<b>${data.username || displayString}</b>`;
+          window.gpaDrafts = data.gpaDrafts || []; 
+          window.plannerDrafts = data.plannerDrafts || [];
+          window.userProfileData = data.profile || { courses: [] };
+          
+          window.renderGpaDrafts(); window.renderPlannerDrafts();
+          if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
+              importGpaBtn.style.display = 'inline-flex'; importPlannerBtn.style.display = 'inline-flex';
+          }
+          if(typeof window.calcGpa === 'function') window.calcGpa();
+          
+      } catch (err) {
+          console.error("Profile sync error:", err);
       }
-      
-      if (data && !error) {
-        let displayString = data.username ? data.username : user.email.split('@')[0];
-        window.currentUsername = displayString;
-        document.getElementById('user-email-text').innerHTML = `<b>${displayString}</b>`;
-        window.gpaDrafts = data.gpaDrafts || []; 
-        window.plannerDrafts = data.plannerDrafts || [];
-        window.userProfileData = data.profile || { courses: [] };
-        
-        window.renderGpaDrafts(); window.renderPlannerDrafts();
-        if(window.userProfileData.courses && window.userProfileData.courses.length > 0) {
-            importGpaBtn.style.display = 'inline-flex'; importPlannerBtn.style.display = 'inline-flex';
-        }
-        if(typeof window.calcGpa === 'function') window.calcGpa(); 
-      } else {
-        let displayEmail = user.email.split('@')[0];
-        window.currentUsername = displayEmail;
-        document.getElementById('user-email-text').innerHTML = `<b>${displayEmail}</b>`;
-      }
+
     } else {
       window.currentUser = null; window.currentUsername = null;
       loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; 
@@ -1034,6 +1043,7 @@
       list.appendChild(div);
       
       let nameInp = div.querySelector('.dc-name'); let unitInp = div.querySelector('.dc-units');
+      
       nameInp.addEventListener('input', () => {
           let val = nameInp.value;
           window.closeAllAutocomplete();
@@ -1054,6 +1064,7 @@
               dd.appendChild(item);
           });
           document.body.appendChild(dd);
+          window.isAutocompleteOpen = true; 
           
           let rect = nameInp.getBoundingClientRect();
           dd.style.top = (rect.bottom + 2) + 'px';
@@ -1189,18 +1200,30 @@
       }, 'text');
   }
 
-  // Prevent dropdown detachment on scroll
-  window.addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
-  document.querySelector('.dashboard-modal').addEventListener('scroll', window.closeAllAutocomplete, {passive: true});
 </script>
 
 <script>
+  // --- سیستم هوشمند و بهینه بستن لیست اتوکامپلیت (جلوگیری قطعی از افت فریم و لگ در اسکرول) ---
+  window.isAutocompleteOpen = false;
+  window.closeAllAutocomplete = function() { 
+      if(!window.isAutocompleteOpen) return; 
+      document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); 
+      window.isAutocompleteOpen = false;
+  };
+  
+  window.addEventListener('scroll', () => {
+      if(window.isAutocompleteOpen) window.closeAllAutocomplete();
+  }, {passive: true});
+  
+  document.querySelector('.dashboard-modal')?.addEventListener('scroll', () => {
+      if(window.isAutocompleteOpen) window.closeAllAutocomplete();
+  }, {passive: true});
+
   window.gpaDrafts = []; window.plannerDrafts = [];
   window.gpaCourses = []; window.pCourses = [];
 
   const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه']; 
   const TIMES = ['۸-۱۰', '۱۰-۱۲', '۱۳-۱۵', '۱۵-۱۷', '۱۷-۱۹'];
-  // آرایه مخصوص نمایش هدر جدول با فرمت از بزرگ به کوچک
   const DISPLAY_TIMES = ['۱۰-۸', '۱۲-۱۰', '۱۵-۱۳', '۱۷-۱۵', '۱۹-۱۷'];
   
   const PERSIAN_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
@@ -1217,15 +1240,6 @@
   
   window.highlight = function(str, query) { let res = [], s = str, q = query.toLowerCase(), qi = 0; for (let i = 0; i < s.length; i++) { if (qi < q.length && s[i].toLowerCase() === q[qi]) { res.push(`<mark>${s[i]}</mark>`); qi++; } else res.push(s[i]); } return res.join(''); }
   window.getSuggestions = function(query) { if (!query || query.trim().length < 1) return []; let q = query.trim(); let exact = PHYSICS_CHART.filter(s => s.startsWith(q)); let includes = PHYSICS_CHART.filter(s => !exact.includes(s) && s.includes(q)); let fuzzy = PHYSICS_CHART.filter(s => !exact.includes(s) && !includes.includes(s) && fuzzyMatch(s, q)); return [...exact, ...includes, ...fuzzy].slice(0, 5); }
-  
-  window.closeAllAutocomplete = function() { document.querySelectorAll('.autocomplete-list').forEach(el => el.remove()); }
-  
-  // Prevent dropdown detachment on scroll
-  document.addEventListener('click', (e) => { 
-      if (!e.target.closest('.autocomplete-wrap') && !e.target.closest('.autocomplete-list')) {
-          window.closeAllAutocomplete(); 
-      }
-  });
   
   function setupAutocomplete(id, inputEl, arrayRef, type) {
     inputEl.addEventListener('input', () => {
@@ -1263,6 +1277,7 @@
       });
       
       document.body.appendChild(dd);
+      window.isAutocompleteOpen = true; 
       
       let rect = inputEl.getBoundingClientRect();
       dd.style.top = (rect.bottom + 2) + 'px';
@@ -1472,7 +1487,7 @@
     });
 
     let deficitWeight = (target * totalUnits) - currentWeight;
-    if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن عبور کرده‌اید! 🎉</div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
+    if (deficitWeight <= 0) { resultsDiv.innerHTML = '<div style="color:var(--green); font-weight:bold; font-size:0.9rem; padding:10px;">شما در حال حاضر به این معدل رسیده‌اید یا از آن  کرده‌اید! </div>'; if(focusIds.size > 0) addClearFocusButton(resultsDiv); return; }
 
     let shiftablePool = pool.filter(p => p.potential_weight > 0);
     if (shiftablePool.length === 0) { resultsDiv.innerHTML = `<div class="target-impossible">${focusIds.size > 0 ? "دروس انتخاب شده، ظرفیت کافی ندارند." : "فراتر از سقف ۲۰ نیاز دارید."}</div>`; document.getElementById('target-guide-text').style.display = 'none'; return; }
@@ -1540,7 +1555,8 @@
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap'; let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name; nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.pCourses, 'planner');
       let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد'); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
       
-      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'انتخاب روز'); let t1Sel = createSelect(TIMES, c.t1, 'انتخاب ساعت'); 
+      // تغییر متون Placeholder به کلمات کوتاه‌تر برای موبایل
+      let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'روز'); let t1Sel = createSelect(TIMES, c.t1, 'ساعت'); 
       d1Sel.onchange = () => { c.d1 = d1Sel.value; handleUnitOrTimeChange(c, false, true); renderPlanner(); }; 
       t1Sel.onchange = () => { 
           c.t1 = t1Sel.value; handleUnitOrTimeChange(c, false, true); 
@@ -1550,7 +1566,7 @@
       }; 
       s1Grp.append(d1Sel, t1Sel);
       
-      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let d2Sel = createSelect(DAYS, c.d2, 'انتخاب روز'); let t2Sel = createSelect(TIMES, c.t2, 'انتخاب ساعت'); 
+      let s2Grp = document.createElement('div'); s2Grp.className = 'session-group'; let d2Sel = createSelect(DAYS, c.d2, 'روز'); let t2Sel = createSelect(TIMES, c.t2, 'ساعت'); 
       d2Sel.onchange = () => { c.d2 = d2Sel.value; drawTimetable(); }; 
       t2Sel.onchange = () => { c.t2 = t2Sel.value; drawTimetable(); }; 
       s2Grp.append(d2Sel, t2Sel);
@@ -1559,7 +1575,7 @@
       eMonthSel.onchange = () => { c.examMonth = eMonthSel.value; if(!c.examMonth) c.examDay = ''; else { let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); if(c.examDay && parseInt(c.examDay) > max) c.examDay = max.toString(); } renderPlanner(); };
       eDayInp.addEventListener('input', (e) => { if(!c.examMonth) { e.target.value = ''; return; } let m = parseInt(c.examMonth); let max = m <= 5 ? 31 : (m === 11 ? 29 : 30); let v = parseInt(e.target.value); if (v > max) e.target.value = max; if (v < 1 && e.target.value !== '') e.target.value = 1; c.examDay = e.target.value; }); eDayInp.addEventListener('change', () => renderPlanner());
       dateInps.append(eMonthSel, eDayInp); examGrp.appendChild(dateInps);
-      if (c.hasExamConflict) { let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت امتحان'); eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel'; eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); }; examGrp.appendChild(eTimeSel); }
+      if (c.hasExamConflict) { let eTimeSel = createSelect(EXAM_TIMES, c.examTime, 'ساعت'); eTimeSel.className = c.examConflictLevel === 2 ? 'exam-time-sel conflict-red' : 'exam-time-sel'; eTimeSel.onchange = () => { c.examTime = eTimeSel.value; renderPlanner(); }; examGrp.appendChild(eTimeSel); }
       
       let delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.textContent = '✕'; delBtn.onclick = () => removePlannerCourse(c.id);
       row.append(nameWrap, unitSel, s1Grp, s2Grp, examGrp, delBtn); list.appendChild(row);
@@ -1580,7 +1596,8 @@
 
   function drawTimetable() {
     const grid = document.getElementById('timetable-grid'); 
-    grid.innerHTML = '<div class="tt-header">ایام / ساعات</div>'; 
+    // اصلاح دیزاین هدر جدول
+    grid.innerHTML = '<div class="tt-header" style="display:flex; flex-direction:column; gap:2px; font-size:0.75rem;"><span style="color:var(--text);">ساعت</span><span style="color:var(--muted); font-size:0.87rem;">روز</span></div>'; 
     DISPLAY_TIMES.forEach(t => { grid.innerHTML += `<div class="tt-header">${t}</div>`; });
     
     let schedule = {}; DAYS.forEach(d => { schedule[d] = {}; TIMES.forEach(t => schedule[d][t] = []); });
@@ -1628,11 +1645,9 @@
     examDates.forEach(d => {
         if (d.courses.length > 1) {
             if (d.level === 2) {
-                // تداخل ساعتی دقیق
                 let conflictNames = d.courses.filter(c => c.examConflictLevel === 2).map(c=>c.name).join(' و ');
                 examWarningMessages.push(`<strong>${PERSIAN_MONTHS[d.month]} ${toFarsiNum(d.day)}:</strong> <span style="color:var(--red);">تداخل ساعتی</span> بین ${conflictNames}`);
             } else {
-                // فقط دو امتحان در یک روز
                 let names = d.courses.map(c=>c.name).join(' و ');
                 examWarningMessages.push(`<strong>${PERSIAN_MONTHS[d.month]} ${toFarsiNum(d.day)}:</strong> دو امتحان در یک روز (${names})`);
             }
@@ -1679,7 +1694,9 @@
 
   window.switchTab = switchTab; window.addPlannerCourse = addPlannerCourse; window.setSemester = setSemester; window.newPlanner = newPlanner; window.addGpaCourse = addGpaCourse; window.toggleTargetPanel = toggleTargetPanel; window.toggleSimulator = toggleSimulator; window.resetTargetSimulation = resetTargetSimulation; window.newGpa = newGpa; window.calculateTarget = calculateTarget; window.highlightRow = highlightRow;
 
-  addGpaCourse(); addPlannerCourse();
+  // اجرا در صورت عدم لود از پیش
+  if (window.gpaCourses.length === 0) addGpaCourse(); 
+  if (window.pCourses.length === 0) addPlannerCourse();
 </script>
 </body>
 </html>

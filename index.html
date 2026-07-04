@@ -26,14 +26,14 @@
     --radius: 16px;
   }
 
-  /* متغیرهای حالت لایت (گرما و رنگ بیشتر) */
+  /* متغیرهای حالت لایت (حذف کامل سفیدی، استفاده از طوسی‌های ملایم و هماهنگ) */
   html.light-mode {
-    --bg: #eef2f6;        /* طوسی-آبی بسیار ملایم به جای سفید یخچالی */
-    --surface: #f8fafc;   /* رنگ کادرها */
-    --card: #ffffff;      /* رنگ کارت‌ها */
-    --border: #cdd5e0;    /* رنگ حاشیه‌ها */
-    --text: #2c3e50;      /* متن سرمه‌ای تیره */
-    --muted: #64748b;     
+    --bg: #d1d5db;        /* پس‌زمینه اصلی: طوسی-نقره‌ای ملایم */
+    --surface: #e5e7eb;   /* رنگ کادرها و فرم‌ها: طوسی خیلی روشن (بدون سفیدی) */
+    --card: #e5e7eb;      /* رنگ کارت‌ها */
+    --border: #9ca3af;    /* رنگ حاشیه‌ها (تیره‌تر برای تفکیک) */
+    --text: #111827;      /* متن تیره برای خوانایی کامل */
+    --muted: #4b5563;     
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -152,6 +152,7 @@
   .btn-danger { background: rgba(248,113,113,.1); color: var(--red) !important; border: 1px solid rgba(248,113,113,.25); padding: 7px 10px; border-radius: 8px; }
   .btn-warning { background: rgba(245,200,66,0.1); color: var(--gold) !important; border: 1px solid rgba(245,200,66,0.3); }
 
+  /* رول‌های فرم در لایت مود هم خوانا باشد */
   input, select { background: rgba(124, 142, 160, 0.05); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Vazirmatn', sans-serif; font-size: .88rem; padding: 8px 12px; width: 100%; transition: all .3s ease; outline: none; }
   input:focus, select:focus { border-color: var(--accent); background: rgba(79,142,247,.05); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
   select option { background: var(--surface); color: var(--text); }
@@ -221,8 +222,22 @@
   .sim-row-top { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text); font-weight: 600; direction: ltr; }
   .sim-val { background: rgba(124, 142, 160, 0.1); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; font-weight: bold; min-width: 45px; text-align: center;}
   
-  .sim-slider { direction: ltr; -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: rgba(124, 142, 160, 0.15); outline: none; transition: .2s; }
-  .sim-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--thumb-c, var(--accent)); cursor: pointer; transition: 0.2s; border: 2px solid #fff; }
+  /* تنظیم محور اسلایدر برای اینکه فقط اهرم آن قابل گرفتن باشد */
+  .sim-slider { 
+      direction: ltr; -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; 
+      background: rgba(124, 142, 160, 0.15); outline: none; transition: .2s; 
+      pointer-events: none; /* جلوگیری از تغییر نمره با کلیک روی محور */
+  }
+  .sim-slider::-webkit-slider-thumb { 
+      -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; 
+      background: var(--thumb-c, var(--accent)); cursor: pointer; transition: 0.2s; border: 2px solid #fff; 
+      pointer-events: auto; /* فقط این دکمه قابلیت درگ و کلیک را خواهد داشت */
+  }
+  .sim-slider::-moz-range-thumb { 
+      width: 18px; height: 18px; border-radius: 50%; 
+      background: var(--thumb-c, var(--accent)); cursor: pointer; transition: 0.2s; border: 2px solid #fff; 
+      pointer-events: auto; /* فقط این دکمه قابلیت درگ و کلیک را خواهد داشت */
+  }
   .sim-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
   
   .target-card { background: rgba(124, 142, 160, 0.05); border: 1px solid var(--border); padding: 12px 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; justify-content: center; transition: all 0.2s ease; cursor: pointer; }
@@ -280,12 +295,14 @@
   .htl-gap-line { flex: 1; width: 2px; background: linear-gradient(to bottom, transparent, var(--border), transparent); min-height: 20px; }
   .htl-gap-label { font-size: 0.58rem; color: var(--muted); writing-mode: vertical-rl; text-orientation: mixed; }
   
-  .timetable-container { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  /* --- بخش متصل کننده جدول و دکمه دانلود --- */
+  .timetable-wrapper { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; margin-bottom: 10px; }
+  .timetable-container { overflow-x: auto; padding: 20px; border-bottom: 1px dashed var(--border); }
   .timetable { display: grid; grid-template-columns: 90px repeat(5, minmax(140px, 1fr)); gap: 10px; min-width: 800px; }
   
-  /* رنگ‌بندی جدول به گونه‌ای که در هر دو حالت خوانا باشد */
-  html.light-mode .tt-header, html.light-mode .tt-day { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
-  html.light-mode .tt-cell { background: #f8fafc; border-color: #cbd5e1; }
+  /* رنگ‌بندی جدول به گونه‌ای که در لایت مود هماهنگ با تم جدید باشد */
+  html.light-mode .tt-header, html.light-mode .tt-day { background: #d1d5db; border-color: #9ca3af; color: #1f2937; }
+  html.light-mode .tt-cell { background: #e5e7eb; border-color: #9ca3af; }
   html.light-mode .tt-header { color: var(--text); }
   
   .tt-header, .tt-day { background: rgba(124, 142, 160, 0.05); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; }
@@ -296,7 +313,7 @@
   .tt-course.single-item { padding: 14px 12px; font-size: 0.88rem; margin: auto 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
   .tt-course.conflict-item { background: linear-gradient(135deg, rgba(248,113,113,0.8), rgba(248,113,113,0.6)); border: 1px solid rgba(248,113,113,0.4); border-right: 4px solid #fff; color: #ffffff !important; padding: 8px; font-size: 0.75rem; width: 100%; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
   
-  .conflict-warning { margin-top: 18px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: var(--red); font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; line-height: 1.6; }
+  .conflict-warning { margin-top: 15px; padding: 14px 20px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.4); border-radius: 12px; color: var(--red); font-size: 0.9rem; display: none; align-items: flex-start; gap: 12px; line-height: 1.6; }
   .sem-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 8px; font-family: 'Vazirmatn', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
   .sem-btn.active { background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,92,252,0.2)); border-color: var(--accent); color: var(--text); }
 
@@ -307,7 +324,7 @@
   footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
 
-  .mobile-rotate-alert { display: none; background: rgba(245,200,66,0.1); color: var(--gold); text-align: center; font-size: 0.8rem; padding: 8px 12px; border-radius: 12px; border: 1px dashed rgba(245,200,66,0.4); margin-bottom: 20px; font-weight: 600; line-height: 1.5; }
+  .mobile-rotate-alert { display: none; background: rgba(245,200,66,0.1); color: var(--gold); text-align: center; font-size: 0.85rem; padding: 12px; border-radius: 12px; border: 1px dashed rgba(245,200,66,0.4); margin-bottom: 20px; font-weight: 600; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
   /* --- Mobile Optimization --- */
   @media(max-width: 768px) {
@@ -315,8 +332,11 @@
     .header-controls { flex-direction: column; gap: 15px; }
     .auth-wrapper { position: static; transform: none; width: 100%; justify-content: center; }
     
-    .result-card { flex-direction: column; flex-wrap: nowrap; gap: 12px; }
-    .result-group, .overall-gpa-box, .result-meta { width: 100%; min-width: unset; margin: 0; }
+    /* ترتیب معدل ها در گوشی */
+    .result-card { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 12px; }
+    .overall-gpa-box { order: 1; width: 100%; min-width: unset; margin: 0; }
+    .result-meta { order: 2; width: 100%; min-width: unset; margin: 0; }
+    .result-group { order: 3; width: 100%; min-width: unset; margin: 0; }
     
     .actions { padding: 12px; justify-content: stretch; }
     .actions button { flex: 1 1 calc(50% - 10px); min-width: 140px; padding: 10px; }
@@ -325,7 +345,6 @@
     .dash-grid { grid-template-columns: 1fr; }
     .dash-course-row { min-width: 100%; grid-template-columns: 1fr 60px 70px 35px; }
     
-    /* تنظیم فشردگی ستون‌های معدل */
     .gpa-header, .gpa-row { 
         min-width: 100%; 
         grid-template-columns: 1fr 50px 60px 35px; 
@@ -335,16 +354,16 @@
     .gpa-header { font-size: 0.65rem; }
     .gpa-row input { font-size: 0.8rem; padding: 6px 4px; }
     
-    /* فشرده‌سازی بسیار بیشتر سطر برنامه‌ریز برای گوشی */
+    /* فشرده‌سازی سطر برنامه‌ریز برای حداقل اسکرول در دیوایس‌های خیلی کوچک */
     .planner-header, .planner-row {
-        min-width: 680px; /* کاهش شدید عرض برای حداقل اسکرول افقی */
-        grid-template-columns: 1.4fr 45px 1.2fr 1.2fr 1.6fr 35px;
+        min-width: 740px; 
+        grid-template-columns: 1.5fr 50px 1.3fr 1.3fr 1.6fr 35px;
         gap: 4px;
         padding: 8px 4px;
     }
-    .planner-header { font-size: 0.65rem; }
+    .planner-header { font-size: 0.7rem; }
     .session-group select, .exam-date-inputs select, .exam-date-inputs input {
-        font-size: 0.7rem; padding: 4px 2px;
+        font-size: 0.78rem; padding: 6px 3px;
     }
     .autocomplete-item { font-size: 0.75rem; padding: 6px 10px; }
     
@@ -360,7 +379,12 @@
   
   <header>
     <h1>Co-Student</h1>
-    <div class="mobile-rotate-alert">📱 کاربر گرامی، در صفحه‌نمایش‌های کوچک برای تجربه بهتر و مشاهده کامل جداول، پیشنهاد می‌شود گوشی خود را افقی (Rotate) کنید.</div>
+    
+    <div class="mobile-rotate-alert" id="mobile-rotate-alert">
+        📱 کاربر گرامی، در صفحه‌نمایش‌های کوچک برای تجربه بهتر و مشاهده کامل جداول، پیشنهاد می‌شود گوشی خود را افقی (Rotate) کنید.
+        <button onclick="document.getElementById('mobile-rotate-alert').style.display='none'" style="display:block; margin: 10px auto 0; background:rgba(245,200,66,0.15); border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:6px 20px; cursor:pointer; font-family:inherit; font-weight:bold; transition: 0.2s;">متوجه شدم</button>
+    </div>
+
     <div class="header-controls">
         
         <div class="tabs">
@@ -389,7 +413,7 @@
     <div class="card-wrapper">
       <div class="scroll-container">
           <div class="planner-header">
-            <div>نام درس</div><div>تعداد واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
+            <div>نام درس</div><div style="text-align:center;">واحد</div><div style="text-align:center; color:var(--muted)">جلسه اول</div><div style="text-align:center; color:var(--muted)">جلسه دوم</div><div style="text-align:center; color:var(--muted)">امتحان (اختیاری)</div><div></div>
           </div>
           <div id="planner-list"></div>
       </div>
@@ -422,17 +446,21 @@
       <div id="planner-drafts-panel" class="drafts-panel" style="display: none;"></div>
     </div>
     
-    <div class="timetable-container" id="export-wrapper">
-        <div class="timetable" id="timetable-grid"></div>
+    <div class="timetable-wrapper">
+        <div class="timetable-container" id="export-wrapper">
+            <div class="timetable" id="timetable-grid"></div>
+        </div>
+        <div style="background: rgba(124, 142, 160, 0.03); padding: 12px; display: flex; justify-content: center; border-top: 1px solid var(--border);">
+            <button class="btn btn-ghost" id="btn-export-img" onclick="exportTimetableImage()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.4); font-size: 0.85rem; padding: 8px 18px; width: 100%; max-width: 300px;">
+                📸 دانلود تصویر جدول
+            </button>
+        </div>
     </div>
-    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-        <button class="btn btn-ghost" id="btn-export-img" onclick="exportTimetableImage()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3); font-size: 0.8rem; padding: 6px 12px; margin-bottom: 5px;">
-            📸 دانلود تصویر جدول
-        </button>
-    </div>
+    
     <div id="conflict-alert" class="conflict-warning"></div>
     
     <div id="exam-timeline-container" class="timeline-section"></div>
+    <div id="exam-conflict-alert" class="conflict-warning"></div>
   </div>
 
   <div id="gpa-tool" class="tool-section">
@@ -653,7 +681,12 @@
       setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 3000);
   };
 
-  // --- تغییر تم لایت و دارک ---
+  // مخفی شدن اتوماتیک پیام چرخش گوشی بعد از 2 دقیقه
+  setTimeout(() => {
+      let rotateAlert = document.getElementById('mobile-rotate-alert');
+      if(rotateAlert) rotateAlert.style.display = 'none';
+  }, 120000);
+
   window.toggleTheme = () => {
       const htmlEl = document.documentElement;
       const isLight = htmlEl.classList.toggle('light-mode');
@@ -661,45 +694,42 @@
       document.getElementById('theme-icon').innerText = isLight ? '🌙' : '☀️';
   };
   
-  // تنظیم آیکون در زمان لود صفحه
   document.addEventListener("DOMContentLoaded", () => {
       const isLight = document.documentElement.classList.contains('light-mode');
       document.getElementById('theme-icon').innerText = isLight ? '🌙' : '☀️';
   });
 
-  // --- گرفتن خروجی عکس از جدول ---
+  // --- گرفتن خروجی عکس کامل و متقارن از جدول ---
   window.exportTimetableImage = async () => {
-      const container = document.getElementById('export-wrapper');
+      const grid = document.getElementById('timetable-grid');
       const btn = document.getElementById('btn-export-img');
       
-      // اگر جدول نیامده یا دیتایی نیست
-      if (!container || window.pCourses.length === 0) {
+      if (!grid || grid.children.length === 0 || window.pCourses.length === 0) {
           return window.showToast('برنامه‌ای برای گرفتن عکس وجود ندارد.', 'error');
       }
 
       const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<span class="btn-spinner"></span> در حال گرفتن عکس...';
+      btn.innerHTML = '<span class="btn-spinner"></span> در حال تهیه...';
       btn.style.pointerEvents = 'none';
 
-      // برای جلوگیری از برش خوردن عکس، اسکرول را صفر می‌کنیم و موقتا محدودیت عرض را برمی‌داریم
-      const origScrollLeft = container.scrollLeft;
-      container.scrollLeft = 0;
-      
-      const origOverflow = container.style.overflowX;
-      container.style.overflowX = 'visible';
-      
-      const origWidth = container.style.width;
-      container.style.width = container.scrollWidth + 'px';
+      // ذخیره تنظیمات قبلی جدول
+      const origPadding = grid.style.padding;
+      const origBg = grid.style.background;
+      const origRadius = grid.style.borderRadius;
+      const origWidth = grid.style.width;
+
+      // اعمال استایل موقت برای عکس عالی و متقارن (پدینگ مساوی در همه جهات)
+      grid.style.padding = '24px';
+      grid.style.background = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#111827';
+      grid.style.borderRadius = '16px';
+      // max-content جدول را مجبور می‌کند به طور کامل و بدون بریدگی باز شود
+      grid.style.width = 'max-content';
 
       try {
-          // دریافت رنگ پس‌زمینه مناسب (برای لایت یا دارک مود)
-          const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#111827';
-          
-          const canvas = await html2canvas(container, {
+          const canvas = await html2canvas(grid, {
               scale: 2, // کیفیت بالا
               useCORS: true,
-              backgroundColor: bgColor,
-              windowWidth: container.scrollWidth + 50 // اطمینان از رندر کامل عرض
+              backgroundColor: null
           });
 
           const link = document.createElement('a');
@@ -711,10 +741,11 @@
           console.error(err);
           window.showToast('خطا در تهیه عکس. لطفاً دوباره تلاش کنید.', 'error');
       } finally {
-          // بازگردانی استایل‌های کانتینر
-          container.style.overflowX = origOverflow;
-          container.style.width = origWidth;
-          container.scrollLeft = origScrollLeft;
+          // بازگردانی جدول به حالت ریسپانسیو اصلی
+          grid.style.padding = origPadding;
+          grid.style.background = origBg;
+          grid.style.borderRadius = origRadius;
+          grid.style.width = origWidth;
           
           btn.innerHTML = originalHTML;
           btn.style.pointerEvents = 'auto';
@@ -1572,8 +1603,50 @@
   function setSemester(idx) { selectedSemester = idx; document.getElementById('sem-btn-0').classList.toggle('active', idx === 0); document.getElementById('sem-btn-1').classList.toggle('active', idx === 1); let valid = SEMESTER_MONTHS[idx].map(m => m.idx.toString()); window.pCourses.forEach(c => { if (c.examMonth && !valid.includes(c.examMonth)) { c.examMonth = ''; c.examDay = ''; c.examTime = ''; c.hasExamConflict = false; c.examConflictLevel = 0; } }); renderPlanner(); }
 
   function drawTimeline() {
-    let container = document.getElementById('exam-timeline-container'); let dateMap = {}; window.pCourses.forEach(c => { if(c.examMonth && c.examDay) { let key = `${c.examMonth}-${c.examDay}`; if(!dateMap[key]) dateMap[key] = { month: parseInt(c.examMonth), day: parseInt(c.examDay), courses: [], level: 0 }; dateMap[key].courses.push(c); dateMap[key].level = Math.max(dateMap[key].level, c.examConflictLevel); } });
-    let examDates = Object.values(dateMap); if(examDates.length === 0) { container.style.display = 'none'; return; } container.style.display = 'block'; examDates.sort((a,b) => toAbsDayJalali(a.month, a.day) - toAbsDayJalali(b.month, b.day));
+    let container = document.getElementById('exam-timeline-container'); 
+    let examConflictBox = document.getElementById('exam-conflict-alert');
+    
+    let dateMap = {}; 
+    window.pCourses.forEach(c => { 
+        if(c.examMonth && c.examDay) { 
+            let key = `${c.examMonth}-${c.examDay}`; 
+            if(!dateMap[key]) dateMap[key] = { month: parseInt(c.examMonth), day: parseInt(c.examDay), courses: [], level: 0 }; 
+            dateMap[key].courses.push(c); 
+            dateMap[key].level = Math.max(dateMap[key].level, c.examConflictLevel); 
+        } 
+    });
+    
+    let examDates = Object.values(dateMap); 
+    if(examDates.length === 0) { 
+        container.style.display = 'none'; 
+        examConflictBox.style.display = 'none';
+        return; 
+    } 
+    container.style.display = 'block'; 
+    
+    let examWarningMessages = [];
+    examDates.forEach(d => {
+        if (d.courses.length > 1) {
+            if (d.level === 2) {
+                // تداخل ساعتی دقیق
+                let conflictNames = d.courses.filter(c => c.examConflictLevel === 2).map(c=>c.name).join(' و ');
+                examWarningMessages.push(`<strong>${PERSIAN_MONTHS[d.month]} ${toFarsiNum(d.day)}:</strong> <span style="color:var(--red);">تداخل ساعتی</span> بین ${conflictNames}`);
+            } else {
+                // فقط دو امتحان در یک روز
+                let names = d.courses.map(c=>c.name).join(' و ');
+                examWarningMessages.push(`<strong>${PERSIAN_MONTHS[d.month]} ${toFarsiNum(d.day)}:</strong> دو امتحان در یک روز (${names})`);
+            }
+        }
+    });
+
+    if (examWarningMessages.length > 0) {
+        examConflictBox.style.display = 'flex';
+        examConflictBox.innerHTML = `<div>⚠️ <b>هشدار امتحانات:</b><br><ul style="margin-right: 15px; margin-top: 5px;">` + examWarningMessages.map(m => `<li>${m}</li>`).join('') + `</ul></div>`;
+    } else {
+        examConflictBox.style.display = 'none';
+    }
+    
+    examDates.sort((a,b) => toAbsDayJalali(a.month, a.day) - toAbsDayJalali(b.month, b.day));
     let firstAbs = toAbsDayJalali(examDates[0].month, examDates[0].day); let lastAbs  = toAbsDayJalali(examDates[examDates.length-1].month, examDates[examDates.length-1].day);
     let examByAbs = {}; examDates.forEach(d => { examByAbs[toAbsDayJalali(d.month, d.day)] = d; });
     function absToJalali(abs) { let monthLengths = [31,31,31,31,31,31,30,30,30,30,30,29]; let rem = abs; for(let m=0; m<12; m++) { if(rem <= monthLengths[m]) return { month: m, day: rem }; rem -= monthLengths[m]; } return { month: 11, day: rem }; }

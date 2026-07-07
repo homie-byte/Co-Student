@@ -5,11 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="ابزار برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل دانشجویان.">
 <meta name="google-site-verification" content="NhTxVjlxYViKUZ5Od_daijrqiWrvX4MpjeGKGy81zc8" /> 
+<meta property="og:title" content="Co-Student | ابزار هوشمند برنامه‌ریزی و محاسبه معدل">
+<meta property="og:description" content="ابزار برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل دانشجویان.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://homie-byte.github.io/Co-Student/">
+<meta property="og:image" content="https://homie-byte.github.io/Co-Student/logo.jpg">
+<link rel="canonical" href="https://homie-byte.github.io/Co-Student/">
 <title>Co-Student</title>
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<!-- Google tag (gtag.js) - تکامل یافته -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5PSY4L19NF"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -72,7 +77,7 @@
   header h1 {
     font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    letter-spacing: -0.5px; margin-bottom: 20px;
+    letter-spacing: -0.5px; margin-bottom: 20px;-webkit-user-select: none; user-select: none; cursor: default;
   }
 
   .header-controls { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; min-height: 50px; }
@@ -97,13 +102,13 @@
   .btn-spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; margin-left: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .toast-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 10000; pointer-events: none; }
-  .toast { background: var(--surface); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s forwards; font-family: 'Vazirmatn', sans-serif;}
+  .toast-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 10000; pointer-events: none; width: calc(100% - 32px); max-width: 450px; }
+  .toast { background: var(--surface); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: toastIn 0.35s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; font-family: 'Vazirmatn', sans-serif;}
   .toast.toast-success { border-bottom: 3px solid var(--green); }
   .toast.toast-error { border-bottom: 3px solid var(--red); }
-  .toast.toast-out { animation: toastOut 0.3s ease forwards; }
-  @keyframes toastIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
+  .toast.toast-out { animation: toastOut 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+  @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(20px); opacity: 0; } }
 
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 15px; }
   .modal-overlay.active { display: flex; opacity: 1; }
@@ -341,7 +346,11 @@
   footer.signature:hover { opacity: 0.9; }
   .signature a { text-decoration: none; color: inherit; display: block; }
 
-  .mobile-rotate-alert { display: none; background: rgba(245,200,66,0.1); color: var(--gold); text-align: center; font-size: 0.85rem; padding: 12px; border-radius: 12px; border: 1px dashed rgba(245,200,66,0.4); margin-bottom: 20px; font-weight: 600; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .mobile-rotate-alert { 
+    display: none; background: rgba(245,200,66,0.1); color: var(--gold); text-align: center; font-size: 0.85rem; padding: 12px; border-radius: 12px; border: 1px dashed rgba(245,200,66,0.4); margin-bottom: 20px; font-weight: 600; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s, margin 0.35s; max-height: 200px; opacity: 1; overflow: hidden;
+  }
+  .mobile-rotate-alert.hide { opacity: 0; max-height: 0; padding: 0; margin: 0; transform: scale(0.95); border: none; }
 
   /* --- Mobile Optimization --- */
   @media(max-width: 768px) {
@@ -363,8 +372,16 @@
     .exam-months-filter { order: -1; flex: 1 1 100% !important; justify-content: center; margin-bottom: 8px; }
 
     .dash-grid { grid-template-columns: 1fr; }
-    .dash-course-row { min-width: 100%; grid-template-columns: 1fr 60px 70px 35px; }
-    
+    .dash-course-row { 
+    min-width: 100%; 
+    grid-template-columns: 1fr 50px 60px 35px; 
+    gap: 5px; 
+}
+.dash-course-row input { 
+    font-size: 0.8rem; 
+    padding: 6px 4px; 
+}
+
     .gpa-header, .gpa-row { 
         min-width: 100%; 
         grid-template-columns: 1fr 50px 60px 35px; 
@@ -385,7 +402,7 @@
     .session-group select, .exam-date-inputs select, .exam-date-inputs input {
         font-size: 0.78rem; padding: 6px 3px;
     }
-    .autocomplete-item { font-size: 0.75rem; padding: 6px 10px; }
+    .autocomplete-item { font-size: 0.88rem; padding: 10px 12px; }
     
     .modal-box { padding: 20px 15px; }
     .tabs { width: 100%; display: flex; }
@@ -402,18 +419,18 @@
     
     <div class="mobile-rotate-alert" id="mobile-rotate-alert">
         📱 کاربر گرامی، در صفحه‌نمایش‌های کوچک برای تجربه بهتر و مشاهده کامل جداول، پیشنهاد می‌شود گوشی خود را افقی (Rotate) کنید.
-        <button onclick="document.getElementById('mobile-rotate-alert').style.display='none'" style="display:block; margin: 10px auto 0; background:rgba(245,200,66,0.15); border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:6px 20px; cursor:pointer; font-family:inherit; font-weight:bold; transition: 0.2s;">متوجه شدم</button>
+        <button onclick="const alertEl = document.getElementById('mobile-rotate-alert'); alertEl.classList.add('hide'); setTimeout(() => alertEl.style.display='none', 350);" style="display:block; margin: 10px auto 0; background:rgba(245,200,66,0.15); border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:6px 20px; cursor:pointer; font-family:inherit; font-weight:bold; transition: 0.2s;">متوجه شدم</button>
     </div>
 
     <div class="header-controls">
         
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('planner-tool')">پلنر انتخاب واحد</button>
-          <button class="tab-btn" onclick="switchTab('gpa-tool')">محاسبه‌گر معدل</button>
+          <button class="tab-btn active" onclick="switchTab('planner-tool', event)">پلنر انتخاب واحد</button>
+          <button class="tab-btn" onclick="switchTab('gpa-tool', event)">محاسبه‌گر معدل</button>
         </div>
         
         <div class="auth-wrapper">
-          <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغییر پوسته">
+          <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغییر پوسته" aria-label="تغییر پوسته تاریک و روشن">
               <span id="theme-icon">☀️</span>
           </button>
           
@@ -549,7 +566,7 @@
 
 <div class="modal-overlay" id="auth-modal-overlay">
   <div class="modal-box auth-modal">
-    <button class="close-modal" onclick="closeAuthModal()">✕</button>
+    <button class="close-modal" onclick="closeAuthModal()" aria-label="بستن مودال">✕</button>
     <h2 id="auth-title">ثبت‌نام حساب کاربری</h2>
 
     <div id="auth-error" class="auth-error"></div>
@@ -582,7 +599,7 @@
 
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
-    <button class="close-modal" onclick="closeDashboardModal()">✕</button>
+    <button class="close-modal" onclick="closeDashboardModal()" aria-label="بستن پنل">✕</button>
     <h2>⚙️ تنظیمات پنل من</h2>
     
     <div class="dash-grid">
@@ -677,11 +694,7 @@
   </div>
 </div>
 
-<footer class="signature"> <!--
-  <a href="https://www.iran-pedia.org/wiki/فاطمه_علی%E2%80%8Cمحمدی" target="_blank" rel="noopener noreferrer">
-    به یاد جاویدنام فاطمه علی‌محمدی
-  </a>-->
-</footer>
+<footer class="signature"> </footer>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -706,13 +719,16 @@
       toast.className = `toast toast-${type}`;
       toast.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`;
       container.appendChild(toast);
-      setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 3000);
+      setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 4000);
   };
 
   // مخفی شدن اتوماتیک پیام چرخش گوشی بعد از 2 دقیقه
   setTimeout(() => {
       let rotateAlert = document.getElementById('mobile-rotate-alert');
-      if(rotateAlert) rotateAlert.style.display = 'none' ;
+      if(rotateAlert) {
+          rotateAlert.classList.add('hide');
+          setTimeout(() => rotateAlert.style.display = 'none', 350);
+      }
   }, 7000);
 
   window.toggleTheme = () => {
@@ -720,6 +736,7 @@
       const isLight = htmlEl.classList.toggle('light-mode');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
       document.getElementById('theme-icon').innerText = isLight ? '🌙' : '☀️';
+      if (typeof gtag === 'function') { gtag('event', 'theme_change', { theme: isLight ? 'light' : 'dark' }); }
   };
   
   document.addEventListener("DOMContentLoaded", () => {
@@ -796,13 +813,19 @@
   window.closeCustomAlert = () => { document.getElementById('custom-alert-overlay').classList.remove('active'); };
   window.closeCustomPrompt = () => { document.getElementById('custom-prompt-overlay').classList.remove('active'); };
   
-  window.openFeaturesModal = () => { document.getElementById('features-modal-overlay').classList.add('active'); };
+  window.openFeaturesModal = () => { 
+      document.getElementById('features-modal-overlay').classList.add('active'); 
+      if (typeof gtag === 'function') { gtag('event', 'view_features'); }
+  };
   window.closeFeaturesModal = () => { document.getElementById('features-modal-overlay').classList.remove('active'); };
 
   window.showCustomConfirm = (msg, callback) => { document.getElementById('custom-confirm-msg').innerText = msg; document.getElementById('custom-confirm-overlay').classList.add('active'); document.getElementById('custom-confirm-yes').onclick = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); callback(); }; };
   window.closeCustomConfirm = () => { document.getElementById('custom-confirm-overlay').classList.remove('active'); };
 
-  window.openAuthModal = () => { document.getElementById('auth-modal-overlay').classList.add('active'); }
+  window.openAuthModal = () => { 
+      document.getElementById('auth-modal-overlay').classList.add('active'); 
+      if (typeof gtag === 'function') { gtag('event', 'login_click'); }
+  }
   window.closeAuthModal = () => { document.getElementById('auth-modal-overlay').classList.remove('active'); document.getElementById('auth-error').style.display = 'none'; }
   
   window.toggleAuthMode = () => {
@@ -852,6 +875,7 @@
           const { error: signInError } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pass });
           if(signInError) throw signInError;
           
+          if (typeof gtag === 'function') { gtag('event', 'login_success'); }
           closeAuthModal(); window.showToast('با موفقیت وارد شدید.');
       } else {
           const username = document.getElementById('auth-username').value.trim();
@@ -883,6 +907,7 @@
 
           await supabase.auth.signInWithPassword({ email: finalEmail, password: pass });
           
+          if (typeof gtag === 'function') { gtag('event', 'signup_success'); }
           closeAuthModal(); window.showToast("حساب کاربری ایجاد شد و با موفقیت وارد شدید!");
       }
     } catch (error) {
@@ -988,6 +1013,7 @@
       window.currentUser = null; window.currentUsername = null;
       loginBtn.style.display = 'flex'; userInfo.style.display = 'none'; 
       importGpaBtn.style.display = 'none'; importPlannerBtn.style.display = 'none';
+      
       window.gpaDrafts = []; window.plannerDrafts = []; window.userProfileData = { courses: [] };
       window.renderGpaDrafts(); window.renderPlannerDrafts();
       if(typeof window.calcGpa === 'function') window.calcGpa();
@@ -1049,7 +1075,7 @@
       div.innerHTML = `
           <div class="autocomplete-wrap" style="z-index: 100;"><input type="text" class="dc-name" placeholder="نام درس" value="${name}"></div>
           <input type="number" class="dc-units" placeholder="واحد" value="${units}">
-          <input type="number" class="dc-grade" placeholder="نمره (اختیاری)" value="${grade}" step="0.01">
+          <input type="number" class="dc-grade" placeholder="نمره" value="${grade}" step="0.01">
           <button class="btn-danger" style="padding:6px; font-size:1rem; cursor:pointer;" onclick="document.getElementById('${id}').remove()">✕</button>
       `;
       list.appendChild(div);
@@ -1118,8 +1144,9 @@
       if (window.gpaDrafts.length === 0) { dashContainer.innerHTML = '<span style="color:var(--muted); font-size:0.85rem; padding: 10px 0;">هیچ فایل معدلی ذخیره نشده است.</span>'; mainContainer.style.display = 'none'; return; }
       mainContainer.style.display = 'flex';
       window.gpaDrafts.forEach(draft => {
-          dashContainer.insertAdjacentHTML('beforeend', `<div class="dash-draft-chip"><span class="name-click" onclick="loadGpaDraft(${draft.id})">📊 ${draft.name}</span><div class="action-icons"><span class="edit-btn" onclick="renameGpaDraft(event, ${draft.id})">✎</span><span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span></div></div>`);
-          const mainChip = document.createElement('div'); mainChip.className = 'draft-chip'; mainChip.innerHTML = `📊 ${draft.name} <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
+          const prefix = draft.isLocal ? '📌 ' : '📊 ';
+          dashContainer.insertAdjacentHTML('beforeend', `<div class="dash-draft-chip"><span class="name-click" onclick="loadGpaDraft(${draft.id})">${prefix} ${draft.name}</span><div class="action-icons"><span class="edit-btn" onclick="renameGpaDraft(event, ${draft.id})">✎</span><span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span></div></div>`);
+          const mainChip = document.createElement('div'); mainChip.className = 'draft-chip'; mainChip.innerHTML = `${prefix} ${draft.name} <span class="del-btn" onclick="deleteGpaDraft(event, ${draft.id})">✕</span>`;
           mainChip.onclick = (e) => { if(!e.target.classList.contains('del-btn')) loadGpaDraft(draft.id); }; mainContainer.appendChild(mainChip);
       });
   };
@@ -1147,20 +1174,26 @@
   };
 
   window.saveGpaDraft = async (btnElement) => {
-    if (!window.currentUser) {
-        window.showCustomAlert('برای ذخیره اطلاعات و دسترسی همیشگی در تمام دستگاه‌ها، لطفاً ابتدا یک حساب کاربری (حتی بدون ایمیل) بسازید.');
-        return window.openAuthModal();
-    }
     if (window.gpaCourses.length === 0 || (window.gpaCourses.length === 1 && !window.gpaCourses[0].name)) return window.showCustomAlert('معدلی برای ذخیره وجود ندارد!');
+    
+    let gpaEl = document.getElementById('gpa-display').textContent; let targetVal = document.getElementById('target-gpa-input').value;
+    
+    if (!window.currentUser) {
+        let draftName = `معدل ${gpaEl} (${window.gpaDrafts.length + 1})`;
+        window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal, isLocal: true });
+        window.renderGpaDrafts();
+        window.showToast('ذخیره‌سازی موقت روی حافظه مرورگر انجام شد. برای ذخیره سازی ابری و دائمی، لطفاً وارد حساب خود شوید.', 'success');
+        if (typeof gtag === 'function') { gtag('event', 'save_gpa_locally'); }
+        return;
+    }
     
     let originalBtnHTML; if(btnElement) { originalBtnHTML = btnElement.innerHTML; btnElement.innerHTML = '<span class="btn-spinner"></span> در حال ذخیره...'; btnElement.style.pointerEvents = 'none'; }
 
-    let gpaEl = document.getElementById('gpa-display').textContent; let targetVal = document.getElementById('target-gpa-input').value;
     let draftName = `معدل ${gpaEl} (${window.gpaDrafts.length + 1})`;
     window.gpaDrafts.push({ id: Date.now(), name: draftName, data: JSON.parse(JSON.stringify(window.gpaCourses)), target: targetVal });
     
     try {
-      const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
+      const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts.filter(d => !d.isLocal) }).eq('id', window.currentUser.id);
       if(error) throw error;
       window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
       if (typeof gtag === 'function') { gtag('event', 'save_gpa_to_cloud'); }
@@ -1168,15 +1201,25 @@
   }
   
   window.deleteGpaDraft = async (event, id) => {
-    event.stopPropagation(); window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
-    if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id);
+    event.stopPropagation(); 
+    let draft = window.gpaDrafts.find(d => d.id === id);
+    window.gpaDrafts = window.gpaDrafts.filter(d => d.id !== id); 
+    if (window.currentUser && (!draft || !draft.isLocal)) {
+        await supabase.from('users').update({ gpaDrafts: window.gpaDrafts.filter(d => !d.isLocal) }).eq('id', window.currentUser.id);
+    }
     window.renderGpaDrafts(); window.showToast('فایل معدل حذف شد.');
   }
 
   window.renameGpaDraft = async (event, id) => {
       event.stopPropagation(); let draft = window.gpaDrafts.find(d => d.id === id); if(!draft) return;
       window.showCustomPrompt("نام جدید را وارد کنید:", draft.name, async (newName) => {
-          if(newName && newName.trim() !== "") { draft.name = newName.trim(); if (window.currentUser) await supabase.from('users').update({ gpaDrafts: window.gpaDrafts }).eq('id', window.currentUser.id); window.renderGpaDrafts(); window.showToast('نام فایل تغییر کرد.'); }
+          if(newName && newName.trim() !== "") { 
+              draft.name = newName.trim(); 
+              if (window.currentUser && !draft.isLocal) {
+                  await supabase.from('users').update({ gpaDrafts: window.gpaDrafts.filter(d => !d.isLocal) }).eq('id', window.currentUser.id);
+              }
+              window.renderGpaDrafts(); window.showToast('نام فایل تغییر کرد.'); 
+          }
       }, 'text');
   }
 
@@ -1244,15 +1287,19 @@
   const EXAM_TIMES = ['۰۸:۳۰ - ۱۰:۳۰', '۱۰:۳۰ - ۱۲:۳۰', '۱۳:۳۰ - ۱۵:۳۰', '۱۵:۳۰ - ۱۷:۳۰'];
   let selectedSemester = 0; const SEMESTER_MONTHS = { 0: [{ idx: 2, name: 'خرداد' }, { idx: 3, name: 'تیر' }], 1: [{ idx: 9, name: 'دی' }, { idx: 10, name: 'بهمن' }] };
 
-  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر اسلام": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
+  window.COURSE_DB = { "ریاضی عمومی ۱": 3, "ریاضی عمومی ۲": 3, "فیزیک پایه ۱": 3, "فیزیک ۲": 3, "فیزیک ۳": 3, "فیزیک ۴": 3, "شیمی عمومی": 3, "آزمایشگاه فیزیک پایه ۱": 1, "آزمایشگاه فیزیک پایه ۲": 1, "آزمایشگاه فیزیک پایه ۳": 1, "آزمایشگاه فیزیک عمومی ۴": 2, "آزمایشگاه شیمی عمومی": 1, "معادلات دیفرانسیل": 3, "ریاضی فیزیک ۱": 3, "ریاضی فیزیک ۲": 3, "مکانیک تحلیلی ۱": 3, "مکانیک تحلیلی ۲": 3, "الکترومغناطیس ۱": 3, "الکترومغناطیس ۲": 3, "مکانیک کوانتومی ۱": 3, "مکانیک کوانتومی ۲": 3, "ترمودینامیک": 3, "مکانیک سیالات": 3, "الکترونیک ۱": 3, "الکترونیک ۲": 3, "آزمایشگاه الکترونیک ۱": 2, "آزمایشگاه الکترونیک ۲": 2, "سیستمهای دیجیتال ۱": 3, "سیستمهای دیجیتال ۲": 3, "آزمایشگاه سیستمهای دیجیتال ۱": 2, "آزمایشگاه سیستمهای دیجیتال ۲": 2, "فیزیک اتمی و مولکولی": 3, "فیزیک هسته ای ۱": 3, "آزمایشگاه فیزیک هسته ای": 2, "فیزیک حالت جامد ۱": 3, "فیزیک حالت جامد ۲": 3, "آزمایشگاه فیزیک حالت جامد ۱": 2, "آزمایشگاه فیزیک حالت جامد ۲": 2, "روش های تجربی در فیزیک": 3, "فیزیک لیزر": 3, "آزمایشگاه لیزر": 2, "فیزیک پلاسما": 3, "بلورشناسی": 3, "فیزیک لایه های نازک": 3, "فیزیک قطعات نیمه رسانا": 3, "فیزیک سطح و مهندسی سطح": 3, "مهندسی فوتونیک": 3, "آزمایشگاه فوتونیک": 2, "مبانی مهندسی نانو": 3, "بیوفیزیک": 3, "فیزیک محیط زیست": 3, "ژئو فیزیک": 3, "آکوستیک": 3, "تکنیک خلاء": 3, "آزمایشگاه تکنیک خلاء": 1, "فیزیک راکتورهای هسته ای ۱": 3, "فیزیک راکتورهای هسته ای ۲": 3, "رادیو ایزوتوپ و کاربرد آن": 3, "آزمایشگاه رادیو ایزوتوپها": 1, "حفاظت در برابر پرتوها": 3, "فیزیک بهداشت هسته ای": 3, "شتابدهنده های ذرات و اپتیک باریکه های یونی": 3, "امواج و ارتعاشات": 3, "خواص فیزیکی مواد": 3, "مواد مغناطیسی": 3, "فیزیک سرامیک ها": 3, "ابررسانایی و کاربردهای آن": 3, "آشنایی با کاربردهای لیزر": 3, "محاسبات عددی": 3, "برنامه نویسی کامپیوتر": 3, "کاربرد کامپیوتر در فیزیک": 3, "محاسبات و اطلاعات کوانتومی": 3, "مبانی شبیه سازی عددی": 3, "سیگنالها و سیستمها": 3, "مبانی مگاترونیک": 3, "اقتصاد مهندسی": 3, "سیستمهای کنترل و ابزار دقیق": 3, "تحقیق در عملیات": 3, "نقشه کشی صنعتی": 1, "کارگاه ماشین افزار": 1, "کارگاه الکترونیک": 1, "پروژه کارگاهی": 1, "پروژه فیزیک": 3, "کارآموزی": 2, "مبانی استاندارد و اندازه گیری": 2, "زلزله شناسی عمومی": 3, "آلودگی هوا": 2, "انرژی های نو": 3, "زبان تخصصی فیزیک": 2, "آزمایشگاه پیشرفته فیزیک": 2, "اندیشه اسلامی ۱": 2, "اندیشه اسلامی ۲": 2, "انسان در اسلام": 2, "اخلاق اسلامی": 2, "آیین زندگی": 2, "انقلاب اسلامی ایران": 2, "تاریخ تحلیلی صدر islam": 2, "تفسیر موضوعی قرآن": 2, "دانش خانواده و جمعیت": 2, "فارسی عمومی": 3, "زبان خارجه": 3, "تربیت بدنی": 1, "آزمایشگاه اپتیک": 2, "اپتیک": 3, "نجوم واختر فیزیک": 3, "فیزیک هسته ای وذرات بنیادی": 3, "مکانیک شاره ها": 3, "تاریخ وفلسفه علم فیزیک": 3, "مهارت های اشتغال پذیری": 1 };
   const PHYSICS_CHART = Object.keys(window.COURSE_DB);
 
-  function switchTab(tabId) { 
+  function switchTab(tabId, event) { 
       document.querySelectorAll('.tool-section').forEach(el => el.classList.remove('active')); 
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); 
       document.getElementById(tabId).classList.add('active'); 
-      if(event && event.currentTarget) event.currentTarget.classList.add('active'); 
-      else document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active'); 
+      let ev = event || window.event;
+      if(ev && ev.currentTarget) ev.currentTarget.classList.add('active'); 
+      else {
+          let targetBtn = document.querySelector(`[onclick*="'${tabId}'"]`);
+          if(targetBtn) targetBtn.classList.add('active');
+      }
       window.closeAllAutocomplete(); 
 
       // --- ارسال آمار تغییر تب به گوگل ---
@@ -1553,7 +1600,11 @@
   function newGpa() { clearGpa(); addGpaCourse(); }
 
   let pIdCounter = 0;
-  function addPlannerCourse(data = {}) { window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); renderPlanner(); }
+  function addPlannerCourse(data = {}) { 
+      window.pCourses.push({ id: ++pIdCounter, name: data.name || '', units: data.units || '', d1: data.d1 || '', t1: data.t1 || '', d2: data.d2 || '', t2: data.t2 || '', examMonth: data.examMonth || '', examDay: data.examDay || '', examTime: data.examTime || '', hasExamConflict: false, examConflictLevel: 0 }); 
+      renderPlanner(); 
+      if (typeof gtag === 'function') { gtag('event', 'add_course_planner'); }
+  }
   function removePlannerCourse(id) { window.pCourses = window.pCourses.filter(c => c.id !== id); renderPlanner(); }
   function handleUnitOrTimeChange(c, isUnitChange, isSession1Change) { 
       let u = parseInt(c.units) || 1; 
@@ -1585,7 +1636,7 @@
     window.pCourses.forEach(c => {
       let row = document.createElement('div'); row.className = 'planner-row'; row.id = `planner-row-${c.id}`;
       let nameWrap = document.createElement('div'); nameWrap.className = 'autocomplete-wrap'; let nameInp = document.createElement('input'); nameInp.placeholder = 'نام درس'; nameInp.value = c.name; nameWrap.appendChild(nameInp); setupAutocomplete(c.id, nameInp, window.pCourses, 'planner');
-      let unitSel = createSelect(['1','2','3','4'], c.units, 'واحد'); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
+      let unitSel = createSelect(['1','2','3','4'], c.units, ''); unitSel.addEventListener('change', () => { c.units = unitSel.value; handleUnitOrTimeChange(c, true, false); renderPlanner(); });
       
       // تغییر متون Placeholder به کلمات کوتاه‌تر برای موبایل
       let s1Grp = document.createElement('div'); s1Grp.className = 'session-group'; let d1Sel = createSelect(DAYS, c.d1, 'روز'); let t1Sel = createSelect(TIMES, c.t1, 'ساعت'); 

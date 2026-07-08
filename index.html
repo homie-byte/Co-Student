@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="ابزار برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل دانشجویان.">
+<meta name="description" content="ابزار جامع دانشجویی Co-Student برای برنامه‌ریزی هوشمند انتخاب واحد، محاسبه و شبیه‌سازی معدل با امکان ذخیره‌سازی ابری و پنل کاربری اختصاصی.">
 <meta name="google-site-verification" content="NhTxVjlxYViKUZ5Od_daijrqiWrvX4MpjeGKGy81zc8" /> 
 <meta property="og:title" content="Co-Student | ابزار هوشمند برنامه‌ریزی و محاسبه معدل">
-<meta property="og:description" content="ابزار برنامه‌ریزی انتخاب واحد و محاسبه‌گر هوشمند معدل دانشجویان.">
+<meta property="og:description" content="ابزار جامع دانشجویی Co-Student برای برنامه‌ریزی هوشمند انتخاب واحد، محاسبه و شبیه‌سازی معدل با امکان ذخیره‌سازی ابری.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://homie-byte.github.io/Co-Student/">
 <meta property="og:image" content="https://homie-byte.github.io/Co-Student/logo.jpg">
@@ -21,6 +21,23 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-5PSY4L19NF');
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Co-Student",
+  "url": "https://homie-byte.github.io/Co-Student/",
+  "description": "ابزار جامع دانشجویی برای برنامه‌ریزی هوشمند انتخاب واحد و محاسبه‌گر معدل با امکان ذخیره‌سازی ابری.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "IRR"
+  }
+}
 </script>
 
 <script>
@@ -95,8 +112,10 @@
   .auth-btn:hover { background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(124,92,252,0.25)); transform: translateY(-2px); border-color: var(--accent); }
   
   .user-info { display: none; align-items: center; gap: 8px; background: rgba(124, 142, 160, 0.1); padding: 6px 8px; border-radius: 18px; border: 1px solid var(--border); }
-  .btn-panel { background: var(--accent); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
-  .btn-panel:hover { background: #3b76d6; }
+  
+  /* ارتقای دکمه پنل کاربری */
+  .btn-panel { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 14px; font-family: 'Vazirmatn'; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(124,92,252,0.25); }
+  .btn-panel:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(124,92,252,0.4); opacity: 0.95; }
 
   .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; margin: 0 auto; }
   .btn-spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; margin-left: 6px; vertical-align: middle; }
@@ -408,6 +427,24 @@
     .tabs { width: 100%; display: flex; }
     .tab-btn { flex: 1; text-align: center; padding: 10px 5px; font-size: 0.85rem; }
   }
+  /* این کد را در قسمت Style فایل خود پیدا کنید یا اضافه کنید */
+.custom-alert { 
+    max-width: 320px; 
+    text-align: center; 
+    border-radius: 20px; /* گردتر کردن */
+    background: var(--surface); /* رنگ پس‌زمینه */
+    border: 1px solid var(--border);
+}
+/* تنظیم کادر نوشتن پیام برای زیباتر شدن */
+#custom-prompt-textarea {
+    min-height: 120px !important; 
+    border-radius: 12px !important;
+    padding: 12px !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+}
 </style>
 </head>
 <body>
@@ -440,7 +477,7 @@
           </button>
           <div class="user-info" id="user-info-display">
             <span id="user-email-text" style="padding: 0 4px; direction: ltr; font-size: 0.9rem;"></span>
-            <button class="btn-panel" onclick="openDashboardModal()">پنل من ⚙️</button>
+            <button class="btn-panel" onclick="openDashboardModal()">مدیریت پنل</button>
           </div>
         </div>
     </div>
@@ -459,7 +496,7 @@
         <button class="btn btn-primary" onclick="addPlannerCourse()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
-        <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
+        <button class="btn btn-ghost" onclick="importPlannerFromProfile()" id="btn-import-planner-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از داشبورد</button>
         <button class="btn btn-ghost" onclick="savePlannerDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره برنامه</button>
         
         <div class="exam-months-filter" style="display:flex; align-items:center; gap:8px; background:rgba(124, 142, 160, 0.05); border:1px solid var(--border); padding:6px 10px; border-radius:12px;">
@@ -552,7 +589,7 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن درس
         </button>
         <button class="btn btn-ghost" onclick="toggleTargetPanel()" style="color: var(--accent); border-color: rgba(79, 142, 247, 0.3);" id="target-toggle-btn">🎯 هدف‌گذاری هوشمند</button>
-        <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از پنل</button>
+        <button class="btn btn-ghost" onclick="importGpaFromProfile()" id="btn-import-gpa-profile" style="display: none; border-color: rgba(52, 211, 153, 0.4); color: var(--green);">📥 فراخوانی از داشبورد</button>
         <button class="btn btn-ghost" onclick="saveGpaDraft(this)" style="color: var(--gold); border-color: rgba(245, 200, 66, 0.3);">💾 ذخیره معدل</button>
         <button class="btn btn-ghost" onclick="newGpa()" style="margin-right:auto">📃 محاسبه جدید</button>
       </div>
@@ -600,7 +637,7 @@
 <div class="modal-overlay" id="dashboard-modal-overlay">
   <div class="modal-box dashboard-modal">
     <button class="close-modal" onclick="closeDashboardModal()" aria-label="بستن پنل">✕</button>
-    <h2>⚙️ تنظیمات پنل من</h2>
+    <h2>⚙️ تنظیمات داشبورد</h2>
     
     <div class="dash-grid">
         <div>
@@ -631,10 +668,10 @@
     <div class="scroll-container" style="min-height: auto; border: 1px solid var(--border); border-radius: 12px; padding: 10px;">
         <div id="dash-courses-list"></div>
     </div>
-    <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(124, 142, 160, 0.2);" onclick="addDashCourse()">+ افزودن درس جدید به پنل</button>
+    <button class="btn btn-ghost" style="width:100%; border-style:dashed; margin-top:10px; border-color: rgba(124, 142, 160, 0.2);" onclick="addDashCourse()">+ افزودن درس جدید به داشبورد</button>
 
     <div style="display: flex; justify-content: center; margin-top: 30px;">
-        <button class="btn btn-primary" onclick="saveDashboardProfile(this)" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات پنل</button>
+        <button class="btn btn-primary" onclick="saveDashboardProfile(this)" style="padding: 12px 24px; width: 100%;">ذخیره اطلاعات داشبورد</button>
     </div>
 
     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 30px 0;">
@@ -654,12 +691,11 @@
         </div>
     </div>
 
-    <div style="display:flex; gap:15px; width: 100%; justify-content: center; flex-wrap: wrap; margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border);">
-        <span class="dash-link" onclick="triggerChangePassword()">تغییر رمز عبور</span>
-        <span style="color:var(--border);">|</span>
-        <span class="dash-link" onclick="logoutApp()">خروج از حساب</span>
-        <span style="color:var(--border);">|</span>
-        <span class="dash-link delete" onclick="triggerDeleteAccount()">حذف حساب</span>
+    <div style="display:flex; gap:10px; width: 100%; justify-content: center; flex-wrap: wrap; margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border);">
+        <button class="btn btn-ghost" style="font-size: 0.8rem; flex: 1 1 45%; min-width: 120px;" onclick="triggerChangeUsername()">تغییر نام کاربری</button>
+        <button class="btn btn-ghost" style="font-size: 0.8rem; flex: 1 1 45%; min-width: 120px;" onclick="triggerChangePassword()">تغییر رمز عبور</button>
+        <button class="btn btn-ghost" style="font-size: 0.8rem; flex: 1 1 45%; min-width: 120px; color: var(--gold); border-color: rgba(245,200,66,0.3);" onclick="logoutApp()">خروج از حساب</button>
+        <button class="btn btn-danger" style="font-size: 0.8rem; flex: 1 1 45%; min-width: 120px;" onclick="triggerFakeDeleteAccount()">حذف کامل حساب</button>
     </div>
   </div>
 </div>
@@ -702,12 +738,10 @@
   const supabaseUrl = 'https://mkockoyoiuitzzimeorr.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rb2Nrb3lvaXVpdHp6aW1lb3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjUwMTUsImV4cCI6MjA5ODYwMTAxNX0.tpjk0PxW7hzdpv2aCSrskq3vS--99dTk-urVwZF_5Rs';
   
-  // تنظیمات کلاینت برای عدم ذخیره نشست کاربر (همیشه خروج هنگام رفرش)
   const supabase = createClient(supabaseUrl, supabaseKey, {
       auth: { persistSession: false }
   });
   
-  // اطمینان از خروج کامل از حساب با هر بار رفرش
   supabase.auth.signOut();
 
   let isLoginMode = false; 
@@ -722,7 +756,6 @@
       setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 4000);
   };
 
-  // مخفی شدن اتوماتیک پیام چرخش گوشی بعد از 2 دقیقه
   setTimeout(() => {
       let rotateAlert = document.getElementById('mobile-rotate-alert');
       if(rotateAlert) {
@@ -744,7 +777,6 @@
       document.getElementById('theme-icon').innerText = isLight ? '🌙' : '☀️';
   });
 
-  // --- گرفتن خروجی عکس کامل و متقارن از جدول ---
   window.exportTimetableImage = async () => {
       const grid = document.getElementById('timetable-grid');
       const btn = document.getElementById('btn-export-img');
@@ -762,7 +794,6 @@
       const origRadius = grid.style.borderRadius;
       const origWidth = grid.style.width;
 
-      // اعمال استایل موقت برای عکس عالی و متقارن
       grid.style.padding = '24px';
       grid.style.background = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#111827';
       grid.style.borderRadius = '16px';
@@ -794,7 +825,6 @@
           btn.style.pointerEvents = 'auto';
       }
   };
-
 
   window.showCustomPrompt = (msg, defaultVal, callback, type = 'text') => { 
       document.getElementById('custom-prompt-msg').innerText = msg; 
@@ -954,23 +984,68 @@
       });
   }
 
+  // --- آپدیت و اصلاح ثبت فیدبک بدون قفل کردن کاربر ---
   window.triggerFeedback = (type) => {
       if(!window.currentUser) return;
-      const titles = { 'bug': 'گزارش مشکل', 'suggestion': 'ارسال نظرات و پیشنهادات' };
+      
+      const titles = { 
+          'bug': 'گزارش مشکل و خطا', 
+          'suggestion': 'ارسال نظرات و پیشنهادات' 
+      };
+      
+      // استفاده از مودال شیک به جای prompt مرورگر
       window.showCustomPrompt(`${titles[type]} خود را در کادر زیر بنویسید:`, "", async (text) => {
           if(!text || text.trim() === "") return;
-          try {
-              const { error } = await supabase.from('feedbacks').insert([{
-                  uid: window.currentUser.id, email: window.currentUser.email,
-                  username: window.currentUsername || "نامشخص", type: type, message: text, timestamp: Date.now()
-              }]);
-              if(error) throw error;
-              window.showToast("پیام شما با موفقیت برای ادمین ارسال شد.");
-              if (typeof gtag === 'function') { gtag('event', 'submit_feedback', { feedback_type: type }); }
-          } catch(e) { window.showToast("خطا در ارسال پیام. لطفاً دوباره تلاش کنید.", "error"); }
+          
+          supabase.from('feedbacks').insert([{
+              uid: window.currentUser.id,
+              email: window.currentUser.email,
+              username: window.currentUsername || "ناشناس",
+              type: type,
+              message: text,
+              timestamp: Date.now()
+          }]).then(({ error }) => {
+              if (error) {
+                  window.showToast("خطا در ارسال پیام!", "error");
+              } else {
+                  window.showToast("پیام شما با موفقیت ارسال شد.");
+              }
+          });
+      }, 'textarea'); // مهم: اینجا تایپ را textarea گذاشتیم تا کادر بزرگ باز شود
+  };
+
+  // فانکشن اختصاصی برای فیدبک‌ها (باگ و پیشنهاد)
+  window.triggerFeedback = (type) => {
+      const titles = { 'bug': 'گزارش مشکل', 'suggestion': 'ارسال پیشنهاد' };
+      window.showCustomPrompt(`${titles[type]} خود را بنویسید:`, "", async (text) => {
+          if(!text) return;
+          supabase.from('feedbacks').insert([{
+              uid: window.currentUser.id, email: window.currentUser.email,
+              username: window.currentUsername, type: type, message: text, timestamp: Date.now()
+          }]).then(() => window.showToast("پیام شما با موفقیت ثبت شد."));
       }, 'textarea');
   };
 
+  // فانکشن اختصاصی برای حذف حساب (مستقیم به جدول account_deletions)
+  window.triggerFakeDeleteAccount = () => {
+      window.showCustomConfirm("آیا از حذف دائم حساب خود مطمئن هستید؟", async () => {
+          supabase.from('account_deletions').insert([{
+              uid: window.currentUser.id,
+              email: window.currentUser.email,
+              username: window.currentUsername,
+              message: "کاربر درخواست حذف حساب داد",
+              timestamp: Date.now()
+          }]).then(({ error }) => {
+              if (error) console.error("Error:", error);
+          });
+          
+          await supabase.auth.signOut();
+          window.showToast("حساب کاربری شما با موفقیت حذف شد."); 
+          window.closeDashboardModal();
+          window.currentUser = null;
+          location.reload();
+      });
+  };
   supabase.auth.onAuthStateChange(async (event, session) => {
     const loginBtn = document.getElementById('login-trigger-btn');
     const userInfo = document.getElementById('user-info-display');
@@ -1020,6 +1095,32 @@
     }
   });
 
+  // --- امکان جدید: تغییر نام کاربری ---
+  window.triggerChangeUsername = () => {
+      window.showCustomPrompt("نام کاربری جدید خود را وارد کنید (فقط حروف و اعداد انگلیسی، حداقل ۳ کاراکتر):", window.currentUsername || "", async (newUsr) => {
+          let trimmed = newUsr.trim();
+          if(!/^[a-zA-Z0-9_]{3,}$/.test(trimmed)) return window.showCustomAlert("نام کاربری باید فقط شامل حروف انگلیسی، اعداد یا _ و حداقل ۳ حرف باشد.");
+          if(trimmed === window.currentUsername) return;
+          
+          try {
+              const { data: existingUser } = await supabase.from('users').select('id').eq('username', trimmed).single();
+              if(existingUser) return window.showCustomAlert("این نام کاربری قبلاً توسط شخص دیگری گرفته شده است.");
+              
+              await supabase.auth.updateUser({ data: { username: trimmed } });
+              
+              const { error } = await supabase.from('users').update({ username: trimmed }).eq('id', window.currentUser.id);
+              if(error) throw error;
+              
+              window.currentUsername = trimmed;
+              document.getElementById('user-email-text').innerHTML = `<b>${trimmed}</b>`;
+              window.showToast("نام کاربری شما با موفقیت تغییر کرد.");
+          } catch(e) { 
+              window.showToast("خطا در تغییر نام کاربری.", "error");
+              console.error(e);
+          }
+      }, 'text');
+  };
+
   window.triggerChangePassword = () => {
       window.showCustomPrompt("رمز عبور جدید را وارد کنید (حداقل ۶ کاراکتر):", "", async (newPass) => {
           if(!newPass || newPass.length < 6) return window.showCustomAlert("رمز عبور نامعتبر است. حداقل ۶ کاراکتر الزامی است.");
@@ -1036,9 +1137,17 @@
           try {
               await supabase.from('feedbacks').delete().eq('uid', window.currentUser.id);
               await supabase.from('users').delete().eq('id', window.currentUser.id);
+              
+              const { error } = await supabase.rpc('delete_user_auth');
+              if (error) throw error;
+
               await supabase.auth.signOut();
-              window.showToast("حساب کاربری شما با موفقیت حذف شد."); window.closeDashboardModal();
-          } catch(e) { window.showToast("خطا در حذف حساب.", "error"); }
+              window.showToast("حساب کاربری شما با موفقیت حذف شد."); 
+              window.closeDashboardModal();
+          } catch(e) { 
+              window.showToast("خطا در حذف حساب. لطفاً مجدداً تلاش کنید.", "error"); 
+              console.error(e);
+          }
       });
   };
 
@@ -1130,7 +1239,7 @@
       try {
           const { error } = await supabase.from('users').update({ profile: window.userProfileData }).eq('id', window.currentUser.id);
           if (error) throw error;
-          window.showToast('اطلاعات پنل با موفقیت ذخیره شد.');
+          window.showToast('اطلاعات داشبورد با موفقیت ذخیره شد.');
           if(courses.length > 0) { document.getElementById('btn-import-gpa-profile').style.display = 'inline-flex'; document.getElementById('btn-import-planner-profile').style.display = 'inline-flex'; } else { document.getElementById('btn-import-gpa-profile').style.display = 'none'; document.getElementById('btn-import-planner-profile').style.display = 'none'; }
           if(typeof window.calcGpa === 'function') window.calcGpa();
       } catch(e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally {
@@ -1195,7 +1304,7 @@
     try {
       const { error } = await supabase.from('users').update({ gpaDrafts: window.gpaDrafts.filter(d => !d.isLocal) }).eq('id', window.currentUser.id);
       if(error) throw error;
-      window.renderGpaDrafts(); window.showToast('معدل در پنل ذخیره شد.');
+      window.renderGpaDrafts(); window.showToast('معدل در داشبورد ذخیره شد.');
       if (typeof gtag === 'function') { gtag('event', 'save_gpa_to_cloud'); }
     } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
@@ -1239,7 +1348,7 @@
     try {
       const { error } = await supabase.from('users').update({ plannerDrafts: window.plannerDrafts }).eq('id', window.currentUser.id);
       if(error) throw error;
-      window.renderPlannerDrafts(); window.showToast('برنامه در پنل ذخیره شد.');
+      window.renderPlannerDrafts(); window.showToast('برنامه در داشبورد ذخیره شد.');
       if (typeof gtag === 'function') { gtag('event', 'save_planner_to_cloud'); }
     } catch (e) { window.showToast('خطا در ذخیره اطلاعات! ' + (e.message || ''), 'error'); console.error(e); } finally { if(btnElement) { btnElement.innerHTML = originalBtnHTML; btnElement.style.pointerEvents = 'auto'; } }
   }
@@ -1260,7 +1369,6 @@
 </script>
 
 <script>
-  // --- سیستم هوشمند و بهینه بستن لیست اتوکامپلیت (جلوگیری قطعی از افت فریم و لگ در اسکرول) ---
   window.isAutocompleteOpen = false;
   window.closeAllAutocomplete = function() { 
       if(!window.isAutocompleteOpen) return; 
@@ -1302,7 +1410,6 @@
       }
       window.closeAllAutocomplete(); 
 
-      // --- ارسال آمار تغییر تب به گوگل ---
       if (typeof gtag === 'function') {
           gtag('event', 'page_view', {
               page_title: tabId === 'planner-tool' ? 'برنامه‌ریز انتخاب واحد' : 'محاسبه‌گر معدل',
@@ -1412,7 +1519,7 @@
               addGpaCourse(pc.name, pc.units, pc.grade); importedCount++;
           }
       });
-      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error'); else window.showToast(`${importedCount} درس از پنل فراخوانی شد.`);
+      if(importedCount === 0) window.showToast('دروس پنل قبلاً اضافه شده‌اند.', 'error'); else window.showToast(`${importedCount} درس از داشبورد فراخوانی شد.`);
   }
 
   function renderGpa() {
@@ -1617,7 +1724,7 @@
   }
 
   window.importPlannerFromProfile = () => {
-      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showToast('درسی در پنل برای فراخوانی وجود ندارد.', 'error');
+      if(!window.userProfileData || !window.userProfileData.courses || window.userProfileData.courses.length === 0) return window.showToast('درسی در داشبورد برای فراخوانی وجود ندارد.', 'error');
       let importedCount = 0;
       window.userProfileData.courses.forEach(pc => {
           let exists = window.pCourses.some(c => c.name === pc.name);
@@ -1679,7 +1786,6 @@
 
   function drawTimetable() {
     const grid = document.getElementById('timetable-grid'); 
-    // اصلاح دیزاین هدر جدول
     grid.innerHTML = '<div class="tt-header" style="display:flex; flex-direction:column; gap:2px; font-size:0.75rem;"><span style="color:var(--text);">ساعت</span><span style="color:var(--muted); font-size:0.87rem;">روز</span></div>'; 
     DISPLAY_TIMES.forEach(t => { grid.innerHTML += `<div class="tt-header">${t}</div>`; });
     

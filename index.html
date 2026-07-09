@@ -1414,17 +1414,16 @@
     window.closeAllAutocomplete(); 
 
     // --- اصلاح نهایی گوگل آنالیتیکس ---
-    // --- اصلاح نهایی گوگل آنالیتیکس ---
     if (typeof gtag === 'function') {
         const title = tabId === 'planner-tool' ? 'برنامه‌ریز انتخاب واحد' : 'محاسبه‌گر معدل';
         const path = '/' + tabId;
-        const newLocation = window.location.origin + window.location.pathname + '?view=' + tabId;
         
-        // ارسال به عنوان یک بازدید صفحه واقعی با استفاده از config
-        gtag('config', 'G-5PSY4L19NF', {
-            'page_title': title,
-            'page_path': path,
-            'page_location': newLocation
+        // ارسال page_view به جای ایونت کاستوم
+        gtag('event', 'page_view', {
+            page_title: title,
+            page_path: path,
+            // این خط باعث می‌شه گوگل آنالیتیکس تغییر تب رو مثل یک تغییر URL واقعی در نظر بگیره
+            page_location: window.location.origin + window.location.pathname + '?view=' + tabId 
         });
     }
 }

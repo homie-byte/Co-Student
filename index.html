@@ -1279,12 +1279,12 @@
 
   window.loadGpaDraft = (id) => {
       const draft = window.gpaDrafts.find(d => d.id === id);
-      if(draft && draft.data) { window.gpaCourses = JSON.parse(JSON.stringify(draft.data)); window.gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), 0) + 1; document.getElementById('target-gpa-input').value = draft.target || ''; renderGpa(); window.showToast(`معدل "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
+      if(draft && draft.data) { window.gpaCourses = JSON.parse(JSON.stringify(draft.data)); gpaIdCounter = Math.max(...window.gpaCourses.map(c => c.id), 0); document.getElementById('target-gpa-input').value = draft.target || ''; renderGpa(); window.showToast(`معدل "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
   };
 
   window.loadPlannerDraft = (id) => {
       const draft = window.plannerDrafts.find(d => d.id === id);
-      if(draft && draft.data) { window.pCourses = JSON.parse(JSON.stringify(draft.data)); window.pIdCounter = Math.max(...window.pCourses.map(c => c.id), 0) + 1; renderPlanner(); window.showToast(`برنامه "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
+      if(draft && draft.data) { window.pCourses = JSON.parse(JSON.stringify(draft.data)); pIdCounter = Math.max(...window.pCourses.map(c => c.id), 0); renderPlanner(); window.showToast(`برنامه "${draft.name}" بارگذاری شد.`); window.closeDashboardModal(); }
   };
 
   window.saveGpaDraft = async (btnElement) => {
